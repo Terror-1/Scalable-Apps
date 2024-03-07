@@ -1,0 +1,37 @@
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+server:
+  port: 8030
+
+spring:
+  application:
+    name: session-service
+  config:
+    import: optional:configserver:http://localhost:8888
+#  data:
+#    cassandra:
+#      keyspace-name: default_keyspace
+#      username: zeXjfZdOzzEjbARoFcdhRsGu
+#      password: CBoIGnJAHb1Y,7h7I4Kn+xmtpw3qFBLbL0rRdJS_ItyqZId,d,_4Ur7mxoURJdKLIYO84_45+C_x.LEtuUAeh-AFG+g6kTkuuTkMQU.He17j8UD6k-8juUqThWWeTLfq
+#      schema-action: create-if-not-exists
+#      request:
+#        timeout: 10s
+#      connection:
+#        connect-timeout: 10s
+#        init-query-timeout: 10s
+#
+#datastax.astra:
+#  secure-connect-bundle: secure-connect.zip
+#
+#astra.db:
+#  id: 50a18904-cb42-48b5-9a86-127bda7d6788
+#  region: us-east1
+#  keyspace: default_keyspace
+#  application.token: AstraCS:zeXjfZdOzzEjbARoFcdhRsGu:1f4a3a6bba99623b9d9eae9b6b8c17fc40e35c831dc25b7b544cfa8515f1af4a
+
+
