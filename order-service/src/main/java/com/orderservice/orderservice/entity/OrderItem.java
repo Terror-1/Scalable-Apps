@@ -1,5 +1,4 @@
-package com.sessionservice.sessionservice.entity;
-
+package com.orderservice.orderservice.entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,24 +10,32 @@ import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
-import java.math.BigDecimal;
-
-// who is responsible for authentication can edit this class if needed
 @Table
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Session {
+public class OrderItem {
     @Id
     @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
-    private String token;
+    private Long userID;
+
+    @Column
+    @CassandraType(type = CassandraType.Name.TEXT)
+    private String sku;
 
     @Column
     @CassandraType(type = CassandraType.Name.DOUBLE)
-    private Double cashScore;
+    private Double piecePrice;
+
+    @Column @CassandraType(type = CassandraType.Name.INT)
+    private Integer quantity;
 
     @Column
-    @CassandraType(type = CassandraType.Name.BIGINT)
-    private Long userId;
+    @CassandraType(type = CassandraType.Name.TEXT)
+    private String smallMidLargeOneSize; // xs, s, m, l, xl, xxl, oneSize
+
+    @Column
+    @CassandraType(type = CassandraType.Name.INT)
+    private Integer sizeNumber; // shoes for example: 42, 44,
 }

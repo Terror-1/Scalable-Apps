@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.PartitionKey;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
 import org.springframework.data.cassandra.core.mapping.*;
@@ -20,7 +21,7 @@ public class Product {
     private String sku;
 
     @Column @CassandraType(type = CassandraType.Name.DECIMAL)
-    private Integer price;
+    private Double price;
 
     @Column @CassandraType(type = CassandraType.Name.TEXT)
     private String name;
@@ -33,6 +34,7 @@ public class Product {
 
     @Column @CassandraType(type = CassandraType.Name.TEXT)
     private String category;
+
 }
 // another implementation for using category as the partition key, this means each bucket will have a category
 // efficient for searching by category

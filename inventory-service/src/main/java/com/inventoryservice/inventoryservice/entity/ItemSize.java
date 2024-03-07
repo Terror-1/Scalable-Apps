@@ -20,7 +20,7 @@ public class ItemSize {
     @JoinColumn(name = "product_item_id")
     private ProductItem productItem;
 
-    private String smallMidLarge; // xs, s, m, l, xl, xxl
+    private String smallMidLargeOneSize; // xs, s, m, l, xl, xxl, oneSize
 
     private Integer sizeNumber; // shoes for example: 42, 44,
 

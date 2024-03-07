@@ -7,6 +7,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
 @Entity
 @Getter
@@ -22,7 +23,7 @@ public class Payment {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    private Integer  cashScore;
+    private BigDecimal cashScore;
 
     private String paymentType; // "creditCard" or "paypal"
 
