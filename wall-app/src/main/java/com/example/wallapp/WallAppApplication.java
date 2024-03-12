@@ -8,6 +8,7 @@ public class WallAppApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(WallAppApplication.class, args);
+
     }
 
 }
