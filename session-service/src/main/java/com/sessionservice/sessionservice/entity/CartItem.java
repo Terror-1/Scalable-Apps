@@ -36,5 +36,4 @@ public class CartItem {
     @Column
     @CassandraType(type = CassandraType.Name.INT)
     private Integer itemPrice;
-
 }

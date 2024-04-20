@@ -24,3 +24,6 @@ public class Order {
     @Column @CassandraType(type = CassandraType.Name.DECIMAL)
     private Double totalPrice;
 }
+
+// sync: openFeign
+// async: kafka, rabbit

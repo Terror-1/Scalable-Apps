@@ -1,41 +1,61 @@
 package com.productservice.productservice.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import lombok.*;
 import org.hibernate.annotations.PartitionKey;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
 import org.springframework.data.cassandra.core.mapping.*;
+
+import java.util.*;
 
 @Table
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Product {
-    // note in cassandra it requires you to add the pk not auto-generated like sql
-    // sku like: iphone_13, gucci_shirt
-    @Id @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
-    private String sku;
-
-    @Column @CassandraType(type = CassandraType.Name.DECIMAL)
-    private Double price;
-
-    @Column @CassandraType(type = CassandraType.Name.TEXT)
+    @Id
+    @GeneratedValue
+    private Integer id;
+    @jakarta.persistence.Column(unique = true)
+    private String sku; // black_shoe
+    private double price;
+    //    @OneToMany(
+//            mappedBy = "productItem"
+//    )
+//    @JsonManagedReference
+//    private List<ItemSize> colorsAndSizes;
+    private String smallMidLargeOneSize; // xs, s, m, l, xl, xxl, oneSize
+    private Integer sizeNumber; // shoes for example: 42, 44, - 1
+    private Integer quantity;
     private String name;
-
-    @Column @CassandraType(type = CassandraType.Name.TEXT)
     private String description;
-
-    @Column @CassandraType(type = CassandraType.Name.TEXT)
-    private String gender;  // male, female or unisex
-
-    @Column @CassandraType(type = CassandraType.Name.TEXT)
-    private String category;
-
+    private String gender;
 }
+//public class Product {
+//    // note in cassandra it requires you to add the pk not auto-generated like sql
+//    // sku like: iphone_13, gucci_shirt
+//    @Id @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
+//    private String sku;
+//
+//    @Column @CassandraType(type = CassandraType.Name.DECIMAL)
+//    private Double price;
+//
+//    @Column @CassandraType(type = CassandraType.Name.TEXT)
+//    private String name;
+//
+//    @Column @CassandraType(type = CassandraType.Name.TEXT)
+//    private String description;
+//
+//    @Column @CassandraType(type = CassandraType.Name.TEXT)
+//    private String gender;  // male, female or unisex
+//
+//    @Column @CassandraType(type = CassandraType.Name.TEXT)
+//    private String category;
+//
+//}
 // another implementation for using category as the partition key, this means each bucket will have a category
 // efficient for searching by category
 //
@@ -64,3 +84,4 @@ public class Product {
 //    @CassandraType(type = CassandraType.Name.TEXT)
 //    private String gender;
 //}
+

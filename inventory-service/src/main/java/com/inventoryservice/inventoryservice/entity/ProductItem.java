@@ -1,9 +1,7 @@
 package com.inventoryservice.inventoryservice.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
@@ -16,12 +14,19 @@ import java.util.List;
 @Builder
 public class ProductItem {
     @Id
+    @GeneratedValue
     private Long id;
     @Column(unique = true)
-    private String sku;
-    private Integer price;
-    @OneToMany(
-            mappedBy = "productItem"
-    )
-    private List<ItemSize> colorsAndSizes;
+    private String sku; // black_shoe
+    private double price;
+//    @OneToMany(
+//            mappedBy = "productItem"
+//    )
+//    @JsonManagedReference
+//    private List<ItemSize> colorsAndSizes;
+    private String smallMidLargeOneSize; // xs, s, m, l, xl, xxl, oneSize
+
+    private Integer sizeNumber; // shoes for example: 42, 44, - 1
+
+    private Integer quantity;
 }
