@@ -64,22 +64,27 @@ public class ProductService {
     }
     public List<Product> getWomanShoes() {
         List<Product> products = productRepository.findByGenderAndCategory("female", "shoes");
+        return  products;
     }
 
     public List<Product> getWomanSunglasses() {
         List<Product> products = productRepository.findByGenderAndCategory("female", "sunglasses");
+        return  products;
     }
 
     public List<Product> getWomanPerfumes() {
         List<Product> products = productRepository.findByGenderAndCategory("female", "perfumes");
+        return  products;
     }
 
     public List<Product> getWomanWatches() {
         List<Product> products = productRepository.findByGenderAndCategory("female", "watches");
+        return  products;
     }
 
     public List<Product> getWomanAccessories() {
         List<Product> products = productRepository.findByGenderAndCategory("female", "accessories");
+        return  products;
     }
     public List<Product> getAllManProducts() {
         List<Product> products = productRepository.findByGender("male");
