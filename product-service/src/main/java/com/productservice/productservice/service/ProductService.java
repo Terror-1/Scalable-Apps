@@ -53,4 +53,66 @@ public class ProductService {
             throw new RuntimeException("Product not found for productId: " + productId);
         }
     }
+    // clothes, shoes, sunglasses, perfumes, watches, accessories
+    public List<Product> getAllWomanProducts() {
+        List<Product> products = productRepository.findByGender("female");
+        return  products;
+    }
+    public List<Product> getWomanClothes() {
+        List<Product> products = productRepository.findByGenderAndCategory("female", "clothes");
+        return  products;
+    }
+    public List<Product> getWomanShoes() {
+        List<Product> products = productRepository.findByGenderAndCategory("female", "shoes");
+    }
+
+    public List<Product> getWomanSunglasses() {
+        List<Product> products = productRepository.findByGenderAndCategory("female", "sunglasses");
+    }
+
+    public List<Product> getWomanPerfumes() {
+        List<Product> products = productRepository.findByGenderAndCategory("female", "perfumes");
+    }
+
+    public List<Product> getWomanWatches() {
+        List<Product> products = productRepository.findByGenderAndCategory("female", "watches");
+    }
+
+    public List<Product> getWomanAccessories() {
+        List<Product> products = productRepository.findByGenderAndCategory("female", "accessories");
+    }
+    public List<Product> getAllManProducts() {
+        List<Product> products = productRepository.findByGender("male");
+        return  products;
+    }
+
+    public List<Product> getManClothes() {
+        List<Product> products = productRepository.findByGenderAndCategory("male", "clothes");
+        return  products;
+    }
+
+    public List<Product> getManShoes() {
+        List<Product> products = productRepository.findByGenderAndCategory("male", "shoes");
+        return  products;
+    }
+
+    public List<Product> getManSunglasses() {
+        List<Product> products = productRepository.findByGenderAndCategory("male", "sunglasses");
+        return  products;
+    }
+
+    public List<Product> getManPerfumes() {
+        List<Product> products = productRepository.findByGenderAndCategory("male", "perfumes");
+        return  products;
+    }
+
+    public List<Product> getManWatches() {
+        List<Product> products = productRepository.findByGenderAndCategory("male", "watches");
+        return  products;
+    }
+
+    public List<Product> getManAccessories() {
+        List<Product> products = productRepository.findByGenderAndCategory("male", "accessories");
+        return  products;
+    }
 }

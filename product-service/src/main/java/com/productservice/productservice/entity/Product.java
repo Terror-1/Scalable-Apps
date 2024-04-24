@@ -20,19 +20,20 @@ public class Product {
     @GeneratedValue
     private Integer id;
     @jakarta.persistence.Column(unique = true)
-    private String sku; // black_shoe
+    private String sku; // black_male_shoe
+    private String name;
     private double price;
+    private String smallMidLargeOneSize; // s, m, l, oneSize
+    private Integer sizeNumber; // shoes for example: 42, 44, -1
+    private Integer quantity;
+    private String description;
+    private String gender; // male, female
+    private String category; // clothes, shoes, sunglasses, perfumes, watches, accessories
     //    @OneToMany(
 //            mappedBy = "productItem"
 //    )
 //    @JsonManagedReference
 //    private List<ItemSize> colorsAndSizes;
-    private String smallMidLargeOneSize; // xs, s, m, l, xl, xxl, oneSize
-    private Integer sizeNumber; // shoes for example: 42, 44, - 1
-    private Integer quantity;
-    private String name;
-    private String description;
-    private String gender;
 }
 //public class Product {
 //    // note in cassandra it requires you to add the pk not auto-generated like sql
