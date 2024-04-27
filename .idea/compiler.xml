@@ -9,14 +9,17 @@
         <outputRelativeToContentRoot value="true" />
         <module name="config-server" />
         <module name="inventory-service" />
-        <module name="customer-service" />
         <module name="discovery" />
         <module name="product-service" />
         <module name="order-service" />
+        <module name="myCustomer-service" />
         <module name="gateway" />
         <module name="session-service" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="customer-service" target="21" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
@@ -25,6 +28,7 @@
       <module name="discovery" options="-parameters" />
       <module name="gateway" options="-parameters" />
       <module name="inventory-service" options="-parameters" />
+      <module name="myCustomer-service" options="-parameters" />
       <module name="order-service" options="-parameters" />
       <module name="product-service" options="-parameters" />
       <module name="session-service" options="-parameters" />

@@ -11,9 +11,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Customer {
+public class MyCustomer {
     @Id
-    private Long id;
+    private Integer id;
+
+    @Column(unique = true)
+    private String StripeId;
 
     @Column(unique = true)
     private String email;

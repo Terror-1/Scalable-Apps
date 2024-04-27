@@ -25,10 +25,6 @@ public class Session {
     private String token;
 
     @Column
-    @CassandraType(type = CassandraType.Name.DOUBLE)
-    private Double cashScore;
-
-    @Column
-    @CassandraType(type = CassandraType.Name.BIGINT)
-    private Long userId;
+    @CassandraType(type = CassandraType.Name.INT)
+    private Integer userId;
 }

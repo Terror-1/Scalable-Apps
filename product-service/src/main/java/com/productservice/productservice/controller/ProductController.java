@@ -1,12 +1,17 @@
 package com.productservice.productservice.controller;
 
 
+import com.productservice.productservice.dto.AddToCartMessage;
 import com.productservice.productservice.dto.ProductRequest;
 import com.productservice.productservice.dto.ProductResponse;
 import com.productservice.productservice.entity.Product;
+import com.productservice.productservice.kafka.KafkaProducer;
 import com.productservice.productservice.service.ProductService;
+import jnr.ffi.annotations.In;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,11 +21,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void createProduct(@RequestBody ProductRequest productRequest) {
-        productService.createProduct(productRequest);
-    }
+//    @PostMapping
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public void createProduct(@RequestBody ProductRequest productRequest) {
+//        productService.createProduct(productRequest);
+//    }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -81,7 +86,6 @@ public class ProductController {
     public List<Product> getAllManProducts() {
         return productService.getAllManProducts();
     }
-    ////////////////////////////////////////////////////////////////////
     @GetMapping("/man-clothes")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getManClothes() {
@@ -117,6 +121,11 @@ public class ProductController {
     public List<Product> getManAccessories() {
         List<Product> products = productService.getManAccessories();
         return  products;
+    }
+    @PostMapping("/product/add-to-cart/{token}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<String> addToCart(@PathVariable String token, @RequestBody Integer productId) {
+        return productService.addToCart(token, productId);
     }
 }
 

@@ -1,0 +1,22 @@
+package com.customerservice.customerservice.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Builder
+public class CustomerAddressDto {
+    private String stripeUserId;
+
+    private String city;
+
+    private String line1;
+
+    private String postalCode;
+
+    private String country;
+}

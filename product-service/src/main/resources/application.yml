@@ -12,12 +12,22 @@ spring:
   kafka:
     consumer:
       bootstrap-servers: localhost:9092
-      group-id: inventory
       auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.stringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: '*'
+
+      # Consumer group for addToCart
+      addToCart:
+        group-id: addToCart
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+      # Consumer group for removeFromCart
+      removeFromCart:
+        group-id: removeFromCart
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
     producer:
       bootstrap-servers: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.stringSerializer

@@ -1,11 +1,14 @@
 package com.productservice.productservice.service;
 
+import com.productservice.productservice.dto.AddToCartMessage;
 import com.productservice.productservice.dto.ProductRequest;
 import com.productservice.productservice.dto.ProductResponse;
 import com.productservice.productservice.entity.Product;
+import com.productservice.productservice.kafka.KafkaProducer;
 import com.productservice.productservice.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +19,7 @@ import java.util.Optional;
 @Slf4j
 public class ProductService {
     private final ProductRepository productRepository;
+    private final KafkaProducer kafkaProducer;
 
     public void createProduct(ProductRequest productRequest) {
         Product product = Product.builder()
@@ -119,5 +123,29 @@ public class ProductService {
     public List<Product> getManAccessories() {
         List<Product> products = productRepository.findByGenderAndCategory("male", "accessories");
         return  products;
+    }
+
+    public ResponseEntity<String> addToCart(String token, Integer productId) {
+        Optional<Product> productOptional = productRepository.findById(productId);
+        Product product;
+        if (productOptional.isPresent()) {
+            // Product found, return ProductResponse
+            product = productOptional.get();
+        } else {
+            throw new RuntimeException("Product not found for productId: " + productId);
+        }
+        AddToCartMessage message = AddToCartMessage.builder()
+                .productId(productId)
+                .userToken(token)
+                .name(product.getName())
+                .description(product.getDescription())
+                .sku(product.getSku())
+                .color(product.getColor())
+                .price(product.getPrice())
+                .sizeNumber(product.getSizeNumber())
+                .smallMidLargeOneSize(product.getSmallMidLargeOneSize())
+                .build();
+        kafkaProducer.sendMessage(message);
+        return ResponseEntity.ok("Message queued successfully");
     }
 }

@@ -11,14 +11,13 @@ import lombok.*;
 @Builder
 public class CustomerAddress {
     @Id
-    private Long id;
+    private Integer id;
     @ManyToOne()
     @JoinColumn(name = "customer_id")
-    private Customer customer;
-    private String address;
-    private String country;
+    private MyCustomer myCustomer;
+    private String line1;
     private String city;
-    private String phone;
-    private Integer zipCode;
+    private String postalCode;
+    private String country;
 
 }

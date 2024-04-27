@@ -1,0 +1,19 @@
+package com.productservice.productservice.kafka;
+
+import com.productservice.productservice.dto.AddToCartMessage;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Service;
+import static java.lang.String.format;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class KafkaProducer {
+    private final KafkaTemplate<String, AddToCartMessage> kafkaTemplate;
+    public void sendMessage(AddToCartMessage msg) {
+        log.info(format("sending message to kafka template:: %s", msg));
+        kafkaTemplate.send("addToCart", msg);
+    }
+}
