@@ -13,7 +13,8 @@ import org.springframework.data.cassandra.core.mapping.*;
 @Builder
 public class CartItem {
 
-    @PrimaryKey
+   @Id
+   @PrimaryKey
     private CartItemKey cartItemKey;
 
     @Column

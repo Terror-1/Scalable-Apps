@@ -14,11 +14,11 @@ import java.time.Instant;
 @PrimaryKeyClass
 @Builder
 public class CartItemKey {
-    @Id
+
     @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
     private String token;
 
-    @Id
+
     @PrimaryKeyColumn(ordinal = 0, type = PrimaryKeyType.CLUSTERED)
     private Integer itemId;
 }

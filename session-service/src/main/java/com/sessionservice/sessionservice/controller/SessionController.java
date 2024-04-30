@@ -12,9 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.web.bind.annotation.*;
+import java.util.*;
 
-import java.util.List;
-import java.util.Optional;
 
 import static java.lang.String.format;
 
@@ -30,9 +29,10 @@ public class SessionController {
     public CartObject viewCart(@PathVariable String token) {
         return sessionService.viewCart(token);
     }
-    @KafkaListener(topics = "addToCart", groupId = "addToCart")
-    public void consumeMessage(AddToCartMessage msg) {
-        log.info(format("Consuming the message:: %s", msg));
-        sessionService.addToCart(msg);
-    }
+
+//    @KafkaListener(topics = "addToCart", groupId = "addToCart")
+//    public void consumeMessage(AddToCartMessage msg) {
+//        log.info(format("Consuming the message:: %s", msg));
+//        sessionService.addToCart(msg);
+//    }
 }

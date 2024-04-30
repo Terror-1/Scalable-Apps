@@ -9,37 +9,41 @@ server:
   port: 8030
 
 spring:
-  kafka:
-    consumer:
-      bootstrap-servers: localhost:9092
-      auto-offset-reset: earliest
-      properties:
-        spring.json.trusted.packages: '*'
+    kafka:
+      consumer:
+        bootstrap-servers: localhost:9092
+        auto-offset-reset: earliest
+        properties:
+          spring.json.trusted.packages: '*'
 
-      # Consumer group for addToCart
-      addToCart:
-        group-id: addToCart
-        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-        value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+        addToCart:
+          group-id: addToCart
+          key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+          value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
 
-      # Consumer group for removeFromCart
-      removeFromCart:
-        group-id: removeFromCart
-        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-        value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
 
-    producer:
-      bootstrap-servers: localhost:9092
-      key-serializer: org.apache.kafka.common.serialization.stringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonDeserializer
+        removeFromCart:
+          group-id: removeFromCart
+          key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+          value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
 
-  application:
-    name: session-service
-  config:
-    import: optional:configserver:http://localhost:8888
-  data:
+      producer:
+        bootstrap-servers: localhost:9092
+        key-serializer: org.apache.kafka.common.serialization.StringSerializer
+        value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+    application:
+      name: session-service
+    config:
+      import: optional:configserver:http://localhost:8888
+
     cassandra:
       keyspace-name: store
-      contact-points: localhost
-      port: 7002
       local-datacenter: datacenter1
+    data:
+      cassandra:
+        schema-action: CREATE_IF_NOT_EXISTS
+
+#CREATE KEYSPACE IF NOT EXISTS store WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : '1' };
+
+
