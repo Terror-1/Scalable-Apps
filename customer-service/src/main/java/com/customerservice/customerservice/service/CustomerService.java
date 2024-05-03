@@ -1,5 +1,6 @@
 package com.customerservice.customerservice.service;
 
+import com.customerservice.customerservice.JwtService;
 import com.customerservice.customerservice.dto.AddCardObject;
 import com.customerservice.customerservice.dto.AddCustomerDto;
 import com.customerservice.customerservice.dto.CustomerAddressDto;
@@ -14,6 +15,8 @@ import com.stripe.model.Token;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.*;
 
@@ -23,9 +26,13 @@ import java.util.*;
 public class CustomerService {
     @Value("${stripe.secret.key}")
     private String stripeSecretKey;
+
     private final CustomerRepository customerRepository;
+
     private final CustomerAddressRepository customerAddressRepository;
+
     private final PaymentRepository paymentRepository;
+    public PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public void addCustomer(AddCustomerDto addCustomerDto) throws StripeException {
         Stripe.apiKey = stripeSecretKey;
@@ -71,5 +78,29 @@ public class CustomerService {
         Map<String, Object> shippingParams = new HashMap<>();
         shippingParams.put("shipping", shipping);
         customer.update(shippingParams);
+    }
+
+    public String authenticate(String email, String password) {
+        MyCustomer customer = customerRepository.findByEmail(email);
+        if (customer != null && passwordEncoder.matches(password, customer.getPassword())) {
+            String my_token = JwtService.generateToken(email);
+            return my_token;
+        }
+        return null;
+    }
+
+    public MyCustomer registerCustomer(MyCustomer customerDetails) {
+        MyCustomer tempCustomer = customerRepository.findByEmail(customerDetails.getEmail());
+        if (tempCustomer != null) {
+            return null;
+        }
+
+        // Hash the password
+        String hashedPassword = passwordEncoder.encode(customerDetails.getPassword());
+        customerDetails.setPassword(hashedPassword);
+
+        // Additional registration logic if needed
+
+        return customerRepository.save(customerDetails);
     }
 }

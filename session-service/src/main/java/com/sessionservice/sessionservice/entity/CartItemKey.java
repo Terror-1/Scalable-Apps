@@ -20,7 +20,7 @@ public class CartItemKey {
 
 
     @PrimaryKeyColumn(ordinal = 0, type = PrimaryKeyType.CLUSTERED)
-    private Integer itemId;
+    private String itemId;
 }
 
 

@@ -9,6 +9,7 @@ import java.util.*;
 public interface ProductRepository extends CassandraRepository<Product, Integer> {
     List<Product> findByGender(String gender);
     List<Product> findByGenderAndCategory(String gender, String category);
+    Optional<Product> findBySku(String sku);
 
 
 }

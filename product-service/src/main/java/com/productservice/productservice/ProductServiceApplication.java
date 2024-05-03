@@ -10,6 +10,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 
 import java.nio.file.Path;
+import java.util.Optional;
 
 @SpringBootApplication
 public class ProductServiceApplication {
@@ -24,11 +25,12 @@ public class ProductServiceApplication {
 			product1.setPrice(1200);
 			product1.setSmallMidLargeOneSize("-");
 			product1.setSizeNumber(-1);
-			product1.setQuantity(100);
+			product1.setQuantity(50);
 			product1.setGender("-");
 			product1.setDescription("elfkhebvfeklvbb vwejbcjwdfc ewlfjkhboewufb ewufhbewou;bfj");
 			productRepository.save(product1);
+			Optional<Product> products1 = productRepository.findBySku(product1.getSku());
+			int product1Id = product1.getId();
 		};
 	}
 }
-

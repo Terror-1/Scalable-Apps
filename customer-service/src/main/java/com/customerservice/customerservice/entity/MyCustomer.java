@@ -13,6 +13,7 @@ import java.util.List;
 @Builder
 public class MyCustomer {
     @Id
+    @GeneratedValue
     private Integer id;
 
     @Column(unique = true)
@@ -22,12 +23,12 @@ public class MyCustomer {
     private String email;
 
     @OneToMany(
-            mappedBy = "customer"
+            mappedBy = "myCustomer"
     )
     private List<CustomerAddress> customerAddresses;
 
     @OneToMany(
-            mappedBy = "customer"
+            mappedBy = "myCustomer"
     )
     private List<Payment> paymentOptions;
 

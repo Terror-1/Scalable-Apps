@@ -9,6 +9,7 @@ import com.sessionservice.sessionservice.repository.SessionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.type.ConvertedBasicArrayType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Array;
@@ -23,7 +24,7 @@ public class SessionService {
 
     public void addToCart(AddToCartMessage msg) {
         CartItemKey cartItemKey = CartItemKey.builder()
-                .itemId(msg.getProductId())
+                .itemId(msg.getProductId().toString())
                 .token(msg.getUserToken())
                 .build();
          Optional<CartItem> cartItemOptional = cartItemRepository.findById(cartItemKey);
@@ -58,5 +59,17 @@ public class SessionService {
                 .totalAmount(totalAmount)
                 .products(cartItems)
                 .build();
+    }
+    public void emptyCart(String token) {
+        cartItemRepository.deleteAllByToken(token);
+    }
+
+    public void removeItem(String token, String itemId) {
+        boolean deleted = cartItemRepository.deleteIfQuantityIsOne(token, itemId);
+        if (!deleted) cartItemRepository.decrementQuantityIfGreaterThanOne(token, itemId);
+    }
+
+    public ResponseEntity<String> purchase(String token) {
+
     }
 }

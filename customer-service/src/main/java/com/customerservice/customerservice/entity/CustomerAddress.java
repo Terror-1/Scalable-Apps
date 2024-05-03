@@ -11,6 +11,7 @@ import lombok.*;
 @Builder
 public class CustomerAddress {
     @Id
+    @GeneratedValue
     private Integer id;
     @ManyToOne()
     @JoinColumn(name = "customer_id")
@@ -19,5 +20,4 @@ public class CustomerAddress {
     private String city;
     private String postalCode;
     private String country;
-
 }

@@ -32,6 +32,13 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
+  cassandra:
+    keyspace-name: store
+    local-datacenter: datacenter1
+  data:
+    cassandra:
+      schema-action: CREATE_IF_NOT_EXISTS
+
   application:
     name: product-service
   config:

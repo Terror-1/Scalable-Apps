@@ -11,6 +11,7 @@ import lombok.*;
 @Builder
 public class Payment {
     @Id
+    @GeneratedValue
     private Integer id;
 
     @ManyToOne()
