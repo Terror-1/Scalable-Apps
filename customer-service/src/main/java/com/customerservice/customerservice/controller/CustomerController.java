@@ -40,6 +40,18 @@ public class CustomerController {
         customerService.addAddress(customerAddressDto);
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<MyCustomer> registerCustomer(@RequestBody MyCustomer customer) throws StripeException {
+        System.out.println("Received customer: " + customer); // Debugging line
+
+        MyCustomer registeredCustomer = customerService.registerCustomer(customer);
+        if (registeredCustomer == null) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
+        return new ResponseEntity<>(registeredCustomer, HttpStatus.CREATED);
+    }
+
     @PostMapping("/login")
     public ResponseEntity<String> authenticate(@RequestBody MyCustomer customer, HttpServletResponse response) {
         String my_token = customerService.authenticate(customer.getEmail(), customer.getPassword());
@@ -54,25 +66,14 @@ public class CustomerController {
             // Add the cookie to the response header
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
+
             return new ResponseEntity<>(my_token, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<MyCustomer> registerCustomer(@RequestBody MyCustomer customer) {
-        System.out.println("Received customer: " + customer); // Debugging line
-
-        MyCustomer registeredCustomer = customerService.registerCustomer(customer);
-        if (registeredCustomer == null) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-
-        return new ResponseEntity<>(registeredCustomer, HttpStatus.CREATED);
-    }
-
-    @PostMapping("/logout") // should kill
+    @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletResponse response) {
         ResponseCookie cookie = ResponseCookie.from("token", null)
                 .maxAge(0)

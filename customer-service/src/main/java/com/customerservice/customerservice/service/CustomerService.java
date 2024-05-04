@@ -89,7 +89,7 @@ public class CustomerService {
         return null;
     }
 
-    public MyCustomer registerCustomer(MyCustomer customerDetails) {
+    public MyCustomer registerCustomer(MyCustomer customerDetails) throws StripeException {
         MyCustomer tempCustomer = customerRepository.findByEmail(customerDetails.getEmail());
         if (tempCustomer != null) {
             return null;
@@ -98,9 +98,14 @@ public class CustomerService {
         // Hash the password
         String hashedPassword = passwordEncoder.encode(customerDetails.getPassword());
         customerDetails.setPassword(hashedPassword);
-
-        // Additional registration logic if needed
-
-        return customerRepository.save(customerDetails);
+        /////////////////////////////////////////////////////////////////////////////////
+        Stripe.apiKey = stripeSecretKey;
+        Map<String, Object> customerParam = new HashMap<String, Object>();
+        customerParam.put("email", customerDetails.getEmail());
+        customerParam.put("name", customerDetails.getFirstName() + " " + customerDetails.getLastName());
+        Customer stripeCustomer = Customer.create(customerParam);
+        customerDetails.setStripeId(stripeCustomer.getId());
+        customerRepository.save(customerDetails);
     }
+
 }
