@@ -10,9 +10,8 @@ public class KafkaConfig {
     @Bean
     public NewTopic addToCart() {
         return TopicBuilder
-                .name("addToCart")
+                .name("login")
                 .build();
-
     }
 
 }
