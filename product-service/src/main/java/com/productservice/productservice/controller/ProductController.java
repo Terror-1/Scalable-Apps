@@ -7,6 +7,7 @@ import com.productservice.productservice.dto.ProductResponse;
 import com.productservice.productservice.entity.Product;
 import com.productservice.productservice.kafka.KafkaProducer;
 import com.productservice.productservice.service.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
 import jnr.ffi.annotations.In;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -124,8 +125,9 @@ public class ProductController {
     }
     @PostMapping("/product/add-to-cart/{token}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> addToCart(@PathVariable String token, @RequestBody Integer productId) {
-        return productService.addToCart(token, productId);
+    public ResponseEntity<String> addToCart(HttpServletRequest request, Integer productId) {
+
+        return productService.addToCart(request, productId);
     }
 }
 

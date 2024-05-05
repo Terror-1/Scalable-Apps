@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class AddToCartMessage {
-    private String userToken;
+    private String userId;
     private Integer productId;
     private String color;
     private String description;

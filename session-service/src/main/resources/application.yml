@@ -11,6 +11,9 @@ server:
 spring:
     kafka:
       consumer:
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
         bootstrap-servers: localhost:9092
         auto-offset-reset: earliest
         properties:
@@ -18,6 +21,16 @@ spring:
 
         addToCart:
           group-id: addToCart
+          key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+          value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+        login:
+          group-id: login
+          key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+          value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+        logout:
+          group-id: logout
           key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
           value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
 

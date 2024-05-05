@@ -15,7 +15,7 @@ import static java.lang.String.format;
 @Slf4j
 public class KafkaProducer {
     private final KafkaTemplate<String, AddToCartMessage> kafkaTemplate;
-    public void sendMessage(AddToCartMessage msg) {
+    public void addToCart(AddToCartMessage msg) {
         Message<AddToCartMessage> message = MessageBuilder
                 .withPayload(msg)
                 .setHeader(KafkaHeaders.TOPIC, "addToCart")

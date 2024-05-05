@@ -12,7 +12,6 @@ public class KafkaConfig {
         return TopicBuilder
                 .name("addToCart")
                 .build();
-
     }
 
 }

@@ -6,6 +6,7 @@ import com.customerservice.customerservice.dto.CustomerAddressDto;
 import com.customerservice.customerservice.entity.MyCustomer;
 import com.customerservice.customerservice.service.CustomerService;
 import com.stripe.exception.StripeException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.core.HttpHeaders;
 import lombok.RequiredArgsConstructor;
@@ -66,7 +67,7 @@ public class CustomerController {
             // Add the cookie to the response header
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
-
+            customerService.createSession(customer.getEmail());
             return new ResponseEntity<>(my_token, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -74,7 +75,9 @@ public class CustomerController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletResponse response) {
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+        String token = customerService.getTokenFromCookies(request);
+        System.out.println(token);
         ResponseCookie cookie = ResponseCookie.from("token", null)
                 .maxAge(0)
                 .path("/")
@@ -85,6 +88,6 @@ public class CustomerController {
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         // Return a response entity indicating the logout was successful
-        return new ResponseEntity<>("Logged out successfully", HttpStatus.OK);
+        return new ResponseEntity<>(token + ": Logged out successfully", HttpStatus.OK);
     }
 }

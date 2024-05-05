@@ -1,9 +1,6 @@
 package com.sessionservice.sessionservice.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
 import org.springframework.data.cassandra.core.mapping.CassandraType;
@@ -17,14 +14,15 @@ import java.math.BigDecimal;
 @Table
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Session {
     @Id
     @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
-    private String token;
+    private String userId;
 
     @Column
-    @CassandraType(type = CassandraType.Name.INT)
-    private Integer userId;
+    @CassandraType(type = CassandraType.Name.TEXT)
+    private String name;
 }

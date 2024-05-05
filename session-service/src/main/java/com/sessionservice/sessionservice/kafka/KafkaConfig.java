@@ -13,4 +13,11 @@ public class KafkaConfig {
                 .name("addToCart")
                 .build();
     }
+
+    @Bean
+    public NewTopic login() {
+        return TopicBuilder
+                .name("login")
+                .build();
+    }
 }

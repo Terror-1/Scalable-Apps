@@ -8,9 +8,16 @@ import org.springframework.kafka.config.TopicBuilder;
 @Configuration
 public class KafkaConfig {
     @Bean
-    public NewTopic addToCart() {
+    public NewTopic login() {
         return TopicBuilder
                 .name("login")
+                .build();
+    }
+
+    @Bean
+    public NewTopic logout() {
+        return TopicBuilder
+                .name("logout")
                 .build();
     }
 

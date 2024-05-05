@@ -6,6 +6,8 @@ import com.productservice.productservice.dto.ProductResponse;
 import com.productservice.productservice.entity.Product;
 import com.productservice.productservice.kafka.KafkaProducer;
 import com.productservice.productservice.repository.ProductRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -125,7 +127,9 @@ public class ProductService {
         return  products;
     }
 
-    public ResponseEntity<String> addToCart(String token, Integer productId) {
+    public ResponseEntity<String> addToCart(HttpServletRequest request, Integer productId) {
+        String token = getTokenFromCookies(request);
+        String userId = getIdFromToken(token);
         Optional<Product> productOptional = productRepository.findById(productId);
         Product product;
         if (productOptional.isPresent()) {
@@ -136,7 +140,7 @@ public class ProductService {
         }
         AddToCartMessage message = AddToCartMessage.builder()
                 .productId(productId)
-                .userToken(token)
+                .userId(userId)
                 .name(product.getName())
                 .description(product.getDescription())
                 .sku(product.getSku())
@@ -145,7 +149,25 @@ public class ProductService {
                 .sizeNumber(product.getSizeNumber())
                 .smallMidLargeOneSize(product.getSmallMidLargeOneSize())
                 .build();
-        kafkaProducer.sendMessage(message);
+        kafkaProducer.addToCart(message);
         return ResponseEntity.ok("Message queued successfully");
+    }
+
+    public String getIdFromToken(String token) {
+        return null;/////////////////////////////////////////////////////////////////////////////////////////
+    }
+
+    public String getTokenFromCookies(HttpServletRequest request){
+        Cookie[] cookies = request.getCookies();
+        String token = null;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("token".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+        }
+        return token;
     }
 }

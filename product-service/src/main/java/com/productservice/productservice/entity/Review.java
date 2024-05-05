@@ -17,7 +17,8 @@ import org.springframework.data.cassandra.core.mapping.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Review {
-    @Id @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
+    @Id
+    @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
     private String sku;
 
     @Column @CassandraType(type = CassandraType.Name.DECIMAL) // 0 -> 5

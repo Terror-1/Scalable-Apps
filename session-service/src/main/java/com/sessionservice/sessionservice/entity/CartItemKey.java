@@ -16,7 +16,7 @@ import java.time.Instant;
 public class CartItemKey {
 
     @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
-    private String token;
+    private String userId;
 
 
     @PrimaryKeyColumn(ordinal = 0, type = PrimaryKeyType.CLUSTERED)

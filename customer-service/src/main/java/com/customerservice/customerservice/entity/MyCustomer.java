@@ -22,16 +22,6 @@ public class MyCustomer {
     @Column(unique = true)
     private String email;
 
-    @OneToMany(
-            mappedBy = "myCustomer"
-    )
-    private List<CustomerAddress> customerAddresses;
-
-    @OneToMany(
-            mappedBy = "myCustomer"
-    )
-    private List<Payment> paymentOptions;
-
     private String firstName;
 
     private String lastName;

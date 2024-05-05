@@ -4,8 +4,10 @@ import com.productservice.productservice.dto.AddToCartMessage;
 import com.productservice.productservice.entity.Product;
 import com.sessionservice.sessionservice.dto.CartObject;
 import com.sessionservice.sessionservice.entity.CartItem;
+import com.sessionservice.sessionservice.entity.Session;
 import com.sessionservice.sessionservice.repository.SessionRepository;
 import com.sessionservice.sessionservice.service.SessionService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,28 +27,33 @@ import static java.lang.String.format;
 public class SessionController {
     private final SessionService sessionService;
 
-    @GetMapping("/view-cart/{token}")
+    @GetMapping("/view-cart")
     @ResponseStatus(HttpStatus.OK)
-    public CartObject viewCart(@PathVariable String token) {
-        return sessionService.viewCart(token);
+    public CartObject viewCart(HttpServletRequest request) {
+        String token = sessionService.getTokenFromCookies(request);
+        String userId = sessionService.getIdFromToken(token);
+        return sessionService.viewCart(userId);
     }
 
-    @PostMapping("/view-cart/purchase/{token}")
+    @GetMapping("/view-cart/empty-cart")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> purchase(@PathVariable String token) {
-        return sessionService.purchase(token);
+    public void emptyCart(HttpServletRequest request) {
+        String token = sessionService.getTokenFromCookies(request);
+        String userId = sessionService.getIdFromToken(token);
+        sessionService.emptyCart(userId);
     }
 
-
-    @GetMapping("/view-cart/empty-cart/{token}")
+    @GetMapping("/view-cart/remove-item")
     @ResponseStatus(HttpStatus.OK)
-    public void emptyCart(@PathVariable String token) {
-        sessionService.emptyCart(token);
+    public void removeItem(@RequestBody String itemId, HttpServletRequest request) {
+        String token = sessionService.getTokenFromCookies(request);
+        String userId = sessionService.getIdFromToken(token);
+        sessionService.removeItem(userId, itemId);
     }
 
-    @GetMapping("/view-cart/remove-item/{token}")
+    @GetMapping("/get-all-sessions") // for testing only
     @ResponseStatus(HttpStatus.OK)
-    public void removeItem(@PathVariable String token, @RequestBody String itemId) {
-        sessionService.removeItem(token, itemId);
+    public List<Session> getAllSessions() {
+        return sessionService.getAllSessions();
     }
 }
