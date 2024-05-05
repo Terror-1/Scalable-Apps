@@ -61,19 +61,21 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.product-service</groupId>
-			<artifactId>product-service</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<scope>compile</scope>
-		</dependency>
+
         <dependency>
             <groupId>com.myCustomer-service</groupId>
             <artifactId>myCustomer-service</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>com.externalDTOs</groupId>
+			<artifactId>externalDTOs</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+
+	</dependencies>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>

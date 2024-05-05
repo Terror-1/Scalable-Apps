@@ -1,7 +1,7 @@
 package com.productservice.productservice.controller;
 
 
-import com.productservice.productservice.dto.AddToCartMessage;
+
 import com.productservice.productservice.dto.ProductRequest;
 import com.productservice.productservice.dto.ProductResponse;
 import com.productservice.productservice.entity.Product;
@@ -30,7 +30,7 @@ public class ProductController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ProductResponse> getAllProducts() {
+    public List<Product> getAllProducts() {
         return productService.getAllProducts();
     }
 
@@ -123,9 +123,9 @@ public class ProductController {
         List<Product> products = productService.getManAccessories();
         return  products;
     }
-    @PostMapping("/product/add-to-cart/{token}")
+    @PostMapping("/product/add-to-cart")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> addToCart(HttpServletRequest request, Integer productId) {
+    public ResponseEntity<String> addToCart(HttpServletRequest request,@RequestBody String productId) {
 
         return productService.addToCart(request, productId);
     }

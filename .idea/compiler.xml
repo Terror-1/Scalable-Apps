@@ -8,7 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="config-server" />
-        <module name="inventory-service" />
+        <module name="externalDTOs" />
         <module name="discovery" />
         <module name="product-service" />
         <module name="order-service" />
@@ -19,6 +19,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="customer-service" target="21" />
+      <module name="inventory-service" target="21" />
       <module name="session-service2" target="21" />
     </bytecodeTargetLevel>
   </component>
@@ -27,6 +28,7 @@
       <module name="config-server" options="-parameters" />
       <module name="customer-service" options="-parameters" />
       <module name="discovery" options="-parameters" />
+      <module name="externalDTOs" options="-parameters" />
       <module name="gateway" options="-parameters" />
       <module name="inventory-service" options="-parameters" />
       <module name="myCustomer-service" options="-parameters" />

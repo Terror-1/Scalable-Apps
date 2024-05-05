@@ -14,4 +14,18 @@ public class KafkaConfig {
                 .build();
     }
 
+    @Bean
+    public NewTopic checkCart() {
+        return TopicBuilder
+                .name("checkCart")
+                .build();
+    }
+
+    @Bean
+    public NewTopic emptyCart() {
+        return TopicBuilder
+                .name("emptyCart")
+                .build();
+    }
+
 }

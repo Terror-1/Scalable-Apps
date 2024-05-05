@@ -11,7 +11,7 @@ import org.springframework.data.cassandra.core.mapping.Table;
 import java.math.BigDecimal;
 
 // who is responsible for authentication can edit this class if needed
-@Table
+@Table(value = "session")
 @Getter
 @Setter
 @Builder
@@ -19,10 +19,10 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class Session {
     @Id
-    @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
+    @PrimaryKeyColumn(name = "user_id", type = PrimaryKeyType.PARTITIONED)
     private String userId;
 
-    @Column
+    @Column("name")
     @CassandraType(type = CassandraType.Name.TEXT)
     private String name;
 }

@@ -1,6 +1,7 @@
 package com.productservice.productservice.kafka;
 
-import com.productservice.productservice.dto.AddToCartMessage;
+import com.externalDTOs.externalDTOs.dtos.AddToCartMessage;
+import com.externalDTOs.externalDTOs.dtos.UserID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -15,6 +16,7 @@ import static java.lang.String.format;
 @Slf4j
 public class KafkaProducer {
     private final KafkaTemplate<String, AddToCartMessage> kafkaTemplate;
+    private final KafkaTemplate<String, UserID> kafkaTemplate2;
     public void addToCart(AddToCartMessage msg) {
         Message<AddToCartMessage> message = MessageBuilder
                 .withPayload(msg)
@@ -22,5 +24,14 @@ public class KafkaProducer {
                 .build();
         kafkaTemplate.send( message);
         log.info(format("sending message to kafka template:: %s", message));
+    }
+
+    public void emptyCart(UserID msg) {
+        Message<UserID> message = MessageBuilder
+                .withPayload(msg)
+                .setHeader(KafkaHeaders.TOPIC, "emptyCart")
+                .build();
+        kafkaTemplate2.send(message);
+        log.info(format("sending message to kafka template to empty cart after successfull purchase :: %s", message));
     }
 }

@@ -1,7 +1,8 @@
 package com.sessionservice.sessionservice.kafka;
 
 import com.customerservice.customerservice.dto.CustomerSessionDto;
-import com.productservice.productservice.dto.AddToCartMessage;
+import com.externalDTOs.externalDTOs.dtos.AddToCartMessage;
+import com.externalDTOs.externalDTOs.dtos.UserID;
 import com.sessionservice.sessionservice.service.SessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,5 +26,10 @@ public class KafkaConsumer {
     public void login(CustomerSessionDto msg) {
         log.info(format("Consumed the customer session info:: %s", msg.toString()));
         sessionService.createSession(msg);
+    }
+    @KafkaListener(topics = "emptyCart", groupId = "emptyCart")
+    public void emptyCart(UserID msg) {
+        log.info(format("Consumed the message to empty the cart:: %s", msg.toString()));
+        sessionService.emptyCartAfterPurchase(msg);
     }
 }

@@ -18,7 +18,7 @@ public class JwtService {
 
     }
 
-    public static String extractEmail(String token) {
+    public static String getIdFromToken(String token) {
         return Jwts.parser()
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)

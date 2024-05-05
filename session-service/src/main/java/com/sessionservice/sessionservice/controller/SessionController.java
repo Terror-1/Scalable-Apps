@@ -1,19 +1,13 @@
 package com.sessionservice.sessionservice.controller;
 
-import com.productservice.productservice.dto.AddToCartMessage;
-import com.productservice.productservice.entity.Product;
 import com.sessionservice.sessionservice.dto.CartObject;
-import com.sessionservice.sessionservice.entity.CartItem;
 import com.sessionservice.sessionservice.entity.Session;
-import com.sessionservice.sessionservice.repository.SessionRepository;
 import com.sessionservice.sessionservice.service.SessionService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
@@ -32,7 +26,7 @@ public class SessionController {
     public CartObject viewCart(HttpServletRequest request) {
         String token = sessionService.getTokenFromCookies(request);
         String userId = sessionService.getIdFromToken(token);
-        return sessionService.viewCart(userId);
+        return sessionService.viewCart(request);
     }
 
     @GetMapping("/view-cart/empty-cart")
@@ -40,7 +34,7 @@ public class SessionController {
     public void emptyCart(HttpServletRequest request) {
         String token = sessionService.getTokenFromCookies(request);
         String userId = sessionService.getIdFromToken(token);
-        sessionService.emptyCart(userId);
+        sessionService.emptyCart(request);
     }
 
     @GetMapping("/view-cart/remove-item")
@@ -48,7 +42,7 @@ public class SessionController {
     public void removeItem(@RequestBody String itemId, HttpServletRequest request) {
         String token = sessionService.getTokenFromCookies(request);
         String userId = sessionService.getIdFromToken(token);
-        sessionService.removeItem(userId, itemId);
+        sessionService.removeItem(request, itemId);
     }
 
     @GetMapping("/get-all-sessions") // for testing only
@@ -56,4 +50,11 @@ public class SessionController {
     public List<Session> getAllSessions() {
         return sessionService.getAllSessions();
     }
+
+    @PostMapping("/create-order")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<String> createOrder(HttpServletRequest request) {
+        return sessionService.createOrder(request);
+    }
+
 }

@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class CustomerAddressDto {
-    private String stripeUserId;
+    private String firstName;
+
+    private String lastName;
 
     private String city;
 

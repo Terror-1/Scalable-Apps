@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class AddCardObject {
-    private String stripeUserId;
 
     private String cardNumber;
 

@@ -31,14 +31,15 @@ public class CustomerController {
     }
     @PostMapping("/add-card")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addCard(@RequestBody AddCardObject addCardObject) throws StripeException {
-        customerService.addCard(addCardObject);
+    public void addCard(@RequestBody AddCardObject addCardObject, HttpServletRequest request) throws StripeException {
+        customerService.addCard(addCardObject, request);
     }
 
     @PostMapping("/add-address")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addAddress(@RequestBody CustomerAddressDto customerAddressDto) throws StripeException {
-        customerService.addAddress(customerAddressDto);
+    public void addAddress(@RequestBody CustomerAddressDto customerAddressDto, HttpServletRequest request) throws StripeException {
+
+        customerService.addAddress(customerAddressDto, request);
     }
 
     @PostMapping("/register")

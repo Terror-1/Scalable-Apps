@@ -19,6 +19,11 @@ spring:
         properties:
           spring.json.trusted.packages: '*'
 
+        emptyCart:
+          group-id: emptyCart
+          key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+          value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
         addToCart:
           group-id: addToCart
           key-deserializer: org.apache.kafka.common.serialization.StringDeserializer

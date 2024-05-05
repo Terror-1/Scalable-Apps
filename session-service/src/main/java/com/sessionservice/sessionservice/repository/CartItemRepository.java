@@ -8,16 +8,16 @@ import org.springframework.stereotype.Repository;
 
 import java.util.*;
 @Repository
-public interface CartItemRepository extends CassandraRepository<CartItem, CartItemKey> {
-    @Query("SELECT * FROM cart_item WHERE cart_item_key_user_id = ?0")
+public interface CartItemRepository extends CassandraRepository<CartItem, String> {
+
+    @Query("SELECT * FROM cart_item WHERE item_id = ?0 AND user_id = ?1 ALLOW FILTERING")
+    Optional<CartItem> findByItemIdAndUserId(String itemId, String userId);
+    @Query("SELECT * FROM cart_item WHERE user_id = ?0 ALLOW FILTERING")
     List<CartItem> findAllByUserId(String userId);
 
-    @Query("DELETE FROM cart_item WHERE cart_item_key_user_id = ?0")
+    @Query("DELETE FROM cart_item WHERE user_id = ?0")
     void deleteAllByUserId(String userId);
 
-    @Query("DELETE FROM cart_item WHERE cart_item_key_user_id = ?0 AND cart_item_key_item_id = ?1 IF quantity = 1")
-    boolean deleteIfQuantityIsOne(String userId, String itemId);
-
-    @Query("UPDATE cart_item SET quantity = quantity - 1 WHERE cart_item_key_user_id = ?0 AND cart_item_key_item_id = ?1 IF quantity > 1")
+    @Query("UPDATE cart_item SET quantity = quantity - 1 WHERE user_id = ?0 AND item_id = ?1 IF quantity > 1 ALLOW FILTERING")
     boolean decrementQuantityIfGreaterThanOne(String userId, String itemId);
 }

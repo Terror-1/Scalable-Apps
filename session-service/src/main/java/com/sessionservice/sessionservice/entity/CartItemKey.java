@@ -7,19 +7,19 @@ import org.springframework.data.cassandra.core.mapping.PrimaryKeyClass;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 
 import java.time.Instant;
+@PrimaryKeyClass
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@PrimaryKeyClass
 @Builder
 public class CartItemKey {
 
-    @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
+    @PrimaryKeyColumn(name = "user_id", type = PrimaryKeyType.PARTITIONED)
     private String userId;
 
 
-    @PrimaryKeyColumn(ordinal = 0, type = PrimaryKeyType.CLUSTERED)
+    @PrimaryKeyColumn(name = "item_id", ordinal = 0, type = PrimaryKeyType.CLUSTERED)
     private String itemId;
 }
 

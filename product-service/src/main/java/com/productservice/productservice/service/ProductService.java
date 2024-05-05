@@ -1,15 +1,20 @@
 package com.productservice.productservice.service;
 
-import com.productservice.productservice.dto.AddToCartMessage;
+import com.externalDTOs.externalDTOs.dtos.AddToCartMessage;
+import com.externalDTOs.externalDTOs.dtos.UserID;
 import com.productservice.productservice.dto.ProductRequest;
 import com.productservice.productservice.dto.ProductResponse;
 import com.productservice.productservice.entity.Product;
 import com.productservice.productservice.kafka.KafkaProducer;
 import com.productservice.productservice.repository.ProductRepository;
+import com.sessionservice.sessionservice.dto.CartObject;
+import com.sessionservice.sessionservice.entity.CartItem;
+import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +27,7 @@ import java.util.Optional;
 public class ProductService {
     private final ProductRepository productRepository;
     private final KafkaProducer kafkaProducer;
+    private static final String jwtSecret = "d740b4e7547111cee19518ffef9b95645de3c346043281e52caaf7c48514e04b";
 
     public void createProduct(ProductRequest productRequest) {
         Product product = Product.builder()
@@ -33,9 +39,9 @@ public class ProductService {
                 .build();
         productRepository.save(product);
     }
-    public List<ProductResponse> getAllProducts() {
-        List<Product> products = productRepository.findAll();
-        return products.stream().map(this::mapToProductResponse).toList();
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+
     }
 
     public ProductResponse mapToProductResponse(Product product) {
@@ -127,7 +133,8 @@ public class ProductService {
         return  products;
     }
 
-    public ResponseEntity<String> addToCart(HttpServletRequest request, Integer productId) {
+    public ResponseEntity<String> addToCart(HttpServletRequest request, String productIdText) {
+        int productId = Integer.parseInt(productIdText);
         String token = getTokenFromCookies(request);
         String userId = getIdFromToken(token);
         Optional<Product> productOptional = productRepository.findById(productId);
@@ -150,11 +157,15 @@ public class ProductService {
                 .smallMidLargeOneSize(product.getSmallMidLargeOneSize())
                 .build();
         kafkaProducer.addToCart(message);
-        return ResponseEntity.ok("Message queued successfully");
+        return ResponseEntity.ok("sent queued successfully to kafka");
     }
 
-    public String getIdFromToken(String token) {
-        return null;/////////////////////////////////////////////////////////////////////////////////////////
+    public static String getIdFromToken(String token) {
+        return Jwts.parser()
+                .setSigningKey(jwtSecret)
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
     public String getTokenFromCookies(HttpServletRequest request){
@@ -169,5 +180,25 @@ public class ProductService {
             }
         }
         return token;
+    }
+
+    public void checkCartAndFinishOrder(CartObject msg) {
+        List<CartItem> products = msg.getProducts();
+        for (int i = 0; i < products.size(); i++) {
+            int cartAmount = products.get(i).getQuantity();
+            int rows = productRepository.updateProductQuantityBySku(products.get(i).getSku(), cartAmount);
+            if (rows == 0) {
+                for (int j = 0; j < i; j++) {
+                    int toAdd = products.get(j).getQuantity();
+                    productRepository.increaseQuantityBySku(products.get(j).getSku(), toAdd);
+                }
+                System.out.println("Item was not found");
+            }
+        }
+        UserID userIdMessage = UserID.builder()
+                .userId(msg.getUserId())
+                .build();
+        kafkaProducer.emptyCart(userIdMessage);
+        System.out.println("Order Was Done Successfully");
     }
 }
