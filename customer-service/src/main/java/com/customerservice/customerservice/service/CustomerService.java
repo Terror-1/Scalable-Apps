@@ -7,9 +7,7 @@ import com.customerservice.customerservice.dto.CustomerAddressDto;
 import com.customerservice.customerservice.dto.CustomerSessionDto;
 import com.customerservice.customerservice.entity.MyCustomer;
 import com.customerservice.customerservice.kafka.KafkaProducer;
-import com.customerservice.customerservice.repository.CustomerAddressRepository;
 import com.customerservice.customerservice.repository.CustomerRepository;
-import com.customerservice.customerservice.repository.PaymentRepository;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Customer;
@@ -32,10 +30,6 @@ public class CustomerService {
     private String stripeSecretKey;
 
     private final CustomerRepository customerRepository;
-
-    private final CustomerAddressRepository customerAddressRepository;
-
-    private final PaymentRepository paymentRepository;
 
     private final KafkaProducer kafkaProducer;
     public PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();

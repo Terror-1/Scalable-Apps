@@ -1,5 +1,6 @@
 package com.productservice.productservice.entity;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.*;
@@ -9,7 +10,7 @@ import org.springframework.data.cassandra.core.mapping.*;
 
 import java.util.*;
 
-@Table
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
