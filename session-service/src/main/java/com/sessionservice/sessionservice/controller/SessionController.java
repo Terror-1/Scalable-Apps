@@ -3,6 +3,7 @@ package com.sessionservice.sessionservice.controller;
 import com.sessionservice.sessionservice.dto.CartObject;
 import com.sessionservice.sessionservice.entity.Session;
 import com.sessionservice.sessionservice.service.SessionService;
+import com.stripe.exception.StripeException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +54,7 @@ public class SessionController {
 
     @PostMapping("/create-order")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> createOrder(HttpServletRequest request) {
+    public ResponseEntity<String> createOrder(HttpServletRequest request) throws StripeException {
         return sessionService.createOrder(request);
     }
 

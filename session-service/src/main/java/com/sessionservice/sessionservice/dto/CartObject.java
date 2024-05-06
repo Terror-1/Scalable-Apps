@@ -14,6 +14,7 @@ import java.util.List;
 @Builder
 public class CartObject {
     private String userId;
+    private String paymentMethodId;
     private Double totalAmount;
     private List<CartItem> products;
 }

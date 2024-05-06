@@ -1,11 +1,12 @@
 package com.customerservice.customerservice.controller;
 
-import com.customerservice.customerservice.dto.AddCardObject;
 import com.customerservice.customerservice.dto.AddCustomerDto;
 import com.customerservice.customerservice.dto.CustomerAddressDto;
 import com.customerservice.customerservice.entity.MyCustomer;
 import com.customerservice.customerservice.service.CustomerService;
 import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentMethod;
+import com.stripe.model.PaymentMethodCollection;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.core.HttpHeaders;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/customers")
@@ -23,25 +25,23 @@ import java.time.Duration;
 public class CustomerController {
 
     private final CustomerService customerService;
-
-    @PostMapping("/add-customer")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void addCustomer(@RequestBody AddCustomerDto addCustomerDto) throws StripeException {
-        customerService.addCustomer(addCustomerDto);
-    }
     @PostMapping("/add-card")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addCard(@RequestBody AddCardObject addCardObject, HttpServletRequest request) throws StripeException {
-        customerService.addCard(addCardObject, request);
+    public ResponseEntity<String> addCard(HttpServletRequest request) throws StripeException {
+        return customerService.addCard(request);
+    }
+    @GetMapping("get-all-payment-methods")
+    @ResponseStatus(HttpStatus.OK)
+    public List<PaymentMethod> getAllPaymentMethods(HttpServletRequest request) throws StripeException {
+        return customerService.getAllPaymentMethods(request);
     }
 
     @PostMapping("/add-address")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addAddress(@RequestBody CustomerAddressDto customerAddressDto, HttpServletRequest request) throws StripeException {
+    public ResponseEntity<String> addAddress(@RequestBody CustomerAddressDto customerAddressDto, HttpServletRequest request) throws StripeException {
 
-        customerService.addAddress(customerAddressDto, request);
+        return customerService.addAddress(customerAddressDto, request);
     }
-
     @PostMapping("/register")
     public ResponseEntity<MyCustomer> registerCustomer(@RequestBody MyCustomer customer) throws StripeException {
         System.out.println("Received customer: " + customer); // Debugging line
@@ -90,5 +90,17 @@ public class CustomerController {
 
         // Return a response entity indicating the logout was successful
         return new ResponseEntity<>(token + ": Logged out successfully", HttpStatus.OK);
+    }
+
+
+
+
+
+
+    @PostMapping("/create-order")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<String> createOrder(HttpServletRequest request) throws StripeException {
+
+        return customerService.createOrder(request);
     }
 }

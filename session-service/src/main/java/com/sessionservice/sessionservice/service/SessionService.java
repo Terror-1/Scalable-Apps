@@ -11,12 +11,18 @@ import com.sessionservice.sessionservice.entity.Session;
 import com.sessionservice.sessionservice.kafka.KafkaProducer;
 import com.sessionservice.sessionservice.repository.CartItemRepository;
 import com.sessionservice.sessionservice.repository.SessionRepository;
+import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Customer;
+import com.stripe.model.PaymentMethodCollection;
+import com.stripe.param.CustomerListPaymentMethodsParams;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.type.ConvertedBasicArrayType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -32,6 +38,8 @@ public class SessionService {
     private final CartItemRepository cartItemRepository;
     private final KafkaProducer kafkaProducer;
     private static final String jwtSecret = "d740b4e7547111cee19518ffef9b95645de3c346043281e52caaf7c48514e04b";
+    @Value("${stripe.secret.key}")
+    private String stripeSecretKey;
 
     public ResponseEntity<String> addToCart(AddToCartMessage msg) {
         String itemId = msg.getProductId().toString();
@@ -120,14 +128,32 @@ public class SessionService {
         return token;
     }
 
-    public ResponseEntity<String> createOrder(HttpServletRequest request) {
+    public ResponseEntity<String> createOrder(HttpServletRequest request) throws StripeException {
+        Stripe.apiKey = stripeSecretKey;
         String token = getTokenFromCookies(request);
         String userId = getIdFromToken(token);
+        Customer customer = Customer.retrieve(userId);
+        CustomerListPaymentMethodsParams params =
+                CustomerListPaymentMethodsParams.builder().build();
+        PaymentMethodCollection paymentMethods = customer.listPaymentMethods(params);
+        if (paymentMethods.getData().isEmpty()) {
+            return new ResponseEntity<>("Error please add a payment method first !", HttpStatus.BAD_REQUEST);
+
+        }
+        if (customer.getShipping() == null) {
+            return new ResponseEntity<>("Error please add a shipping address first !", HttpStatus.BAD_REQUEST);
+        }
         List<CartItem> cartItems = cartItemRepository.findAllByUserId(userId);
+        if (cartItems.isEmpty()) {
+            return new ResponseEntity<>("Error please add products to your cart first !", HttpStatus.BAD_REQUEST);
+        }
+        double totalAmount = 0;
+        for (CartItem cartItem: cartItems) totalAmount += cartItem.getItemPrice() * cartItem.getQuantity();
          CartObject cartObject = CartObject.builder()
+                 .paymentMethodId(paymentMethods.getData().getLast().getId())
                  .products(cartItems)
                  .userId(userId)
-                 .totalAmount(0.0)
+                 .totalAmount(totalAmount)
                  .build();
          kafkaProducer.checkCartAndFinishOrder(cartObject);
          return new ResponseEntity<>("sent your cart to queue to continue processing the payment", HttpStatus.CREATED);

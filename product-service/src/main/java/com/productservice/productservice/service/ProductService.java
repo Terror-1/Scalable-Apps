@@ -9,11 +9,19 @@ import com.productservice.productservice.kafka.KafkaProducer;
 import com.productservice.productservice.repository.ProductRepository;
 import com.sessionservice.sessionservice.dto.CartObject;
 import com.sessionservice.sessionservice.entity.CartItem;
+import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Customer;
+import com.stripe.model.PaymentIntent;
+import com.stripe.model.PaymentMethodCollection;
+import com.stripe.param.CustomerListPaymentMethodsParams;
+import com.stripe.param.PaymentIntentCreateParams;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,7 +33,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class ProductService {
+    @Value("${stripe.secret.key}")
+    private String stripeSecretKey;
+
     private final ProductRepository productRepository;
+
     private final KafkaProducer kafkaProducer;
     private static final String jwtSecret = "d740b4e7547111cee19518ffef9b95645de3c346043281e52caaf7c48514e04b";
 
@@ -182,7 +194,9 @@ public class ProductService {
         return token;
     }
 
-    public void checkCartAndFinishOrder(CartObject msg) {
+    public void checkCartAndFinishOrder(CartObject msg) throws StripeException {
+        Stripe.apiKey = stripeSecretKey;
+        Customer customer = Customer.retrieve(msg.getUserId());
         List<CartItem> products = msg.getProducts();
         for (int i = 0; i < products.size(); i++) {
             int cartAmount = products.get(i).getQuantity();
@@ -193,12 +207,58 @@ public class ProductService {
                     productRepository.increaseQuantityBySku(products.get(j).getSku(), toAdd);
                 }
                 System.out.println("Item was not found");
+                return;
             }
         }
-        UserID userIdMessage = UserID.builder()
-                .userId(msg.getUserId())
+        /////////////////////////////////////////////
+        PaymentIntentCreateParams.Shipping.builder()
+                .setName(customer.getName())
+                .setPhone(customer.getPhone())
+                .setAddress(
+                        PaymentIntentCreateParams.Shipping.Address.builder()
+                                .setCity(customer.getShipping().getAddress().getCity())
+                                .setCountry(customer.getShipping().getAddress().getCountry())
+                                .setLine1(customer.getShipping().getAddress().getLine1())
+                                .setPostalCode(customer.getShipping().getAddress().getPostalCode())
+                                .build()
+                )
                 .build();
-        kafkaProducer.emptyCart(userIdMessage);
-        System.out.println("Order Was Done Successfully");
+        // Create a PaymentIntent specifying the customer, currency and amount
+        PaymentIntentCreateParams paymentIntentParams = PaymentIntentCreateParams.builder()
+                .setCustomer(customer.getId())
+                .setCurrency("usd") // Update with your currency code
+                .setAmount((long) (msg.getTotalAmount() * 100)) // Convert double to long with cents conversion
+                .setPaymentMethod(msg.getPaymentMethodId())
+                .setShipping(
+                        PaymentIntentCreateParams.Shipping.builder()
+                                .setName(customer.getName())
+                                .setPhone(customer.getPhone())
+                                .setCarrier("carrier")
+                                .setTrackingNumber("1")
+                                .setAddress(
+                                        PaymentIntentCreateParams.Shipping.Address.builder()
+                                                .setCity(customer.getShipping().getAddress().getCity())
+                                                .setCountry(customer.getShipping().getAddress().getCountry())
+                                                .setLine1(customer.getShipping().getAddress().getLine1())
+                                                .setPostalCode(customer.getShipping().getAddress().getPostalCode())
+                                                .build()
+                                )
+                                .build()
+                )
+                .build();
+        try {
+            PaymentIntent paymentIntent = PaymentIntent.create(paymentIntentParams);
+            UserID userIdMessage = UserID.builder()
+                    .userId(msg.getUserId())
+                    .build();
+            kafkaProducer.emptyCart(userIdMessage);
+            System.out.println("Order created Successfully: " + paymentIntent.getId());
+        } catch (StripeException e) {
+            for (int i = 0; i < products.size(); i++) {
+                int toAdd = products.get(i).getQuantity();
+                productRepository.increaseQuantityBySku(products.get(i).getSku(), toAdd);
+            }
+            System.out.println("Error creating order: " + e.getMessage());
+        }
     }
 }

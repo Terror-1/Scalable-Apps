@@ -1,26 +1,26 @@
 package com.customerservice.customerservice.service;
 
 import com.customerservice.customerservice.JwtService;
-import com.customerservice.customerservice.dto.AddCardObject;
 import com.customerservice.customerservice.dto.AddCustomerDto;
 import com.customerservice.customerservice.dto.CustomerAddressDto;
 import com.customerservice.customerservice.dto.CustomerSessionDto;
 import com.customerservice.customerservice.entity.MyCustomer;
 import com.customerservice.customerservice.kafka.KafkaProducer;
 import com.customerservice.customerservice.repository.CustomerRepository;
+
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Customer;
-import com.stripe.model.PaymentIntent;
-import com.stripe.model.PaymentMethod;
-import com.stripe.model.Token;
-import com.stripe.param.PaymentIntentCreateParams;
+import com.stripe.model.*;
+import com.stripe.param.*;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,40 +40,36 @@ public class CustomerService {
     private final KafkaProducer kafkaProducer;
     public PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public void addCustomer(AddCustomerDto addCustomerDto) throws StripeException {
-        Stripe.apiKey = stripeSecretKey;
-        Map<String, Object> customerParam = new HashMap<String, Object>();
-        customerParam.put("email", addCustomerDto.getEmail());
-        customerParam.put("name", addCustomerDto.getFirstName() + " " + addCustomerDto.getLastName());
-        Customer stripeCustomer = Customer.create(customerParam);
-        MyCustomer myCustomer = MyCustomer.builder()
-                .firstName(addCustomerDto.getFirstName())
-                .lastName(addCustomerDto.getLastName())
-                .email(addCustomerDto.getEmail())
-                .StripeId(stripeCustomer.getId())
-                .build();
-        customerRepository.save(myCustomer);
-    }
-
-    public void addCard(AddCardObject addCardObject, HttpServletRequest request) throws StripeException {
+    public ResponseEntity<String> addCard(HttpServletRequest request) throws StripeException {
         Stripe.apiKey = stripeSecretKey;
         String token = getTokenFromCookies(request);
         String userId = getIdFromToken(token);
+        String cardToken = "tok_visa";
         Customer customer = Customer.retrieve(userId);
-        Map<String, Object> cardParam = new HashMap<>();
-        cardParam.put("number", addCardObject.getCardNumber());
-        cardParam.put("exp_month", addCardObject.getExpMonth());
-        cardParam.put("exp_year", addCardObject.getExpYear());
-        cardParam.put("cvc", addCardObject.getCvc());
-        Map<String, Object> tokenParam = new HashMap<>();
-        tokenParam.put("card", cardParam);
-        Token stripeToken = Token.create(tokenParam);
-        Map<String, Object> source = new HashMap<>();
-        source.put("source", stripeToken.getId());
-        customer.getSources().create(source);
+        PaymentMethodCreateParams params =
+                PaymentMethodCreateParams.builder()
+                        .setType(PaymentMethodCreateParams.Type.CARD)
+                        .setCard(
+                                PaymentMethodCreateParams.Token.builder()
+                                        .setToken(cardToken)  // Set the card token instead of card details
+                                        .build()
+                        )
+                        .build();
+        try {
+            PaymentMethod resource = PaymentMethod.create(params);
+            PaymentMethodAttachParams attachParams =
+                    PaymentMethodAttachParams.builder().setCustomer(userId).build();
+            PaymentMethod paymentMethod = resource.attach(attachParams);
+            // Handle the created paymentMethod as needed
+            return new ResponseEntity<>("PaymentMethod created: " +  resource.getId(), HttpStatus.CREATED);
+
+        } catch (StripeException e) {
+            // Handle any errors that may occur during the creation of PaymentMethod
+            return new ResponseEntity<>("Error creating PaymentMethod: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
-    public void addAddress(CustomerAddressDto customerAddressDto, HttpServletRequest request)  throws StripeException {
+    public ResponseEntity<String> addAddress(CustomerAddressDto customerAddressDto, HttpServletRequest request)  throws StripeException {
         String token = getTokenFromCookies(request);
         String userId = getIdFromToken(token);
         Stripe.apiKey = stripeSecretKey;
@@ -89,6 +85,7 @@ public class CustomerService {
         Map<String, Object> shippingParams = new HashMap<>();
         shippingParams.put("shipping", shipping);
         customer.update(shippingParams);
+        return new ResponseEntity<>("Address added successfully", HttpStatus.CREATED);
     }
 
     public String authenticate(String email, String password) {
@@ -148,5 +145,84 @@ public class CustomerService {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+    }
+
+    public List<PaymentMethod> getAllPaymentMethods(HttpServletRequest request) throws StripeException {
+        Stripe.apiKey = stripeSecretKey;
+        String token = getTokenFromCookies(request);
+        String userId = getIdFromToken(token);
+        Customer customer = Customer.retrieve(userId);
+        CustomerListPaymentMethodsParams params =
+                CustomerListPaymentMethodsParams.builder().build();
+        PaymentMethodCollection paymentMethods = customer.listPaymentMethods(params);
+
+        return paymentMethods.getData();
+    }
+
+    public ResponseEntity<String> createOrder(HttpServletRequest request) throws StripeException {
+        double totalAmount = 500.0;
+        Stripe.apiKey = stripeSecretKey;
+        String token = getTokenFromCookies(request);
+        String userId = getIdFromToken(token);
+        ////////////////////////////////////////////////////////////////////////////////
+        Customer customer = Customer.retrieve(userId);
+        CustomerListPaymentMethodsParams params =
+                CustomerListPaymentMethodsParams.builder().build();
+        PaymentMethodCollection paymentMethods = customer.listPaymentMethods(params);
+        if (paymentMethods.getData().isEmpty()) {
+            return new ResponseEntity<>("Error please add a payment method first !", HttpStatus.BAD_REQUEST);
+
+        }
+        if (customer.getShipping() == null) {
+            return new ResponseEntity<>("Error please add a shipping address first !", HttpStatus.BAD_REQUEST);
+        }
+        //////////////////////////////////////////////////////////////////////////////////
+
+        PaymentIntentCreateParams.Shipping.builder()
+                .setName(customer.getName())
+                .setPhone(customer.getPhone())
+                .setAddress(
+                        PaymentIntentCreateParams.Shipping.Address.builder()
+                        .setCity(customer.getShipping().getAddress().getCity())
+                        .setCountry(customer.getShipping().getAddress().getCountry())
+                        .setLine1(customer.getShipping().getAddress().getLine1())
+                        .setPostalCode(customer.getShipping().getAddress().getPostalCode())
+                        .build()
+                )
+                .build();
+        // Create a PaymentIntent specifying the customer, currency and amount
+        PaymentIntentCreateParams paymentIntentParams = PaymentIntentCreateParams.builder()
+                .setCustomer(userId)
+                .setCurrency("usd") // Update with your currency code
+                .setAmount((long) (totalAmount * 100)) // Convert double to long with cents conversion
+                .setPaymentMethod(paymentMethods.getData().getLast().getId())
+                .setShipping(
+                        PaymentIntentCreateParams.Shipping.builder()
+                                .setName(customer.getName())
+                                .setPhone(customer.getPhone())
+                                .setCarrier("carrier")
+                                .setTrackingNumber("1")
+                                .setAddress(
+                                        PaymentIntentCreateParams.Shipping.Address.builder()
+                                                .setCity(customer.getShipping().getAddress().getCity())
+                                                .setCountry(customer.getShipping().getAddress().getCountry())
+                                                .setLine1(customer.getShipping().getAddress().getLine1())
+                                                .setPostalCode(customer.getShipping().getAddress().getPostalCode())
+                                                .build()
+                                )
+                                .build()
+                )
+                .build();
+        try {
+            PaymentIntent paymentIntent = PaymentIntent.create(paymentIntentParams);
+
+            // Handle the successful payment intent
+            return new ResponseEntity<>("Order created: " + paymentIntent.getId(), HttpStatus.CREATED);
+        } catch (StripeException e) {
+            // Handle any errors that may occur during PaymentIntent creation
+            return new ResponseEntity<>("Error creating order: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        // ... rest of the code remains the same as before ...
     }
 }
