@@ -10,14 +10,15 @@ import java.util.*;
 @Repository
 public interface CartItemRepository extends CassandraRepository<CartItem, String> {
 
-    @Query("SELECT * FROM cart_item WHERE item_id = ?0 AND user_id = ?1 ALLOW FILTERING")
+    @Query("SELECT * FROM cart_item WHERE item_id = ?0 AND user_id = ?1")
     Optional<CartItem> findByItemIdAndUserId(String itemId, String userId);
-    @Query("SELECT * FROM cart_item WHERE user_id = ?0 ALLOW FILTERING")
+    @Query("SELECT * FROM cart_item WHERE user_id = ?0")
     List<CartItem> findAllByUserId(String userId);
 
     @Query("DELETE FROM cart_item WHERE user_id = ?0")
     void deleteAllByUserId(String userId);
 
-    @Query("UPDATE cart_item SET quantity = quantity - 1 WHERE user_id = ?0 AND item_id = ?1 IF quantity > 1 ALLOW FILTERING")
-    boolean decrementQuantityIfGreaterThanOne(String userId, String itemId);
+    @Query("DELETE FROM cart_item WHERE user_id = ?0 AND item_id = ?1")
+    void deleteCartItemByUserIdAndItemId(String userId, String itemId);
+
 }

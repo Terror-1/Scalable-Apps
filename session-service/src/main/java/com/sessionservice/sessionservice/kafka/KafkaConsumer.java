@@ -27,6 +27,13 @@ public class KafkaConsumer {
         log.info(format("Consumed the customer session info:: %s", msg.toString()));
         sessionService.createSession(msg);
     }
+
+    @KafkaListener(topics = "logout", groupId = "logout")
+    public void logout(CustomerSessionDto msg) {
+        log.info(format("consumed the logout session destroy request:: %s", msg.toString()));
+        sessionService.destroySession(msg);
+    }
+
     @KafkaListener(topics = "emptyCart", groupId = "emptyCart")
     public void emptyCart(UserID msg) {
         log.info(format("Consumed the message to empty the cart:: %s", msg.toString()));

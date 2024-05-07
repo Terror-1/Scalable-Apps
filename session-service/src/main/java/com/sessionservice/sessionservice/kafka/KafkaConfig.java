@@ -20,6 +20,13 @@ public class KafkaConfig {
                 .name("login")
                 .build();
     }
+
+    @Bean
+    public NewTopic logout() {
+        return TopicBuilder
+                .name("logout")
+                .build();
+    }
     @Bean
     public NewTopic checkCart() {
         return TopicBuilder

@@ -7,15 +7,14 @@ CREATE TABLE IF NOT EXISTS session (
 );
 
 CREATE TABLE IF NOT EXISTS cart_item (
-    item_id text,
-    user_id text,
-    sku text,
-    small_mid_large_one_size text,
-    color text,
-    name text,
-    size_number int,
-    item_price double,
-    quantity int,
-    PRIMARY KEY (user_id)
+  user_id text,
+  item_id text,
+  sku text,
+  small_mid_large_one_size text,
+  color text,
+  name text,
+  size_number int,
+  item_price double,
+  quantity int,
+  PRIMARY KEY (user_id, item_id)
 );
-

@@ -27,8 +27,8 @@ public class CustomerController {
     private final CustomerService customerService;
     @PostMapping("/add-card")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<String> addCard(HttpServletRequest request) throws StripeException {
-        return customerService.addCard(request);
+    public ResponseEntity<String> addCard(HttpServletRequest request, @RequestBody String cardToken) throws StripeException {
+        return customerService.addCard(request, cardToken);
     }
     @GetMapping("get-all-payment-methods")
     @ResponseStatus(HttpStatus.OK)
@@ -77,30 +77,6 @@ public class CustomerController {
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
-        String token = customerService.getTokenFromCookies(request);
-        System.out.println(token);
-        ResponseCookie cookie = ResponseCookie.from("token", null)
-                .maxAge(0)
-                .path("/")
-                .httpOnly(true)
-                .build();
-
-        // Add the expired cookie to the response header to overwrite the existing one
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-
-        // Return a response entity indicating the logout was successful
-        return new ResponseEntity<>(token + ": Logged out successfully", HttpStatus.OK);
-    }
-
-
-
-
-
-
-    @PostMapping("/create-order")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<String> createOrder(HttpServletRequest request) throws StripeException {
-
-        return customerService.createOrder(request);
+        return customerService.logout(request, response);
     }
 }

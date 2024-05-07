@@ -68,30 +68,51 @@ public class SessionService {
         return new ResponseEntity<>("added product to cart!", HttpStatus.CREATED);
     }
 
-    public CartObject viewCart(HttpServletRequest request) {
+    public CartObject viewCart(HttpServletRequest request) throws StripeException {
+        Stripe.apiKey = stripeSecretKey;
         String token = getTokenFromCookies(request);
         String userId = getIdFromToken(token);
+        Customer customer = Customer.retrieve(userId);
+        CustomerListPaymentMethodsParams params =
+                CustomerListPaymentMethodsParams.builder().build();
+        PaymentMethodCollection paymentMethods = customer.listPaymentMethods(params);
         List<CartItem> cartItems= cartItemRepository.findAllByUserId(userId);
         double totalAmount = 0;
         for (int i = 0; i < (int) cartItems.size(); i++) {
             totalAmount += cartItems.get(i).getQuantity() * cartItems.get(i).getItemPrice();
         }
-        return CartObject.builder()
+        CartObject cartObject =  CartObject.builder()
                 .totalAmount(totalAmount)
                 .userId(userId)
                 .products(cartItems)
                 .build();
+        if (!paymentMethods.getData().isEmpty()) {
+            cartObject.setPaymentMethodId(paymentMethods.getData().getLast().getId());
+        }
+        return cartObject;
     }
-    public void emptyCart(HttpServletRequest request) {
+    public ResponseEntity<String> emptyCart(HttpServletRequest request) {
         String token = getTokenFromCookies(request);
         String userId = getIdFromToken(token);
         cartItemRepository.deleteAllByUserId(userId);
+        return new ResponseEntity<>("Card is now empty", HttpStatus.OK);
     }
 
-    public void removeItem(HttpServletRequest request, String itemId) {
+    public ResponseEntity<String> removeItem(HttpServletRequest request, String itemId) {
         String token = getTokenFromCookies(request);
         String userId = getIdFromToken(token);
-        cartItemRepository.decrementQuantityIfGreaterThanOne(userId, itemId);
+        Optional<CartItem> cartItemOptional = cartItemRepository.findByItemIdAndUserId(itemId, userId);
+        if (cartItemOptional.isEmpty()) {
+            return new ResponseEntity<>("Can't remove the item because it is not in your cart !", HttpStatus.BAD_REQUEST);
+        }
+        CartItem existingCartItem = cartItemOptional.get();
+        if (existingCartItem.getQuantity() == 1) {
+            cartItemRepository.deleteCartItemByUserIdAndItemId(userId, itemId);
+        } else {
+            existingCartItem.setQuantity(existingCartItem.getQuantity() - 1);
+            cartItemRepository.save(existingCartItem);
+        }
+        return new ResponseEntity<>("Removed the item from the cart !", HttpStatus.OK);
     }
 
     public void createSession(CustomerSessionDto msg) {
@@ -138,7 +159,6 @@ public class SessionService {
         PaymentMethodCollection paymentMethods = customer.listPaymentMethods(params);
         if (paymentMethods.getData().isEmpty()) {
             return new ResponseEntity<>("Error please add a payment method first !", HttpStatus.BAD_REQUEST);
-
         }
         if (customer.getShipping() == null) {
             return new ResponseEntity<>("Error please add a shipping address first !", HttpStatus.BAD_REQUEST);
@@ -162,5 +182,11 @@ public class SessionService {
     public void emptyCartAfterPurchase(UserID msg) {
         String userId = msg.getUserId();
         cartItemRepository.deleteAllByUserId(userId);
+    }
+
+    public void destroySession(CustomerSessionDto msg) {
+        String userId = msg.getStripeId();
+        cartItemRepository.deleteAllByUserId(userId);
+        sessionRepository.deleteByUserId(userId);
     }
 }

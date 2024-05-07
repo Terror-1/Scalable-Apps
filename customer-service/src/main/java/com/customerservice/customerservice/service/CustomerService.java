@@ -15,11 +15,14 @@ import com.stripe.param.*;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.HttpHeaders;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,11 +43,10 @@ public class CustomerService {
     private final KafkaProducer kafkaProducer;
     public PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public ResponseEntity<String> addCard(HttpServletRequest request) throws StripeException {
+    public ResponseEntity<String> addCard(HttpServletRequest request, String cardToken) throws StripeException {
         Stripe.apiKey = stripeSecretKey;
         String token = getTokenFromCookies(request);
         String userId = getIdFromToken(token);
-        String cardToken = "tok_visa";
         Customer customer = Customer.retrieve(userId);
         PaymentMethodCreateParams params =
                 PaymentMethodCreateParams.builder()
@@ -159,70 +161,20 @@ public class CustomerService {
         return paymentMethods.getData();
     }
 
-    public ResponseEntity<String> createOrder(HttpServletRequest request) throws StripeException {
-        double totalAmount = 500.0;
-        Stripe.apiKey = stripeSecretKey;
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
         String token = getTokenFromCookies(request);
         String userId = getIdFromToken(token);
-        ////////////////////////////////////////////////////////////////////////////////
-        Customer customer = Customer.retrieve(userId);
-        CustomerListPaymentMethodsParams params =
-                CustomerListPaymentMethodsParams.builder().build();
-        PaymentMethodCollection paymentMethods = customer.listPaymentMethods(params);
-        if (paymentMethods.getData().isEmpty()) {
-            return new ResponseEntity<>("Error please add a payment method first !", HttpStatus.BAD_REQUEST);
-
-        }
-        if (customer.getShipping() == null) {
-            return new ResponseEntity<>("Error please add a shipping address first !", HttpStatus.BAD_REQUEST);
-        }
-        //////////////////////////////////////////////////////////////////////////////////
-
-        PaymentIntentCreateParams.Shipping.builder()
-                .setName(customer.getName())
-                .setPhone(customer.getPhone())
-                .setAddress(
-                        PaymentIntentCreateParams.Shipping.Address.builder()
-                        .setCity(customer.getShipping().getAddress().getCity())
-                        .setCountry(customer.getShipping().getAddress().getCountry())
-                        .setLine1(customer.getShipping().getAddress().getLine1())
-                        .setPostalCode(customer.getShipping().getAddress().getPostalCode())
-                        .build()
-                )
+        System.out.println(token);
+        ResponseCookie cookie = ResponseCookie.from("token", null)
+                .maxAge(0)
+                .path("/")
+                .httpOnly(true)
                 .build();
-        // Create a PaymentIntent specifying the customer, currency and amount
-        PaymentIntentCreateParams paymentIntentParams = PaymentIntentCreateParams.builder()
-                .setCustomer(userId)
-                .setCurrency("usd") // Update with your currency code
-                .setAmount((long) (totalAmount * 100)) // Convert double to long with cents conversion
-                .setPaymentMethod(paymentMethods.getData().getLast().getId())
-                .setShipping(
-                        PaymentIntentCreateParams.Shipping.builder()
-                                .setName(customer.getName())
-                                .setPhone(customer.getPhone())
-                                .setCarrier("carrier")
-                                .setTrackingNumber("1")
-                                .setAddress(
-                                        PaymentIntentCreateParams.Shipping.Address.builder()
-                                                .setCity(customer.getShipping().getAddress().getCity())
-                                                .setCountry(customer.getShipping().getAddress().getCountry())
-                                                .setLine1(customer.getShipping().getAddress().getLine1())
-                                                .setPostalCode(customer.getShipping().getAddress().getPostalCode())
-                                                .build()
-                                )
-                                .build()
-                )
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        CustomerSessionDto customerSessionDto = CustomerSessionDto.builder()
+                .stripeId(userId)
                 .build();
-        try {
-            PaymentIntent paymentIntent = PaymentIntent.create(paymentIntentParams);
-
-            // Handle the successful payment intent
-            return new ResponseEntity<>("Order created: " + paymentIntent.getId(), HttpStatus.CREATED);
-        } catch (StripeException e) {
-            // Handle any errors that may occur during PaymentIntent creation
-            return new ResponseEntity<>("Error creating order: " + e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-
-        // ... rest of the code remains the same as before ...
+        kafkaProducer.killSession(customerSessionDto);
+        return new ResponseEntity<>(token + ": Logged out successfully", HttpStatus.OK);
     }
 }

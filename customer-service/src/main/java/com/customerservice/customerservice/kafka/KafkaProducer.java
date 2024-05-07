@@ -24,4 +24,13 @@ public class KafkaProducer {
         kafkaTemplate.send(message);
         log.info(format("sending login info to kafka template:: %s", message));
     }
+
+    public void killSession(CustomerSessionDto msg) {
+        Message<CustomerSessionDto> message = MessageBuilder
+                .withPayload(msg)
+                .setHeader(KafkaHeaders.TOPIC, "logout")
+                .build();
+        kafkaTemplate.send(message);
+        log.info(format("sending userId info to kafka template to destroy the session:: %s", message));
+    }
 }
