@@ -11,18 +11,25 @@ import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
-@Table
+@Table(value = "reviews")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Review {
-    @Id
-    @PrimaryKeyColumn(name = "sku", type = PrimaryKeyType.PARTITIONED)
-    private String sku;
+
+    @PrimaryKeyColumn(name = "product_id", type = PrimaryKeyType.PARTITIONED)
+    private String productId;
+
+    @PrimaryKeyColumn(name = "user_id", type = PrimaryKeyType.CLUSTERED)
+    private String userId;
+
+    @Column("user_name")
+    @CassandraType(type = CassandraType.Name.TEXT)
+    private String userName;
 
     @Column("rating")
-    @CassandraType(type = CassandraType.Name.DECIMAL) // 1 -> 5
+    @CassandraType(type = CassandraType.Name.INT) // 1 -> 5
     private Integer rating;
 
     @Column("review")

@@ -1,3 +1,7 @@
+to access the cassandra shell:
+cqlsh
+//////////////////////////////////////////////////////////////////
+
 CREATE KEYSPACE IF NOT EXISTS store WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : '1' };
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -18,3 +22,13 @@ CREATE TABLE IF NOT EXISTS cart_item (
   quantity int,
   PRIMARY KEY (user_id, item_id)
 );
+
+CREATE TABLE IF NOT EXISTS reviews (
+    product_id TEXT,
+    user_id TEXT,
+    user_name TEXT,
+    rating INT,
+    review TEXT,
+    PRIMARY KEY (product_id, user_id)
+);
+

@@ -16,7 +16,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     Optional<Product> findBySku(String sku);
     @Transactional
     @Modifying
-    @Query("UPDATE Product p SET p.quantity = CASE WHEN p.quantity >= :cartAmount THEN p.quantity - :cartAmount ELSE p.quantity END WHERE p.sku = :sku")
+    @Query("UPDATE Product p SET p.quantity = p.quantity - :cartAmount WHERE p.sku = :sku AND p.quantity >= :cartAmount")
     int updateProductQuantityBySku(@Param("sku") String sku, @Param("cartAmount") int cartAmount);
 
     @Transactional

@@ -20,21 +20,21 @@ public class ProductServiceApplication {
 	@Bean
 	public CommandLineRunner loadData(ProductRepository productRepository) {
 		return args -> {
-			//shoes
+			// Shoes
 			Product product1 = new Product();
 			product1.setCategory("shoes");
 			product1.setSku("Running_Shoes_blue");
 			product1.setPrice(1200);
 			product1.setSmallMidLargeOneSize("one Size");
 			product1.setSizeNumber(13);
-			product1.setQuantity(50);
+			product1.setQuantity(1);
 			product1.setGender("female");
 			product1.setDescription("blue running shoes");
+			product1.setColor("Blue");
+			product1.setName("Blue Running Shoes");
 			productRepository.save(product1);
 			Optional<Product> products1 = productRepository.findBySku(product1.getSku());
 			int product1Id = product1.getId();
-
-
 
 			Product product2 = new Product();
 			product2.setCategory("shoes");
@@ -44,7 +44,9 @@ public class ProductServiceApplication {
 			product2.setSizeNumber(12);
 			product2.setQuantity(50);
 			product2.setGender("male");
-			product2.setDescription("black unning shoes");
+			product2.setDescription("black running shoes");
+			product2.setColor("Black");
+			product2.setName("Black Running Shoes");
 			productRepository.save(product2);
 			Optional<Product> products2 = productRepository.findBySku(product2.getSku());
 			int product2Id = product2.getId();
@@ -58,11 +60,13 @@ public class ProductServiceApplication {
 			product3.setQuantity(50);
 			product3.setGender("female");
 			product3.setDescription("white running shoes");
+			product3.setColor("White");
+			product3.setName("White Running Shoes");
 			productRepository.save(product3);
 			Optional<Product> products3 = productRepository.findBySku(product3.getSku());
 			int product3Id = product3.getId();
 
-
+			// Continue in the same pattern for products 4 to 10:
 			Product product4 = new Product();
 			product4.setCategory("shoes");
 			product4.setSku("Running_Shoes_Grey");
@@ -72,11 +76,13 @@ public class ProductServiceApplication {
 			product4.setQuantity(50);
 			product4.setGender("male");
 			product4.setDescription("grey running shoes");
+			product4.setColor("Grey");
+			product4.setName("Grey Running Shoes");
 			productRepository.save(product4);
 			Optional<Product> products4 = productRepository.findBySku(product4.getSku());
 			int product4Id = product4.getId();
 
-			Product product5 = new Product();
+            Product product5 = new Product();
 			product5.setCategory("shoes");
 			product5.setSku("Running_Shoes_Red");
 			product5.setPrice(1200);
@@ -84,7 +90,9 @@ public class ProductServiceApplication {
 			product5.setSizeNumber(10);
 			product5.setQuantity(50);
 			product5.setGender("female");
-			product5.setDescription(" red running shoes");
+			product5.setDescription("red running shoes");
+			product5.setColor("Red");
+			product5.setName("Red Running Shoes");
 			productRepository.save(product5);
 			Optional<Product> products5 = productRepository.findBySku(product5.getSku());
 			int product5Id = product5.getId();
@@ -98,6 +106,8 @@ public class ProductServiceApplication {
 			product6.setQuantity(50);
 			product6.setGender("male");
 			product6.setDescription("orange running shoes");
+			product6.setColor("Orange");
+			product6.setName("Orange Running Shoes");
 			productRepository.save(product6);
 			Optional<Product> products6 = productRepository.findBySku(product6.getSku());
 			int product6Id = product6.getId();
@@ -111,6 +121,8 @@ public class ProductServiceApplication {
 			product7.setQuantity(50);
 			product7.setGender("female");
 			product7.setDescription("pink running shoes");
+			product7.setColor("Pink");
+			product7.setName("Pink Running Shoes");
 			productRepository.save(product7);
 			Optional<Product> products7 = productRepository.findBySku(product7.getSku());
 			int product7Id = product7.getId();
@@ -124,6 +136,8 @@ public class ProductServiceApplication {
 			product8.setQuantity(50);
 			product8.setGender("male");
 			product8.setDescription("yellow running shoes");
+			product8.setColor("Yellow");
+			product8.setName("Yellow Running Shoes");
 			productRepository.save(product8);
 			Optional<Product> products8 = productRepository.findBySku(product8.getSku());
 			int product8Id = product8.getId();
@@ -137,6 +151,8 @@ public class ProductServiceApplication {
 			product9.setQuantity(50);
 			product9.setGender("female");
 			product9.setDescription("green running shoes");
+			product9.setColor("Green");
+			product9.setName("Green Running Shoes");
 			productRepository.save(product9);
 			Optional<Product> products9 = productRepository.findBySku(product9.getSku());
 			int product9Id = product9.getId();
@@ -150,13 +166,14 @@ public class ProductServiceApplication {
 			product10.setQuantity(50);
 			product10.setGender("male");
 			product10.setDescription("brown running shoes");
+			product10.setColor("Brown");
+			product10.setName("Brown Running Shoes");
 			productRepository.save(product10);
 			Optional<Product> products10 = productRepository.findBySku(product10.getSku());
 			int product10Id = product10.getId();
 
 
 			//bags
-
 			Product product11 = new Product();
 			product11.setCategory("bags");
 			product11.setSku("black_female_bag");
@@ -166,10 +183,11 @@ public class ProductServiceApplication {
 			product11.setQuantity(50);
 			product11.setGender("female");
 			product11.setDescription("black bag");
+			product11.setColor("Black");
+			product11.setName("Black Female Bag");
 			productRepository.save(product11);
 			Optional<Product> products11 = productRepository.findBySku(product11.getSku());
 			int product11Id = product11.getId();
-
 
 			Product product12 = new Product();
 			product12.setCategory("bags");
@@ -180,10 +198,11 @@ public class ProductServiceApplication {
 			product12.setQuantity(50);
 			product12.setGender("male");
 			product12.setDescription("black bag");
+			product12.setColor("Black");
+			product12.setName("Black Male Bag");
 			productRepository.save(product12);
 			Optional<Product> products12 = productRepository.findBySku(product12.getSku());
 			int product12Id = product12.getId();
-
 
 			Product product13 = new Product();
 			product13.setCategory("bags");
@@ -194,10 +213,11 @@ public class ProductServiceApplication {
 			product13.setQuantity(50);
 			product13.setGender("female");
 			product13.setDescription("white bag");
+			product13.setColor("White");
+			product13.setName("White Female Bag");
 			productRepository.save(product13);
 			Optional<Product> products13 = productRepository.findBySku(product13.getSku());
 			int product13Id = product13.getId();
-
 
 			Product product14 = new Product();
 			product14.setCategory("bags");
@@ -208,10 +228,11 @@ public class ProductServiceApplication {
 			product14.setQuantity(50);
 			product14.setGender("male");
 			product14.setDescription("white bag");
+			product14.setColor("White");
+			product14.setName("White Male Bag");
 			productRepository.save(product14);
 			Optional<Product> products14 = productRepository.findBySku(product14.getSku());
 			int product14Id = product14.getId();
-
 
 			Product product15 = new Product();
 			product15.setCategory("bags");
@@ -222,10 +243,11 @@ public class ProductServiceApplication {
 			product15.setQuantity(50);
 			product15.setGender("female");
 			product15.setDescription("pink bag");
+			product15.setColor("Pink");
+			product15.setName("Pink Female Bag");
 			productRepository.save(product15);
 			Optional<Product> products15 = productRepository.findBySku(product15.getSku());
 			int product15Id = product15.getId();
-
 
 			Product product16 = new Product();
 			product16.setCategory("bags");
@@ -236,6 +258,8 @@ public class ProductServiceApplication {
 			product16.setQuantity(50);
 			product16.setGender("male");
 			product16.setDescription("pink bag");
+			product16.setColor("Pink");
+			product16.setName("Pink Male Bag");
 			productRepository.save(product16);
 			Optional<Product> products16 = productRepository.findBySku(product16.getSku());
 			int product16Id = product16.getId();
@@ -249,10 +273,11 @@ public class ProductServiceApplication {
 			product17.setQuantity(50);
 			product17.setGender("female");
 			product17.setDescription("yellow bag");
+			product17.setColor("Yellow");
+			product17.setName("Yellow Female Bag");
 			productRepository.save(product17);
 			Optional<Product> products17 = productRepository.findBySku(product17.getSku());
 			int product17Id = product17.getId();
-
 
 			Product product18 = new Product();
 			product18.setCategory("bags");
@@ -263,10 +288,11 @@ public class ProductServiceApplication {
 			product18.setQuantity(50);
 			product18.setGender("male");
 			product18.setDescription("yellow bag");
+			product18.setColor("Yellow");
+			product18.setName("Yellow Male Bag");
 			productRepository.save(product18);
 			Optional<Product> products18 = productRepository.findBySku(product18.getSku());
 			int product18Id = product18.getId();
-
 
 			Product product19 = new Product();
 			product19.setCategory("bags");
@@ -277,10 +303,11 @@ public class ProductServiceApplication {
 			product19.setQuantity(50);
 			product19.setGender("female");
 			product19.setDescription("green bag");
+			product19.setColor("Green");
+			product19.setName("Green Female Bag");
 			productRepository.save(product19);
 			Optional<Product> products19 = productRepository.findBySku(product19.getSku());
 			int product19Id = product19.getId();
-
 
 			Product product20 = new Product();
 			product20.setCategory("bags");
@@ -291,6 +318,8 @@ public class ProductServiceApplication {
 			product20.setQuantity(50);
 			product20.setGender("male");
 			product20.setDescription("green bag");
+			product20.setColor("Green");
+			product20.setName("Green Male Bag");
 			productRepository.save(product20);
 			Optional<Product> products20 = productRepository.findBySku(product20.getSku());
 			int product20Id = product20.getId();
@@ -305,10 +334,11 @@ public class ProductServiceApplication {
 			product21.setQuantity(50);
 			product21.setGender("male");
 			product21.setDescription("black male watch");
+			product21.setColor("Black");
+			product21.setName("Black Male Watch");
 			productRepository.save(product21);
 			Optional<Product> products21 = productRepository.findBySku(product21.getSku());
 			int product21Id = product21.getId();
-
 
 			Product product22 = new Product();
 			product22.setCategory("watches");
@@ -319,10 +349,11 @@ public class ProductServiceApplication {
 			product22.setQuantity(50);
 			product22.setGender("female");
 			product22.setDescription("black female watch");
+			product22.setColor("Black");
+			product22.setName("Black Female Watch");
 			productRepository.save(product22);
 			Optional<Product> products22 = productRepository.findBySku(product22.getSku());
 			int product22Id = product22.getId();
-
 
 			Product product23 = new Product();
 			product23.setCategory("watches");
@@ -333,10 +364,11 @@ public class ProductServiceApplication {
 			product23.setQuantity(50);
 			product23.setGender("male");
 			product23.setDescription("white male watch");
+			product23.setColor("White");
+			product23.setName("White Male Watch");
 			productRepository.save(product23);
 			Optional<Product> products23 = productRepository.findBySku(product23.getSku());
 			int product23Id = product23.getId();
-
 
 			Product product24 = new Product();
 			product24.setCategory("watches");
@@ -347,6 +379,8 @@ public class ProductServiceApplication {
 			product24.setQuantity(50);
 			product24.setGender("female");
 			product24.setDescription("white female watch");
+			product24.setColor("White");
+			product24.setName("White Female Watch");
 			productRepository.save(product24);
 			Optional<Product> products24 = productRepository.findBySku(product24.getSku());
 			int product24Id = product24.getId();
@@ -360,10 +394,11 @@ public class ProductServiceApplication {
 			product25.setQuantity(50);
 			product25.setGender("male");
 			product25.setDescription("red male watch");
+			product25.setColor("Red");
+			product25.setName("Red Male Watch");
 			productRepository.save(product25);
 			Optional<Product> products25 = productRepository.findBySku(product25.getSku());
 			int product25Id = product25.getId();
-
 
 			Product product26 = new Product();
 			product26.setCategory("watches");
@@ -374,6 +409,8 @@ public class ProductServiceApplication {
 			product26.setQuantity(50);
 			product26.setGender("female");
 			product26.setDescription("red female watch");
+			product26.setColor("Red");
+			product26.setName("Red Female Watch");
 			productRepository.save(product26);
 			Optional<Product> products26 = productRepository.findBySku(product26.getSku());
 			int product26Id = product26.getId();
@@ -387,6 +424,8 @@ public class ProductServiceApplication {
 			product27.setQuantity(50);
 			product27.setGender("male");
 			product27.setDescription("blue male watch");
+			product27.setColor("Blue");
+			product27.setName("Blue Male Watch");
 			productRepository.save(product27);
 			Optional<Product> products27 = productRepository.findBySku(product27.getSku());
 			int product27Id = product27.getId();
@@ -400,6 +439,8 @@ public class ProductServiceApplication {
 			product28.setQuantity(50);
 			product28.setGender("female");
 			product28.setDescription("blue female watch");
+			product28.setColor("Blue");
+			product28.setName("Blue Female Watch");
 			productRepository.save(product28);
 			Optional<Product> products28 = productRepository.findBySku(product28.getSku());
 			int product28Id = product28.getId();
@@ -413,6 +454,8 @@ public class ProductServiceApplication {
 			product29.setQuantity(50);
 			product29.setGender("male");
 			product29.setDescription("pink male watch");
+			product29.setColor("Pink");
+			product29.setName("Pink Male Watch");
 			productRepository.save(product29);
 			Optional<Product> products29 = productRepository.findBySku(product29.getSku());
 			int product29Id = product29.getId();
@@ -426,12 +469,13 @@ public class ProductServiceApplication {
 			product30.setQuantity(50);
 			product30.setGender("female");
 			product30.setDescription("pink female watch");
+			product30.setColor("Pink");
+			product30.setName("Pink Female Watch");
 			productRepository.save(product30);
 			Optional<Product> products30 = productRepository.findBySku(product30.getSku());
 			int product30Id = product30.getId();
 
 			//clothing
-
 			Product product31 = new Product();
 			product31.setCategory("clothes");
 			product31.setSku("Black_male_shirt1");
@@ -441,10 +485,11 @@ public class ProductServiceApplication {
 			product31.setQuantity(50);
 			product31.setGender("male");
 			product31.setDescription("small black shirt");
+			product31.setColor("Black");
+			product31.setName("Black Male Shirt");
 			productRepository.save(product31);
 			Optional<Product> products31 = productRepository.findBySku(product31.getSku());
 			int product31Id = product31.getId();
-
 
 			Product product32 = new Product();
 			product32.setCategory("clothes");
@@ -455,10 +500,11 @@ public class ProductServiceApplication {
 			product32.setQuantity(50);
 			product32.setGender("female");
 			product32.setDescription("small black female shirt");
+			product32.setColor("Black");
+			product32.setName("Black Female Shirt");
 			productRepository.save(product32);
 			Optional<Product> products32 = productRepository.findBySku(product32.getSku());
 			int product32Id = product32.getId();
-
 
 			Product product33 = new Product();
 			product33.setCategory("clothes");
@@ -469,10 +515,11 @@ public class ProductServiceApplication {
 			product33.setQuantity(50);
 			product33.setGender("male");
 			product33.setDescription("medium red shirt");
+			product33.setColor("Red");
+			product33.setName("Red Male Shirt");
 			productRepository.save(product33);
 			Optional<Product> products33 = productRepository.findBySku(product33.getSku());
 			int product33Id = product33.getId();
-
 
 			Product product34 = new Product();
 			product34.setCategory("clothes");
@@ -483,10 +530,11 @@ public class ProductServiceApplication {
 			product34.setQuantity(50);
 			product34.setGender("female");
 			product34.setDescription("large red female shirt");
+			product34.setColor("Red");
+			product34.setName("Red Female Shirt");
 			productRepository.save(product34);
 			Optional<Product> products34 = productRepository.findBySku(product34.getSku());
 			int product34Id = product34.getId();
-
 
 			Product product35 = new Product();
 			product35.setCategory("clothes");
@@ -497,10 +545,11 @@ public class ProductServiceApplication {
 			product35.setQuantity(50);
 			product35.setGender("male");
 			product35.setDescription("small blue shirt");
+			product35.setColor("Blue");
+			product35.setName("Blue Male Shirt");
 			productRepository.save(product35);
 			Optional<Product> products35 = productRepository.findBySku(product35.getSku());
 			int product35Id = product35.getId();
-
 
 			Product product36 = new Product();
 			product36.setCategory("clothes");
@@ -511,10 +560,11 @@ public class ProductServiceApplication {
 			product36.setQuantity(50);
 			product36.setGender("female");
 			product36.setDescription("small blue female shirt");
+			product36.setColor("Blue");
+			product36.setName("Blue Female Shirt");
 			productRepository.save(product36);
 			Optional<Product> products36 = productRepository.findBySku(product36.getSku());
 			int product36Id = product36.getId();
-
 
 			Product product37 = new Product();
 			product37.setCategory("clothes");
@@ -525,10 +575,11 @@ public class ProductServiceApplication {
 			product37.setQuantity(50);
 			product37.setGender("male");
 			product37.setDescription("small pink shirt");
+			product37.setColor("Pink");
+			product37.setName("Pink Male Shirt");
 			productRepository.save(product37);
 			Optional<Product> products37 = productRepository.findBySku(product37.getSku());
 			int product37Id = product37.getId();
-
 
 			Product product38 = new Product();
 			product38.setCategory("clothes");
@@ -539,10 +590,11 @@ public class ProductServiceApplication {
 			product38.setQuantity(50);
 			product38.setGender("female");
 			product38.setDescription("small pink female shirt");
+			product38.setColor("Pink");
+			product38.setName("Pink Female Shirt");
 			productRepository.save(product38);
 			Optional<Product> products38 = productRepository.findBySku(product38.getSku());
 			int product38Id = product38.getId();
-
 
 			Product product39 = new Product();
 			product39.setCategory("clothes");
@@ -553,10 +605,11 @@ public class ProductServiceApplication {
 			product39.setQuantity(50);
 			product39.setGender("male");
 			product39.setDescription("small green shirt");
+			product39.setColor("Green");
+			product39.setName("Green Male Shirt");
 			productRepository.save(product39);
 			Optional<Product> products39 = productRepository.findBySku(product39.getSku());
 			int product39Id = product39.getId();
-
 
 			Product product40 = new Product();
 			product40.setCategory("clothes");
@@ -567,11 +620,13 @@ public class ProductServiceApplication {
 			product40.setQuantity(50);
 			product40.setGender("female");
 			product40.setDescription("small green female shirt");
+			product40.setColor("Green");
+			product40.setName("Green Female Shirt");
 			productRepository.save(product40);
 			Optional<Product> products40 = productRepository.findBySku(product40.getSku());
 			int product40Id = product40.getId();
 
-
+			// Continue in the same pattern for products 41 to 50:
 			Product product41 = new Product();
 			product41.setCategory("clothes");
 			product41.setSku("Yellow_male_shirt");
@@ -581,10 +636,11 @@ public class ProductServiceApplication {
 			product41.setQuantity(50);
 			product41.setGender("male");
 			product41.setDescription("small yellow shirt");
+			product41.setColor("Yellow");
+			product41.setName("Yellow Male Shirt");
 			productRepository.save(product41);
 			Optional<Product> products41 = productRepository.findBySku(product41.getSku());
 			int product41Id = product41.getId();
-
 
 			Product product42 = new Product();
 			product42.setCategory("clothes");
@@ -595,10 +651,11 @@ public class ProductServiceApplication {
 			product42.setQuantity(50);
 			product42.setGender("female");
 			product42.setDescription("small yellow female shirt");
+			product42.setColor("Yellow");
+			product42.setName("Yellow Female Shirt");
 			productRepository.save(product42);
 			Optional<Product> products42 = productRepository.findBySku(product42.getSku());
 			int product42Id = product42.getId();
-
 
 			Product product43 = new Product();
 			product43.setCategory("clothes");
@@ -609,10 +666,11 @@ public class ProductServiceApplication {
 			product43.setQuantity(50);
 			product43.setGender("male");
 			product43.setDescription("small purple shirt");
+			product43.setColor("Purple");
+			product43.setName("Purple Male Shirt");
 			productRepository.save(product43);
 			Optional<Product> products43 = productRepository.findBySku(product43.getSku());
 			int product43Id = product43.getId();
-
 
 			Product product44 = new Product();
 			product44.setCategory("clothes");
@@ -623,6 +681,8 @@ public class ProductServiceApplication {
 			product44.setQuantity(50);
 			product44.setGender("female");
 			product44.setDescription("small purple female shirt");
+			product44.setColor("Purple");
+			product44.setName("Purple Female Shirt");
 			productRepository.save(product44);
 			Optional<Product> products44 = productRepository.findBySku(product44.getSku());
 			int product44Id = product44.getId();
@@ -636,10 +696,11 @@ public class ProductServiceApplication {
 			product45.setQuantity(50);
 			product45.setGender("male");
 			product45.setDescription("small orange shirt");
+			product45.setColor("Orange");
+			product45.setName("Orange Male Shirt");
 			productRepository.save(product45);
 			Optional<Product> products45 = productRepository.findBySku(product45.getSku());
 			int product45Id = product45.getId();
-
 
 			Product product46 = new Product();
 			product46.setCategory("clothes");
@@ -650,10 +711,11 @@ public class ProductServiceApplication {
 			product46.setQuantity(50);
 			product46.setGender("female");
 			product46.setDescription("small orange female shirt");
+			product46.setColor("Orange");
+			product46.setName("Orange Female Shirt");
 			productRepository.save(product46);
 			Optional<Product> products46 = productRepository.findBySku(product46.getSku());
 			int product46Id = product46.getId();
-
 
 			Product product47 = new Product();
 			product47.setCategory("clothes");
@@ -664,6 +726,8 @@ public class ProductServiceApplication {
 			product47.setQuantity(50);
 			product47.setGender("male");
 			product47.setDescription("small white shirt");
+			product47.setColor("White");
+			product47.setName("White Male Shirt");
 			productRepository.save(product47);
 			Optional<Product> products47 = productRepository.findBySku(product47.getSku());
 			int product47Id = product47.getId();
@@ -677,6 +741,8 @@ public class ProductServiceApplication {
 			product48.setQuantity(50);
 			product48.setGender("female");
 			product48.setDescription("small white female shirt");
+			product48.setColor("White");
+			product48.setName("White Female Shirt");
 			productRepository.save(product48);
 			Optional<Product> products48 = productRepository.findBySku(product48.getSku());
 			int product48Id = product48.getId();
@@ -690,10 +756,11 @@ public class ProductServiceApplication {
 			product49.setQuantity(50);
 			product49.setGender("male");
 			product49.setDescription("small black shirt");
+			product49.setColor("Black");
+			product49.setName("Black Male Shirt");
 			productRepository.save(product49);
 			Optional<Product> products49 = productRepository.findBySku(product49.getSku());
 			int product49Id = product49.getId();
-
 
 			Product product50 = new Product();
 			product50.setCategory("clothes");
@@ -704,14 +771,17 @@ public class ProductServiceApplication {
 			product50.setQuantity(50);
 			product50.setGender("female");
 			product50.setDescription("small black female shirt");
+			product50.setColor("Black");
+			product50.setName("Black Female Shirt");
 			productRepository.save(product50);
 			Optional<Product> products50 = productRepository.findBySku(product50.getSku());
 			int product50Id = product50.getId();
 
 			//watches
 
+			// Perfume products
 			Product product51 = new Product();
-			product51.setCategory("watches");
+			product51.setCategory("perfume");
 			product51.setSku("male_perfume1");
 			product51.setPrice(800);
 			product51.setSmallMidLargeOneSize("small");
@@ -719,12 +789,14 @@ public class ProductServiceApplication {
 			product51.setQuantity(50);
 			product51.setGender("male");
 			product51.setDescription("small male perfume");
+			product51.setColor("Transparent"); // Assuming perfumes are in transparent bottles, unless specified otherwise
+			product51.setName("Male Perfume 1");
 			productRepository.save(product51);
 			Optional<Product> products51 = productRepository.findBySku(product51.getSku());
 			int product51Id = product51.getId();
 
 			Product product52 = new Product();
-			product52.setCategory("watches");
+			product52.setCategory("perfume");
 			product52.setSku("female_perfume1");
 			product52.setPrice(800);
 			product52.setSmallMidLargeOneSize("small");
@@ -732,12 +804,14 @@ public class ProductServiceApplication {
 			product52.setQuantity(50);
 			product52.setGender("female");
 			product52.setDescription("small female perfume");
+			product52.setColor("Transparent");
+			product52.setName("Female Perfume 1");
 			productRepository.save(product52);
 			Optional<Product> products52 = productRepository.findBySku(product52.getSku());
 			int product52Id = product52.getId();
 
 			Product product53 = new Product();
-			product53.setCategory("watches");
+			product53.setCategory("perfume");
 			product53.setSku("male_perfume2");
 			product53.setPrice(800);
 			product53.setSmallMidLargeOneSize("medium");
@@ -745,12 +819,14 @@ public class ProductServiceApplication {
 			product53.setQuantity(50);
 			product53.setGender("male");
 			product53.setDescription("medium male perfume");
+			product53.setColor("Transparent");
+			product53.setName("Male Perfume 2");
 			productRepository.save(product53);
 			Optional<Product> products53 = productRepository.findBySku(product53.getSku());
 			int product53Id = product53.getId();
 
 			Product product54 = new Product();
-			product54.setCategory("watches");
+			product54.setCategory("perfume");
 			product54.setSku("female_perfume2");
 			product54.setPrice(800);
 			product54.setSmallMidLargeOneSize("medium");
@@ -758,12 +834,14 @@ public class ProductServiceApplication {
 			product54.setQuantity(50);
 			product54.setGender("female");
 			product54.setDescription("medium female perfume");
+			product54.setColor("Transparent");
+			product54.setName("Female Perfume 2");
 			productRepository.save(product54);
 			Optional<Product> products54 = productRepository.findBySku(product54.getSku());
 			int product54Id = product54.getId();
 
 			Product product55 = new Product();
-			product55.setCategory("watches");
+			product55.setCategory("perfume");
 			product55.setSku("male_perfume3");
 			product55.setPrice(800);
 			product55.setSmallMidLargeOneSize("large");
@@ -771,12 +849,14 @@ public class ProductServiceApplication {
 			product55.setQuantity(50);
 			product55.setGender("male");
 			product55.setDescription("large male perfume");
+			product55.setColor("Transparent");
+			product55.setName("Male Perfume 3");
 			productRepository.save(product55);
 			Optional<Product> products55 = productRepository.findBySku(product55.getSku());
 			int product55Id = product55.getId();
 
 			Product product56 = new Product();
-			product56.setCategory("watches");
+			product56.setCategory("perfume");
 			product56.setSku("female_perfume3");
 			product56.setPrice(800);
 			product56.setSmallMidLargeOneSize("large");
@@ -784,12 +864,13 @@ public class ProductServiceApplication {
 			product56.setQuantity(50);
 			product56.setGender("female");
 			product56.setDescription("large female perfume");
+			product56.setColor("Transparent");
+			product56.setName("Female Perfume 3");
 			productRepository.save(product56);
 			Optional<Product> products56 = productRepository.findBySku(product56.getSku());
 			int product56Id = product56.getId();
 
-			//sunglasses
-
+			// Sunglasses products
 			Product product57 = new Product();
 			product57.setCategory("sunglasses");
 			product57.setSku("male_sunglasses1");
@@ -799,6 +880,8 @@ public class ProductServiceApplication {
 			product57.setQuantity(50);
 			product57.setGender("male");
 			product57.setDescription("male sunglasses 1");
+			product57.setColor("Black");
+			product57.setName("Male Sunglasses 1");
 			productRepository.save(product57);
 			Optional<Product> products57 = productRepository.findBySku(product57.getSku());
 			int product57Id = product57.getId();
@@ -812,6 +895,8 @@ public class ProductServiceApplication {
 			product58.setQuantity(50);
 			product58.setGender("female");
 			product58.setDescription("female sunglasses 1");
+			product58.setColor("Black");
+			product58.setName("Female Sunglasses 1");
 			productRepository.save(product58);
 			Optional<Product> products58 = productRepository.findBySku(product58.getSku());
 			int product58Id = product58.getId();
@@ -825,6 +910,8 @@ public class ProductServiceApplication {
 			product59.setQuantity(50);
 			product59.setGender("male");
 			product59.setDescription("male sunglasses 2");
+			product59.setColor("Black");
+			product59.setName("Male Sunglasses 2");
 			productRepository.save(product59);
 			Optional<Product> products59 = productRepository.findBySku(product59.getSku());
 			int product59Id = product59.getId();
@@ -838,6 +925,8 @@ public class ProductServiceApplication {
 			product60.setQuantity(50);
 			product60.setGender("female");
 			product60.setDescription("female sunglasses 2");
+			product60.setColor("Black");
+			product60.setName("Female Sunglasses 2");
 			productRepository.save(product60);
 			Optional<Product> products60 = productRepository.findBySku(product60.getSku());
 			int product60Id = product60.getId();
@@ -851,6 +940,8 @@ public class ProductServiceApplication {
 			product61.setQuantity(50);
 			product61.setGender("male");
 			product61.setDescription("male sunglasses 3");
+			product61.setColor("Black");
+			product61.setName("Male Sunglasses 3");
 			productRepository.save(product61);
 			Optional<Product> products61 = productRepository.findBySku(product61.getSku());
 			int product61Id = product61.getId();
@@ -864,10 +955,14 @@ public class ProductServiceApplication {
 			product62.setQuantity(50);
 			product62.setGender("female");
 			product62.setDescription("female sunglasses 3");
+			product62.setColor("Black");
+			product62.setName("Female Sunglasses 3");
 			productRepository.save(product62);
 			Optional<Product> products62 = productRepository.findBySku(product62.getSku());
 			int product62Id = product62.getId();
 
+
+			// Accessories products
 			Product product63 = new Product();
 			product63.setCategory("sunglasses");
 			product63.setSku("male_sunglasses4");
@@ -877,6 +972,8 @@ public class ProductServiceApplication {
 			product63.setQuantity(50);
 			product63.setGender("male");
 			product63.setDescription("male sunglasses 4");
+			product63.setColor("Black");
+			product63.setName("Male Sunglasses 4");
 			productRepository.save(product63);
 			Optional<Product> products63 = productRepository.findBySku(product63.getSku());
 			int product63Id = product63.getId();
@@ -890,11 +987,11 @@ public class ProductServiceApplication {
 			product64.setQuantity(50);
 			product64.setGender("female");
 			product64.setDescription("female sunglasses 4");
+			product64.setColor("Black");
+			product64.setName("Female Sunglasses 4");
 			productRepository.save(product64);
 			Optional<Product> products64 = productRepository.findBySku(product64.getSku());
 			int product64Id = product64.getId();
-
-			//accessories
 
 			Product product65 = new Product();
 			product65.setCategory("accessories");
@@ -905,6 +1002,8 @@ public class ProductServiceApplication {
 			product65.setQuantity(50);
 			product65.setGender("male");
 			product65.setDescription("male accessories 1");
+			product65.setColor("Varied");  // Typically for accessories, color might vary unless specified.
+			product65.setName("Male Accessories 1");
 			productRepository.save(product65);
 			Optional<Product> products65 = productRepository.findBySku(product65.getSku());
 			int product65Id = product65.getId();
@@ -918,6 +1017,8 @@ public class ProductServiceApplication {
 			product66.setQuantity(50);
 			product66.setGender("female");
 			product66.setDescription("female accessories 1");
+			product66.setColor("Varied");
+			product66.setName("Female Accessories 1");
 			productRepository.save(product66);
 			Optional<Product> products66 = productRepository.findBySku(product66.getSku());
 			int product66Id = product66.getId();
@@ -931,6 +1032,8 @@ public class ProductServiceApplication {
 			product67.setQuantity(50);
 			product67.setGender("male");
 			product67.setDescription("male accessories 2");
+			product67.setColor("Varied");
+			product67.setName("Male Accessories 2");
 			productRepository.save(product67);
 			Optional<Product> products67 = productRepository.findBySku(product67.getSku());
 			int product67Id = product67.getId();
@@ -944,9 +1047,12 @@ public class ProductServiceApplication {
 			product68.setQuantity(50);
 			product68.setGender("female");
 			product68.setDescription("female accessories 2");
+			product68.setColor("Varied");
+			product68.setName("Female Accessories 2");
 			productRepository.save(product68);
 			Optional<Product> products68 = productRepository.findBySku(product68.getSku());
 			int product68Id = product68.getId();
+
 
 		};
 	}

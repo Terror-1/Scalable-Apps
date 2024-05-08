@@ -4,9 +4,12 @@ import com.externalDTOs.externalDTOs.dtos.AddToCartMessage;
 import com.externalDTOs.externalDTOs.dtos.UserID;
 import com.productservice.productservice.dto.ProductRequest;
 import com.productservice.productservice.dto.ProductResponse;
+import com.productservice.productservice.dto.ProductReviewDto;
 import com.productservice.productservice.entity.Product;
+import com.productservice.productservice.entity.Review;
 import com.productservice.productservice.kafka.KafkaProducer;
 import com.productservice.productservice.repository.ProductRepository;
+import com.productservice.productservice.repository.ReviewRepository;
 import com.sessionservice.sessionservice.dto.CartObject;
 import com.sessionservice.sessionservice.entity.CartItem;
 import com.stripe.Stripe;
@@ -38,6 +41,8 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
+    private final ReviewRepository reviewRepository;
+
     private final KafkaProducer kafkaProducer;
     private static final String jwtSecret = "d740b4e7547111cee19518ffef9b95645de3c346043281e52caaf7c48514e04b";
 
@@ -66,7 +71,8 @@ public class ProductService {
                 .build();
     }
 
-    public Product getProductById(int productId) {
+    public Product getProductById(String textProductId) {
+        int productId = Integer.parseInt(textProductId);
         Optional<Product> productOptional = productRepository.findById(productId);
         if (productOptional.isPresent()) {
             // Product found, return ProductResponse
@@ -97,7 +103,7 @@ public class ProductService {
     }
 
     public List<Product> getWomanPerfumes() {
-        List<Product> products = productRepository.findByGenderAndCategory("female", "perfumes");
+        List<Product> products = productRepository.findByGenderAndCategory("female", "perfume");
         return  products;
     }
 
@@ -131,7 +137,7 @@ public class ProductService {
     }
 
     public List<Product> getManPerfumes() {
-        List<Product> products = productRepository.findByGenderAndCategory("male", "perfumes");
+        List<Product> products = productRepository.findByGenderAndCategory("male", "perfume");
         return  products;
     }
 
@@ -150,12 +156,10 @@ public class ProductService {
         String token = getTokenFromCookies(request);
         String userId = getIdFromToken(token);
         Optional<Product> productOptional = productRepository.findById(productId);
-        Product product;
-        if (productOptional.isPresent()) {
+        Product product = productOptional.get();
+        if (product.getQuantity() == 0) {
             // Product found, return ProductResponse
-            product = productOptional.get();
-        } else {
-            throw new RuntimeException("Product not found for productId: " + productId);
+            return new ResponseEntity<>("Item is not available in the inventory in the meantime !", HttpStatus.BAD_REQUEST);
         }
         AddToCartMessage message = AddToCartMessage.builder()
                 .productId(productId)
@@ -169,7 +173,7 @@ public class ProductService {
                 .smallMidLargeOneSize(product.getSmallMidLargeOneSize())
                 .build();
         kafkaProducer.addToCart(message);
-        return ResponseEntity.ok("sent queued successfully to kafka");
+        return ResponseEntity.ok("sent  the product to kafka queue successfully to be put to cart !");
     }
 
     public static String getIdFromToken(String token) {
@@ -201,6 +205,7 @@ public class ProductService {
         for (int i = 0; i < products.size(); i++) {
             int cartAmount = products.get(i).getQuantity();
             int rows = productRepository.updateProductQuantityBySku(products.get(i).getSku(), cartAmount);
+            System.err.println("rows affected = " + rows);
             if (rows == 0) {
                 for (int j = 0; j < i; j++) {
                     int toAdd = products.get(j).getQuantity();
@@ -260,5 +265,24 @@ public class ProductService {
             }
             System.out.println("Error creating order: " + e.getMessage());
         }
+    }
+
+    public ResponseEntity<String> addReview(ProductReviewDto productReviewDto, HttpServletRequest request) throws StripeException {
+        Stripe.apiKey = stripeSecretKey;
+        String token = getTokenFromCookies(request);
+        String userId = getIdFromToken(token);
+        Customer customer = Customer.retrieve(userId);
+        reviewRepository.addReview(
+                Integer.toString(productReviewDto.getProductId())
+                , userId
+                , customer.getName()
+                ,productReviewDto.getRating()
+                , productReviewDto.getReview()
+                );
+        return new ResponseEntity<>("Your review was added successfully, Thank you !", HttpStatus.CREATED);
+    }
+
+    public List<Review> getReviewsPerProduct(String productId) {
+        return reviewRepository.findAllByProductId(productId);
     }
 }

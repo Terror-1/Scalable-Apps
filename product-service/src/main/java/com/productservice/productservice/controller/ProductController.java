@@ -4,9 +4,12 @@ package com.productservice.productservice.controller;
 
 import com.productservice.productservice.dto.ProductRequest;
 import com.productservice.productservice.dto.ProductResponse;
+import com.productservice.productservice.dto.ProductReviewDto;
 import com.productservice.productservice.entity.Product;
+import com.productservice.productservice.entity.Review;
 import com.productservice.productservice.kafka.KafkaProducer;
 import com.productservice.productservice.service.ProductService;
+import com.stripe.exception.StripeException;
 import jakarta.servlet.http.HttpServletRequest;
 import jnr.ffi.annotations.In;
 import lombok.Builder;
@@ -34,13 +37,24 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
-    @GetMapping("/product/{product-id}")
+    @GetMapping("/product")
     @ResponseStatus(HttpStatus.OK)
-    public Product getProductById(
-            @PathVariable("product-id") int productId
-    ) {
+    public Product getProductById(@RequestBody String productId) {
         return productService.getProductById(productId);
     }
+
+    @GetMapping("/product/get-reviews")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Review> getReviewsPerProduct(@RequestBody String productId) {
+        return productService.getReviewsPerProduct(productId);
+    }
+
+    @PostMapping("/product/add-review")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<String> addReview(@RequestBody ProductReviewDto productReviewDto, HttpServletRequest request) throws StripeException {
+        return productService.addReview(productReviewDto, request);
+    }
+
     @GetMapping("/all-woman")
     @ResponseStatus(HttpStatus.OK)
     public List<Product>  getAllWomanProducts() {
