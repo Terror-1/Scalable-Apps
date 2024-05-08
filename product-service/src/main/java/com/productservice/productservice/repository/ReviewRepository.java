@@ -12,4 +12,10 @@ public interface ReviewRepository extends CassandraRepository<Review, String> {
 
     @Query("SELECT * FROM reviews WHERE product_id = ?0")
     List<Review> findAllByProductId(String productId);
+
+    @Query("DELETE FROM reviews WHERE user_id = ?0 AND product_id = ?1")
+    void deleteByUserIdAndProductId(String userId, String productId);
+
+    @Query("SELECT * FROM reviews WHERE user_id = ?0 AND product_id = ?1 LIMIT 1")
+    Review findByUserIdAndProductId(String userId, String productId);
 }

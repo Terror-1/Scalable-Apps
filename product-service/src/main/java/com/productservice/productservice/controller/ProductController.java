@@ -55,6 +55,13 @@ public class ProductController {
         return productService.addReview(productReviewDto, request);
     }
 
+    @PostMapping("/product/delete-review")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<String> deleteReview(@RequestBody String productId, HttpServletRequest request) throws StripeException {
+        return productService.deleteReview(productId, request);
+    }
+
+
     @GetMapping("/all-woman")
     @ResponseStatus(HttpStatus.OK)
     public List<Product>  getAllWomanProducts() {

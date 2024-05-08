@@ -285,4 +285,15 @@ public class ProductService {
     public List<Review> getReviewsPerProduct(String productId) {
         return reviewRepository.findAllByProductId(productId);
     }
+
+    public ResponseEntity<String> deleteReview(String productId, HttpServletRequest request) {
+        String token = getTokenFromCookies(request);
+        String userId = getIdFromToken(token);
+        Review review = reviewRepository.findByUserIdAndProductId(userId, productId);
+        reviewRepository.deleteByUserIdAndProductId(userId, productId);
+        if (review == null)
+                return new ResponseEntity<>("There is no such review for that user on that product", HttpStatus.BAD_REQUEST);
+        reviewRepository.deleteByUserIdAndProductId(userId, productId);
+        return new ResponseEntity<>("Review deleted successfully !", HttpStatus.OK);
+    }
 }
