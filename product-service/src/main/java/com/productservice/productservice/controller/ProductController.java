@@ -37,6 +37,8 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
+
+
     @GetMapping("/product")
     @ResponseStatus(HttpStatus.OK)
     public Product getProductById(@RequestBody String productId) {

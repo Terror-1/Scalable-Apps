@@ -2,18 +2,23 @@ package com.productservice.productservice;
 
 import com.productservice.productservice.entity.Product;
 import com.productservice.productservice.repository.ProductRepository;
+import com.productservice.productservice.service.ImageService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.cassandra.CqlSessionBuilderCustomizer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Path;
 import java.util.Optional;
 
 @SpringBootApplication
+@RequiredArgsConstructor
 public class ProductServiceApplication {
+	private final ImageService imageService;
 	public static void main(String[] args) {
 		SpringApplication.run(ProductServiceApplication.class, args);
 	}
@@ -32,6 +37,12 @@ public class ProductServiceApplication {
 			product1.setDescription("blue running shoes");
 			product1.setColor("Blue");
 			product1.setName("Blue Running Shoes");
+			String imageUrl = imageService.upload("firebaseShoot.jpg");
+			if (imageUrl == null) {
+				// Handle error - image upload failed
+				return;
+			}
+			product1.setImageUrl(imageUrl);
 			productRepository.save(product1);
 			Optional<Product> products1 = productRepository.findBySku(product1.getSku());
 			int product1Id = product1.getId();
@@ -1052,7 +1063,6 @@ public class ProductServiceApplication {
 			productRepository.save(product68);
 			Optional<Product> products68 = productRepository.findBySku(product68.getSku());
 			int product68Id = product68.getId();
-
 
 		};
 	}

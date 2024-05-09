@@ -28,6 +28,7 @@ public class Product {
     private Integer sizeNumber; // shoes for example: 42, 44, -1
     private Integer quantity;
     private String color;
+    private String imageUrl;
     private String description;
     private String gender; // male, female
     private String category; // clothes, shoes, sunglasses, perfumes, watches, accessories

@@ -5,8 +5,8 @@ import com.customerservice.customerservice.dto.CustomerAddressDto;
 import com.customerservice.customerservice.entity.MyCustomer;
 import com.customerservice.customerservice.service.CustomerService;
 import com.stripe.exception.StripeException;
-import com.stripe.model.PaymentMethod;
-import com.stripe.model.PaymentMethodCollection;
+import com.stripe.model.*;
+import com.stripe.param.PaymentIntentCreateParams;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.core.HttpHeaders;
@@ -42,6 +42,12 @@ public class CustomerController {
 
         return customerService.addAddress(customerAddressDto, request);
     }
+    @GetMapping("get-address")
+    @ResponseStatus(HttpStatus.OK)
+    public String getAddress(HttpServletRequest request) throws StripeException {
+        return customerService.getAddress(request);
+    }
+
     @PostMapping("/register")
     public ResponseEntity<MyCustomer> registerCustomer(@RequestBody MyCustomer customer) throws StripeException {
         System.out.println("Received customer: " + customer); // Debugging line
