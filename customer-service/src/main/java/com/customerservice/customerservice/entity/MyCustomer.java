@@ -27,4 +27,6 @@ public class MyCustomer {
     private String lastName;
 
     private String password;
+
+    private String defaultCardId;
 }

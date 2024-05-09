@@ -9,6 +9,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.cassandra.CqlSessionBuilderCustomizer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 @SpringBootApplication
 @RequiredArgsConstructor
+@EnableCaching
 public class ProductServiceApplication {
 	private final ImageService imageService;
 	public static void main(String[] args) {
@@ -37,12 +39,12 @@ public class ProductServiceApplication {
 			product1.setDescription("blue running shoes");
 			product1.setColor("Blue");
 			product1.setName("Blue Running Shoes");
-			String imageUrl = imageService.upload("firebaseShoot.jpg");
-			if (imageUrl == null) {
-				// Handle error - image upload failed
-				return;
-			}
-			product1.setImageUrl(imageUrl);
+//			String imageUrl = imageService.upload("firebaseShoot.jpg");
+//			if (imageUrl == null) {
+//				// Handle error - image upload failed
+//				return;
+//			}
+//			product1.setImageUrl(imageUrl);
 			productRepository.save(product1);
 			Optional<Product> products1 = productRepository.findBySku(product1.getSku());
 			int product1Id = product1.getId();

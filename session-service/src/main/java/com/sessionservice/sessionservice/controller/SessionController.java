@@ -25,24 +25,18 @@ public class SessionController {
     @GetMapping("/view-cart")
     @ResponseStatus(HttpStatus.OK)
     public CartObject viewCart(HttpServletRequest request) throws StripeException {
-        String token = sessionService.getTokenFromCookies(request);
-        String userId = sessionService.getIdFromToken(token);
         return sessionService.viewCart(request);
     }
 
     @GetMapping("/view-cart/empty-cart")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> emptyCart(HttpServletRequest request) {
-        String token = sessionService.getTokenFromCookies(request);
-        String userId = sessionService.getIdFromToken(token);
         return sessionService.emptyCart(request);
     }
 
     @PostMapping("/view-cart/remove-item")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> removeItem(@RequestBody String itemId, HttpServletRequest request) {
-        String token = sessionService.getTokenFromCookies(request);
-        String userId = sessionService.getIdFromToken(token);
         return sessionService.removeItem(request, itemId);
     }
 

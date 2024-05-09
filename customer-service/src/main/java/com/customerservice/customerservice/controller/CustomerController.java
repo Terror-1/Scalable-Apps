@@ -47,7 +47,7 @@ public class CustomerController {
     }
     @GetMapping("get-address")
     @ResponseStatus(HttpStatus.OK)
-    public String getAddress(HttpServletRequest request) throws StripeException {
+    public Address getAddress(HttpServletRequest request) throws StripeException {
         return customerService.getAddress(request);
     }
 

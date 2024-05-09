@@ -178,11 +178,11 @@ public class CustomerService {
         return new ResponseEntity<>(token + ": Logged out successfully", HttpStatus.OK);
     }
 
-    public String getAddress(HttpServletRequest request) throws StripeException {
+    public Address getAddress(HttpServletRequest request) throws StripeException {
         Stripe.apiKey = stripeSecretKey;
         String token = getTokenFromCookies(request);
         String userId = getIdFromToken(token);
         Customer customer = Customer.retrieve(userId);
-        return customer.getShipping().getAddress().getPostalCode();
+        return customer.getShipping().getAddress();
     }
 }

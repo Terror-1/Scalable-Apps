@@ -22,14 +22,24 @@ public class Product {
     private Integer id;
     @jakarta.persistence.Column(unique = true)
     private String sku; // gucci_black_male_shoe_39
+
     private String name; //  black shoe
+
     private double price;
+
     private String smallMidLargeOneSize; // s, m, l, oneSize
+
     private Integer sizeNumber; // shoes for example: 42, 44, -1
+
     private Integer quantity;
+
     private String color;
+
     private String imageUrl;
+
     private String description;
+
     private String gender; // male, female
+
     private String category; // clothes, shoes, sunglasses, perfumes, watches, accessories
 }

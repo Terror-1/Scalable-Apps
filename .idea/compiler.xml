@@ -11,7 +11,6 @@
         <module name="externalDTOs" />
         <module name="discovery" />
         <module name="product-service" />
-        <module name="order-service" />
         <module name="myCustomer-service" />
         <module name="gateway" />
         <module name="session-service" />
@@ -20,6 +19,7 @@
     <bytecodeTargetLevel>
       <module name="customer-service" target="21" />
       <module name="inventory-service" target="21" />
+      <module name="order-service" target="21" />
       <module name="session-service2" target="21" />
     </bytecodeTargetLevel>
   </component>
