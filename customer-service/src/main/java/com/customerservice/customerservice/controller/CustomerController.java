@@ -1,5 +1,7 @@
 package com.customerservice.customerservice.controller;
 
+import com.customerservice.customerservice.command.AddCardCommand;
+import com.customerservice.customerservice.command.Command;
 import com.customerservice.customerservice.dto.AddCustomerDto;
 import com.customerservice.customerservice.dto.CustomerAddressDto;
 import com.customerservice.customerservice.entity.MyCustomer;
@@ -27,8 +29,9 @@ public class CustomerController {
     private final CustomerService customerService;
     @PostMapping("/add-card")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<String> addCard(HttpServletRequest request, @RequestBody String cardToken) throws StripeException {
-        return customerService.addCard(request, cardToken);
+    public ResponseEntity<String> addCard(HttpServletRequest request, @RequestBody String cardToken) throws Exception {
+        Command<ResponseEntity<String>> command = new AddCardCommand(request, cardToken, customerService);
+        return command.execute();
     }
     @GetMapping("get-all-payment-methods")
     @ResponseStatus(HttpStatus.OK)
@@ -50,13 +53,10 @@ public class CustomerController {
 
     @PostMapping("/register")
     public ResponseEntity<MyCustomer> registerCustomer(@RequestBody MyCustomer customer) throws StripeException {
-        System.out.println("Received customer: " + customer); // Debugging line
-
         MyCustomer registeredCustomer = customerService.registerCustomer(customer);
         if (registeredCustomer == null) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
-
         return new ResponseEntity<>(registeredCustomer, HttpStatus.CREATED);
     }
 
