@@ -73,9 +73,7 @@ public class SessionService {
         String token = getTokenFromCookies(request);
         String userId = getIdFromToken(token);
         Customer customer = Customer.retrieve(userId);
-        CustomerListPaymentMethodsParams params =
-                CustomerListPaymentMethodsParams.builder().build();
-        PaymentMethodCollection paymentMethods = customer.listPaymentMethods(params);
+        String defaultPaymentMethodId = customer.getInvoiceSettings().getDefaultPaymentMethod();
         List<CartItem> cartItems= cartItemRepository.findAllByUserId(userId);
         double totalAmount = 0;
         for (int i = 0; i < (int) cartItems.size(); i++) {
@@ -85,10 +83,8 @@ public class SessionService {
                 .totalAmount(totalAmount)
                 .userId(userId)
                 .products(cartItems)
+                .paymentMethodId(defaultPaymentMethodId)
                 .build();
-        if (!paymentMethods.getData().isEmpty()) {
-            cartObject.setPaymentMethodId(paymentMethods.getData().getLast().getId());
-        }
         return cartObject;
     }
     public ResponseEntity<String> emptyCart(HttpServletRequest request) {
