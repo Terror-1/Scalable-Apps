@@ -160,6 +160,11 @@ public class SessionService {
         if (paymentMethods.getData().isEmpty()) {
             return new ResponseEntity<>("Error please add a payment method first !", HttpStatus.BAD_REQUEST);
         }
+        String defaultPaymentMethodId = customer.getInvoiceSettings().getDefaultPaymentMethod();
+        if (defaultPaymentMethodId == null)
+            return new ResponseEntity<>("You have no default payment method, please set one !", HttpStatus.BAD_REQUEST);
+        if (defaultPaymentMethodId.equals(""))
+            return new ResponseEntity<>("You have no default payment method, please set one !", HttpStatus.BAD_REQUEST);
         if (customer.getShipping() == null) {
             return new ResponseEntity<>("Error please add a shipping address first !", HttpStatus.BAD_REQUEST);
         }
@@ -170,7 +175,7 @@ public class SessionService {
         double totalAmount = 0;
         for (CartItem cartItem: cartItems) totalAmount += cartItem.getItemPrice() * cartItem.getQuantity();
          CartObject cartObject = CartObject.builder()
-                 .paymentMethodId(paymentMethods.getData().getLast().getId())
+                 .paymentMethodId(defaultPaymentMethodId)
                  .products(cartItems)
                  .userId(userId)
                  .totalAmount(totalAmount)

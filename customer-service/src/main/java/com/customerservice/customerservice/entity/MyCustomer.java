@@ -17,7 +17,7 @@ public class MyCustomer {
     private Integer id;
 
     @Column(unique = true)
-    private String StripeId;
+    private String stripeId;
 
     @Column(unique = true)
     private String email;
@@ -28,5 +28,4 @@ public class MyCustomer {
 
     private String password;
 
-    private String defaultCardId;
 }

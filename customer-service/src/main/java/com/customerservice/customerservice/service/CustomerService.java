@@ -8,6 +8,7 @@ import com.customerservice.customerservice.entity.MyCustomer;
 import com.customerservice.customerservice.kafka.KafkaProducer;
 import com.customerservice.customerservice.repository.CustomerRepository;
 
+import com.google.common.collect.ImmutableMap;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.*;
@@ -63,6 +64,14 @@ public class CustomerService {
                     PaymentMethodAttachParams.builder().setCustomer(userId).build();
             PaymentMethod paymentMethod = resource.attach(attachParams);
             // Handle the created paymentMethod as needed
+            try {
+                Customer updatedCustomer = customer.update(
+                        ImmutableMap.of("invoice_settings", ImmutableMap.of("default_payment_method", paymentMethod.getId()))
+                );
+            } catch (StripeException e) {
+                // Handle errors during customer update
+                return new ResponseEntity<>("Error setting default payment method: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+            }
             return new ResponseEntity<>("PaymentMethod created: " +  resource.getId(), HttpStatus.CREATED);
 
         } catch (StripeException e) {
@@ -184,5 +193,70 @@ public class CustomerService {
         String userId = getIdFromToken(token);
         Customer customer = Customer.retrieve(userId);
         return customer.getShipping().getAddress();
+    }
+
+    public ResponseEntity<String> setDefaultPaymentMethod(HttpServletRequest request, String cardId) throws StripeException {
+        Stripe.apiKey = stripeSecretKey;
+        String token = getTokenFromCookies(request);
+        String userId = getIdFromToken(token);
+        Customer customer = Customer.retrieve(userId);
+        CustomerListPaymentMethodsParams params =
+                CustomerListPaymentMethodsParams.builder().build();
+        PaymentMethodCollection paymentMethods = customer.listPaymentMethods(params);
+        if (paymentMethods.getData().isEmpty()) {
+            return new ResponseEntity<>("Error please add a payment method first !", HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            Customer updatedCustomer = customer.update(
+                    ImmutableMap.of("invoice_settings", ImmutableMap.of("default_payment_method", cardId))
+            );
+            return new ResponseEntity<>("Payment method was set to default Successfully ", HttpStatus.CREATED);
+        } catch (StripeException e) {
+            // Handle errors during customer update
+            return new ResponseEntity<>("Error setting default payment method !: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public ResponseEntity<String> deletePaymentMethod(HttpServletRequest request, String cardId) throws StripeException {
+        Stripe.apiKey = stripeSecretKey;
+        String token = getTokenFromCookies(request);
+        String userId = getIdFromToken(token);
+        Customer customer = Customer.retrieve(userId);
+        CustomerListPaymentMethodsParams params =
+                CustomerListPaymentMethodsParams.builder().build();
+        PaymentMethodCollection paymentMethods = customer.listPaymentMethods(params);
+        if (paymentMethods.getData().isEmpty()) {
+            return new ResponseEntity<>("Error please add a payment method first !", HttpStatus.BAD_REQUEST);
+        }
+        PaymentMethod resource = PaymentMethod.retrieve(cardId);
+        PaymentMethodDetachParams params2 = PaymentMethodDetachParams.builder().build();
+        PaymentMethod paymentMethod = resource.detach(params2);
+        String defaultPaymentMethodId = customer.getInvoiceSettings().getDefaultPaymentMethod();
+        if (defaultPaymentMethodId.equals(cardId)) {
+            Customer updatedCustomer = customer.update(
+                    ImmutableMap.of("invoice_settings", ImmutableMap.of("default_payment_method", ""))
+            );
+        }
+        return new ResponseEntity<>("deleted the payment method successfully!", HttpStatus.OK);
+    }
+
+    public ResponseEntity<String> getDefaultPaymentMethod(HttpServletRequest request) throws StripeException {
+        Stripe.apiKey = stripeSecretKey;
+        String token = getTokenFromCookies(request);
+        String userId = getIdFromToken(token);
+        Customer customer = Customer.retrieve(userId);
+        CustomerListPaymentMethodsParams params =
+                CustomerListPaymentMethodsParams.builder().build();
+        PaymentMethodCollection paymentMethods = customer.listPaymentMethods(params);
+        if (paymentMethods.getData().isEmpty()) {
+            return new ResponseEntity<>("Error please add a payment method first !", HttpStatus.BAD_REQUEST);
+        }
+        String defaultPaymentMethodId = customer.getInvoiceSettings().getDefaultPaymentMethod();
+        if (defaultPaymentMethodId == null)
+            return new ResponseEntity<>("You have no default payment method, please set one !", HttpStatus.BAD_REQUEST);
+        if (defaultPaymentMethodId.equals(""))
+            return new ResponseEntity<>("You have no default payment method, please set one !", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(defaultPaymentMethodId + " is your default payment method!", HttpStatus.CREATED);
     }
 }

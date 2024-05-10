@@ -33,10 +33,30 @@ public class CustomerController {
         Command<ResponseEntity<String>> command = new AddCardCommand(request, cardToken, customerService);
         return command.execute();
     }
+    @PostMapping("/set-default-payment-method")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<String> setDefaultPaymentMethod(HttpServletRequest request, @RequestBody String cardId) throws Exception {
+
+        return customerService.setDefaultPaymentMethod(request, cardId);
+    }
+
+    @PostMapping("/delete-payment-method")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<String> deletePaymentMethod(HttpServletRequest request, @RequestBody String cardId) throws Exception {
+
+        return customerService.deletePaymentMethod(request, cardId);
+    }
+
     @GetMapping("get-all-payment-methods")
     @ResponseStatus(HttpStatus.OK)
     public List<PaymentMethod> getAllPaymentMethods(HttpServletRequest request) throws StripeException {
         return customerService.getAllPaymentMethods(request);
+    }
+
+    @GetMapping("get-default-payment-method")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<String> getDefaultPaymentMethod(HttpServletRequest request) throws StripeException {
+        return customerService.getDefaultPaymentMethod(request);
     }
 
     @PostMapping("/add-address")
@@ -85,4 +105,5 @@ public class CustomerController {
     public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
         return customerService.logout(request, response);
     }
+
 }
