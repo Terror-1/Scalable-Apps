@@ -5,6 +5,7 @@ package com.productservice.productservice.controller;
 import com.productservice.productservice.dto.ProductRequest;
 import com.productservice.productservice.dto.ProductResponse;
 import com.productservice.productservice.dto.ProductReviewDto;
+import com.productservice.productservice.entity.PopularProducts;
 import com.productservice.productservice.entity.Product;
 import com.productservice.productservice.entity.Review;
 import com.productservice.productservice.kafka.KafkaProducer;
@@ -50,6 +51,19 @@ public class ProductController {
     public List<Review> getReviewsPerProduct(@RequestBody String productId) {
         return productService.getReviewsPerProduct(productId);
     }
+
+    @GetMapping("/get-popular-products")
+    @ResponseStatus(HttpStatus.OK)
+    public List<PopularProducts> getPopularProducts() {
+        return productService.getPopularProducts();
+    }
+
+    @GetMapping("/empty-popular-products")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<String> emptyPopularProducts() {
+        return productService.emptyPopularProducts();
+    }
+
 
     @PostMapping("/product/add-review")
     @ResponseStatus(HttpStatus.CREATED)

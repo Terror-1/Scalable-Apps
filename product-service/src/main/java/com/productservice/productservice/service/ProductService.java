@@ -5,9 +5,11 @@ import com.externalDTOs.externalDTOs.dtos.UserID;
 import com.productservice.productservice.dto.ProductRequest;
 import com.productservice.productservice.dto.ProductResponse;
 import com.productservice.productservice.dto.ProductReviewDto;
+import com.productservice.productservice.entity.PopularProducts;
 import com.productservice.productservice.entity.Product;
 import com.productservice.productservice.entity.Review;
 import com.productservice.productservice.kafka.KafkaProducer;
+import com.productservice.productservice.repository.PopularProductsRepository;
 import com.productservice.productservice.repository.ProductRepository;
 import com.productservice.productservice.repository.ReviewRepository;
 import com.sessionservice.sessionservice.dto.CartObject;
@@ -31,6 +33,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +47,8 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     private final ReviewRepository reviewRepository;
+
+    private  final PopularProductsRepository popularProductsRepository;
 
     private final KafkaProducer kafkaProducer;
     private static final String jwtSecret = "d740b4e7547111cee19518ffef9b95645de3c346043281e52caaf7c48514e04b";
@@ -173,6 +180,12 @@ public class ProductService {
                 .smallMidLargeOneSize(product.getSmallMidLargeOneSize())
                 .build();
         kafkaProducer.addToCart(message);
+        PopularProducts popularProduct = PopularProducts.builder()
+                .productId(product.getId())
+                .name(product.getName())
+                .imageUrl(product.getImageUrl())
+                .build();
+        popularProductsRepository.save(popularProduct);
         return ResponseEntity.ok("sent  the product to kafka queue successfully to be put to cart !");
     }
 
@@ -295,5 +308,20 @@ public class ProductService {
                 return new ResponseEntity<>("There is no such review for that user on that product", HttpStatus.BAD_REQUEST);
         reviewRepository.deleteByUserIdAndProductId(userId, productId);
         return new ResponseEntity<>("Review deleted successfully !", HttpStatus.OK);
+    }
+
+    public List<PopularProducts> getPopularProducts() {
+        Iterable<PopularProducts> iterable = popularProductsRepository.findAll();
+
+        // Convert the Iterable to a Stream using StreamSupport
+        Stream<PopularProducts> stream = StreamSupport.stream(iterable.spliterator(), false);
+        // Collect the Stream elements into a List using Collectors.toList()
+        List<PopularProducts> productList = stream.collect(Collectors.toList());
+        return productList;
+    }
+
+    public ResponseEntity<String> emptyPopularProducts() {
+        popularProductsRepository.deleteAll();
+        return  new ResponseEntity<>("The cache is now empty", HttpStatus.OK);
     }
 }
