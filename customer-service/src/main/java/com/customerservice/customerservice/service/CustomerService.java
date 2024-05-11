@@ -102,8 +102,7 @@ public class CustomerService {
     public String authenticate(String email, String password) {
         MyCustomer customer = customerRepository.findByEmail(email);
         if (customer != null && passwordEncoder.matches(password, customer.getPassword())) {
-            String my_token = JwtService.generateToken(customer.getStripeId());
-            return my_token;
+            return JwtService.generateToken(customer.getStripeId());
         }
         return null;
     }
@@ -258,5 +257,16 @@ public class CustomerService {
         if (defaultPaymentMethodId.equals(""))
             return new ResponseEntity<>("You have no default payment method, please set one !", HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(defaultPaymentMethodId + " is your default payment method!", HttpStatus.CREATED);
+    }
+
+    public List<PaymentIntent> getAllOrders(HttpServletRequest request) throws StripeException {
+        Stripe.apiKey = stripeSecretKey;
+        String token = getTokenFromCookies(request);
+        String userId = getIdFromToken(token);
+        PaymentIntentListParams params =
+                PaymentIntentListParams.builder()
+                        .setCustomer(userId)
+                        .build();
+        return PaymentIntent.list(params).getData();
     }
 }
