@@ -14,6 +14,8 @@ import com.stripe.exception.StripeException;
 import jakarta.servlet.http.HttpServletRequest;
 import jnr.ffi.annotations.In;
 import lombok.Builder;
+import org.springframework.data.elasticsearch.annotations.Document;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -166,5 +168,13 @@ public class ProductController {
 
         return productService.addToCart(request, productId);
     }
+
+    @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Product> searchProduct(@RequestParam String query) {
+        return  productService.searchProduct(query.toLowerCase());
+    }
+
+
 }
 

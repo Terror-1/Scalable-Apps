@@ -51,6 +51,7 @@ public class ProductService {
     private  final PopularProductsRepository popularProductsRepository;
 
     private final KafkaProducer kafkaProducer;
+
     private static final String jwtSecret = "d740b4e7547111cee19518ffef9b95645de3c346043281e52caaf7c48514e04b";
 
     public void createProduct(ProductRequest productRequest) {
@@ -323,5 +324,9 @@ public class ProductService {
     public ResponseEntity<String> emptyPopularProducts() {
         popularProductsRepository.deleteAll();
         return  new ResponseEntity<>("The cache is now empty", HttpStatus.OK);
+    }
+
+    public List<Product> searchProduct(String name) {
+        return productRepository.searchByNameOrSkuOrDescriptionContaining(name);
     }
 }
