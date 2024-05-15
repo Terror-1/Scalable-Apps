@@ -1,6 +1,48 @@
 version: '3'
 
 services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+
+#  db-customer:
+#    container_name: postgres_customer_db_container
+#    image: postgres:latest
+#    restart: always
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/customer
+#      POSTGRES_USER: admin
+#      POSTGRES_PASSWORD: admin
+#      POSTGRES_DB: customer
+#    ports:
+#      - "5432:5432"
+#
+#  db-product:
+#    container_name: postgres_product_db_container
+#    image: postgres:latest
+#    restart: always
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5431/product
+#      POSTGRES_USER: admin
+#      POSTGRES_PASSWORD: admin
+#      POSTGRES_DB: product
+#    ports:
+#      - "5431:5431"
+#
+#  pgadmin:
+#    container_name: pgadmin_container
+#    image: dpage/pgadmin4
+#    restart: always
+#    environment:
+#      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+#      PGADMIN_DEFAULT_PASSWORD: root
+#    ports:
+#      - "5050:80"
+
   zookeeper:
     image: docker.io/bitnami/zookeeper:3.9
     container_name: zookeeper
