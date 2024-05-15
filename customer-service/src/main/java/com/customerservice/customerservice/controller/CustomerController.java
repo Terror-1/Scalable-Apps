@@ -1,24 +1,17 @@
 package com.customerservice.customerservice.controller;
 
-import com.customerservice.customerservice.command.AddCardCommand;
-import com.customerservice.customerservice.command.Command;
-import com.customerservice.customerservice.dto.AddCustomerDto;
+import com.customerservice.customerservice.command.*;
 import com.customerservice.customerservice.dto.CustomerAddressDto;
 import com.customerservice.customerservice.entity.MyCustomer;
 import com.customerservice.customerservice.service.CustomerService;
-import com.stripe.exception.StripeException;
 import com.stripe.model.*;
-import com.stripe.param.PaymentIntentCreateParams;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.ws.rs.core.HttpHeaders;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Duration;
 import java.util.List;
 
 @RestController
@@ -37,80 +30,67 @@ public class CustomerController {
     @PostMapping("/set-default-payment-method")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<String> setDefaultPaymentMethod(HttpServletRequest request, @RequestBody String cardId) throws Exception {
-
-        return customerService.setDefaultPaymentMethod(request, cardId);
+        Command<ResponseEntity<String>> command = new SetDefaultPaymentMethodCommand(request, cardId, customerService);
+        return command.execute();
     }
 
     @PostMapping("/delete-payment-method")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> deletePaymentMethod(HttpServletRequest request, @RequestBody String cardId) throws Exception {
-
-        return customerService.deletePaymentMethod(request, cardId);
+        Command<ResponseEntity<String>> command = new DeletePaymentMethodCommand(request, cardId, customerService);
+        return command.execute();
     }
 
     @GetMapping("get-all-payment-methods")
     @ResponseStatus(HttpStatus.OK)
-    public List<PaymentMethod> getAllPaymentMethods(HttpServletRequest request) throws StripeException {
-        return customerService.getAllPaymentMethods(request);
+    public List<PaymentMethod> getAllPaymentMethods(HttpServletRequest request) throws Exception {
+        Command<List<PaymentMethod>> command = new GetAllPaymentMethodsCommand(request, customerService);
+        return command.execute();
     }
 
     @GetMapping("get-default-payment-method")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> getDefaultPaymentMethod(HttpServletRequest request) throws StripeException {
-        return customerService.getDefaultPaymentMethod(request);
+    public ResponseEntity<String> getDefaultPaymentMethod(HttpServletRequest request) throws Exception {
+        Command<ResponseEntity<String>> command = new GetDefaultPaymentMethodCommand(request, customerService);
+        return command.execute();
     }
 
     @GetMapping("get-all-orders")
     @ResponseStatus(HttpStatus.OK)
-    public List<PaymentIntent> getAllOrders(HttpServletRequest request) throws StripeException {
-        return customerService.getAllOrders(request);
+    public List<PaymentIntent> getAllOrders(HttpServletRequest request) throws Exception {
+        Command<List<PaymentIntent>> command = new GetAllOrdersCommand(request, customerService);
+        return command.execute();
     }
 
     @PostMapping("/add-address")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<String> addAddress(@RequestBody CustomerAddressDto customerAddressDto, HttpServletRequest request) throws StripeException {
-
-        return customerService.addAddress(customerAddressDto, request);
+    public ResponseEntity<String> addAddress(@RequestBody CustomerAddressDto customerAddressDto, HttpServletRequest request) throws Exception {
+        Command<ResponseEntity<String>> command = new AddAddressCommand(request, customerAddressDto, customerService);
+        return command.execute();
     }
     @GetMapping("get-address")
     @ResponseStatus(HttpStatus.OK)
-    public Address getAddress(HttpServletRequest request) throws StripeException {
-        return customerService.getAddress(request);
+    public Address getAddress(HttpServletRequest request) throws Exception {
+        Command<Address> command = new GetAddressCommand(request, customerService);
+        return command.execute();
     }
 
     @PostMapping("/register")
-    public ResponseEntity<MyCustomer> registerCustomer(@RequestBody MyCustomer customer) throws StripeException {
-        MyCustomer registeredCustomer = customerService.registerCustomer(customer);
-        if (registeredCustomer == null) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-        return new ResponseEntity<>(registeredCustomer, HttpStatus.CREATED);
+    public ResponseEntity<MyCustomer> registerCustomer(@RequestBody MyCustomer customer) throws Exception {
+        Command<ResponseEntity<MyCustomer>> command = new RegisterCustomerCommand(customer, customerService);
+        return command.execute();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> authenticate(@RequestBody MyCustomer customer, HttpServletResponse response) {
-        String my_token = customerService.authenticate(customer.getEmail(), customer.getPassword());
-        if (my_token != null) {
-            // Create a cookie with the token
-            ResponseCookie cookie = ResponseCookie.from("token", my_token)
-                    .maxAge(Duration.ofDays(1)) // Set the cookie's maximum age
-                    .path("/") // Set the cookie's path
-                    .httpOnly(true) // Set the cookie as HttpOnly to prevent client-side script access
-                    .build();
-
-            // Add the cookie to the response header
-            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-
-            customerService.createSession(customer.getEmail());
-            return new ResponseEntity<>(my_token, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+    public ResponseEntity<String> authenticate(@RequestBody MyCustomer customer, HttpServletResponse response) throws Exception {
+        Command<ResponseEntity<String>> command = new LoginCommand(response ,customer, customerService);
+        return command.execute();
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
-        return customerService.logout(request, response);
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Command<ResponseEntity<String>> command = new LogoutCommand(request , response, customerService);
+        return command.execute();
     }
 
 }
