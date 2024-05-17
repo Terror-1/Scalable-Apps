@@ -2,6 +2,7 @@ package com.productservice.productservice.repository;
 
 import com.productservice.productservice.entity.PopularProducts;
 import com.productservice.productservice.entity.Product;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

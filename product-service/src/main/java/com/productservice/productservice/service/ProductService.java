@@ -18,8 +18,6 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Customer;
 import com.stripe.model.PaymentIntent;
-import com.stripe.model.PaymentMethodCollection;
-import com.stripe.param.CustomerListPaymentMethodsParams;
 import com.stripe.param.PaymentIntentCreateParams;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.Cookie;
@@ -64,9 +62,8 @@ public class ProductService {
                 .build();
         productRepository.save(product);
     }
-    public List<Product> getAllProducts() {
+    public Iterable<Product> getAllProducts() {
         return productRepository.findAll();
-
     }
 
     public ProductResponse mapToProductResponse(Product product) {

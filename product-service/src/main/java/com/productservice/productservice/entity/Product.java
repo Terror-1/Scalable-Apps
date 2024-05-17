@@ -7,6 +7,9 @@ import lombok.*;
 import org.hibernate.annotations.PartitionKey;
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
 import org.springframework.data.cassandra.core.mapping.*;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.util.*;
 
@@ -16,11 +19,13 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Document(indexName = "product")
 public class Product {
     @Id
     @GeneratedValue
     private Integer id;
     @jakarta.persistence.Column(unique = true)
+    @Field(type = FieldType.Text)
     private String sku; // gucci_black_male_shoe_39
 
     private String name; //  black shoe
