@@ -30,12 +30,12 @@ public class ProductConfiguration {
             product1.setDescription("blue running shoes");
             product1.setColor("Blue");
             product1.setName("Blue Running Shoes");
-//			String imageUrl = imageService.upload("firebaseShoot.jpg");
-//			if (imageUrl == null) {
-//				// Handle error - image upload failed
-//				return;
-//			}
-//			product1.setImageUrl(imageUrl);
+			String imageUrl = imageService.upload("product-service/src/main/resources/firebaseShoot.jpeg");
+			if (imageUrl == null) {
+				// Handle error - image upload failed
+				return;
+			}
+			product1.setImageUrl(imageUrl);
             productRepository.save(product1);
             Optional<Product> products1 = productRepository.findBySku(product1.getSku());
             int product1Id = product1.getId();
@@ -51,6 +51,7 @@ public class ProductConfiguration {
             product2.setDescription("black running shoes");
             product2.setColor("Black");
             product2.setName("Black Running Shoes");
+            product2.setImageUrl(imageUrl);
             productRepository.save(product2);
             Optional<Product> products2 = productRepository.findBySku(product2.getSku());
             int product2Id = product2.getId();
@@ -66,6 +67,7 @@ public class ProductConfiguration {
             product3.setDescription("white running shoes");
             product3.setColor("White");
             product3.setName("White Running Shoes");
+            product3.setImageUrl(imageUrl);
             productRepository.save(product3);
             Optional<Product> products3 = productRepository.findBySku(product3.getSku());
             int product3Id = product3.getId();
@@ -82,6 +84,7 @@ public class ProductConfiguration {
             product4.setDescription("grey running shoes");
             product4.setColor("Grey");
             product4.setName("Grey Running Shoes");
+            product4.setImageUrl(imageUrl);
             productRepository.save(product4);
             Optional<Product> products4 = productRepository.findBySku(product4.getSku());
             int product4Id = product4.getId();
@@ -97,6 +100,7 @@ public class ProductConfiguration {
             product5.setDescription("red running shoes");
             product5.setColor("Red");
             product5.setName("Red Running Shoes");
+            product5.setImageUrl(imageUrl);
             productRepository.save(product5);
             Optional<Product> products5 = productRepository.findBySku(product5.getSku());
             int product5Id = product5.getId();
@@ -112,6 +116,7 @@ public class ProductConfiguration {
             product6.setDescription("orange running shoes");
             product6.setColor("Orange");
             product6.setName("Orange Running Shoes");
+            product6.setImageUrl(imageUrl);
             productRepository.save(product6);
             Optional<Product> products6 = productRepository.findBySku(product6.getSku());
             int product6Id = product6.getId();
@@ -127,6 +132,7 @@ public class ProductConfiguration {
             product7.setDescription("pink running shoes");
             product7.setColor("Pink");
             product7.setName("Pink Running Shoes");
+            product7.setImageUrl(imageUrl);
             productRepository.save(product7);
             Optional<Product> products7 = productRepository.findBySku(product7.getSku());
             int product7Id = product7.getId();
@@ -142,6 +148,7 @@ public class ProductConfiguration {
             product8.setDescription("yellow running shoes");
             product8.setColor("Yellow");
             product8.setName("Yellow Running Shoes");
+            product8.setImageUrl(imageUrl);
             productRepository.save(product8);
             Optional<Product> products8 = productRepository.findBySku(product8.getSku());
             int product8Id = product8.getId();
@@ -157,6 +164,7 @@ public class ProductConfiguration {
             product9.setDescription("green running shoes");
             product9.setColor("Green");
             product9.setName("Green Running Shoes");
+            product9.setImageUrl(imageUrl);
             productRepository.save(product9);
             Optional<Product> products9 = productRepository.findBySku(product9.getSku());
             int product9Id = product9.getId();
@@ -172,6 +180,7 @@ public class ProductConfiguration {
             product10.setDescription("brown running shoes");
             product10.setColor("Brown");
             product10.setName("Brown Running Shoes");
+            product10.setImageUrl(imageUrl);
             productRepository.save(product10);
             Optional<Product> products10 = productRepository.findBySku(product10.getSku());
             int product10Id = product10.getId();
@@ -189,6 +198,7 @@ public class ProductConfiguration {
             product11.setDescription("black bag");
             product11.setColor("Black");
             product11.setName("Black Female Bag");
+            product11.setImageUrl(imageUrl);
             productRepository.save(product11);
             Optional<Product> products11 = productRepository.findBySku(product11.getSku());
             int product11Id = product11.getId();
@@ -204,6 +214,7 @@ public class ProductConfiguration {
             product12.setDescription("black bag");
             product12.setColor("Black");
             product12.setName("Black Male Bag");
+            product12.setImageUrl(imageUrl);
             productRepository.save(product12);
             Optional<Product> products12 = productRepository.findBySku(product12.getSku());
             int product12Id = product12.getId();
@@ -219,6 +230,7 @@ public class ProductConfiguration {
             product13.setDescription("white bag");
             product13.setColor("White");
             product13.setName("White Female Bag");
+            product13.setImageUrl(imageUrl);
             productRepository.save(product13);
             Optional<Product> products13 = productRepository.findBySku(product13.getSku());
             int product13Id = product13.getId();
@@ -234,6 +246,7 @@ public class ProductConfiguration {
             product14.setDescription("white bag");
             product14.setColor("White");
             product14.setName("White Male Bag");
+            product14.setImageUrl(imageUrl);
             productRepository.save(product14);
             Optional<Product> products14 = productRepository.findBySku(product14.getSku());
             int product14Id = product14.getId();
@@ -249,6 +262,7 @@ public class ProductConfiguration {
             product15.setDescription("pink bag");
             product15.setColor("Pink");
             product15.setName("Pink Female Bag");
+            product15.setImageUrl(imageUrl);
             productRepository.save(product15);
             Optional<Product> products15 = productRepository.findBySku(product15.getSku());
             int product15Id = product15.getId();
@@ -264,6 +278,7 @@ public class ProductConfiguration {
             product16.setDescription("pink bag");
             product16.setColor("Pink");
             product16.setName("Pink Male Bag");
+            product16.setImageUrl(imageUrl);
             productRepository.save(product16);
             Optional<Product> products16 = productRepository.findBySku(product16.getSku());
             int product16Id = product16.getId();
@@ -279,6 +294,7 @@ public class ProductConfiguration {
             product17.setDescription("yellow bag");
             product17.setColor("Yellow");
             product17.setName("Yellow Female Bag");
+            product17.setImageUrl(imageUrl);
             productRepository.save(product17);
             Optional<Product> products17 = productRepository.findBySku(product17.getSku());
             int product17Id = product17.getId();
@@ -294,6 +310,7 @@ public class ProductConfiguration {
             product18.setDescription("yellow bag");
             product18.setColor("Yellow");
             product18.setName("Yellow Male Bag");
+            product18.setImageUrl(imageUrl);
             productRepository.save(product18);
             Optional<Product> products18 = productRepository.findBySku(product18.getSku());
             int product18Id = product18.getId();
@@ -309,6 +326,7 @@ public class ProductConfiguration {
             product19.setDescription("green bag");
             product19.setColor("Green");
             product19.setName("Green Female Bag");
+            product19.setImageUrl(imageUrl);
             productRepository.save(product19);
             Optional<Product> products19 = productRepository.findBySku(product19.getSku());
             int product19Id = product19.getId();
@@ -324,6 +342,7 @@ public class ProductConfiguration {
             product20.setDescription("green bag");
             product20.setColor("Green");
             product20.setName("Green Male Bag");
+            product20.setImageUrl(imageUrl);
             productRepository.save(product20);
             Optional<Product> products20 = productRepository.findBySku(product20.getSku());
             int product20Id = product20.getId();
@@ -340,6 +359,7 @@ public class ProductConfiguration {
             product21.setDescription("black male watch");
             product21.setColor("Black");
             product21.setName("Black Male Watch");
+            product21.setImageUrl(imageUrl);
             productRepository.save(product21);
             Optional<Product> products21 = productRepository.findBySku(product21.getSku());
             int product21Id = product21.getId();
@@ -355,6 +375,7 @@ public class ProductConfiguration {
             product22.setDescription("black female watch");
             product22.setColor("Black");
             product22.setName("Black Female Watch");
+            product22.setImageUrl(imageUrl);
             productRepository.save(product22);
             Optional<Product> products22 = productRepository.findBySku(product22.getSku());
             int product22Id = product22.getId();
@@ -370,6 +391,7 @@ public class ProductConfiguration {
             product23.setDescription("white male watch");
             product23.setColor("White");
             product23.setName("White Male Watch");
+            product23.setImageUrl(imageUrl);
             productRepository.save(product23);
             Optional<Product> products23 = productRepository.findBySku(product23.getSku());
             int product23Id = product23.getId();
@@ -385,6 +407,7 @@ public class ProductConfiguration {
             product24.setDescription("white female watch");
             product24.setColor("White");
             product24.setName("White Female Watch");
+            product24.setImageUrl(imageUrl);
             productRepository.save(product24);
             Optional<Product> products24 = productRepository.findBySku(product24.getSku());
             int product24Id = product24.getId();
@@ -400,6 +423,7 @@ public class ProductConfiguration {
             product25.setDescription("red male watch");
             product25.setColor("Red");
             product25.setName("Red Male Watch");
+            product25.setImageUrl(imageUrl);
             productRepository.save(product25);
             Optional<Product> products25 = productRepository.findBySku(product25.getSku());
             int product25Id = product25.getId();
@@ -415,6 +439,7 @@ public class ProductConfiguration {
             product26.setDescription("red female watch");
             product26.setColor("Red");
             product26.setName("Red Female Watch");
+            product26.setImageUrl(imageUrl);
             productRepository.save(product26);
             Optional<Product> products26 = productRepository.findBySku(product26.getSku());
             int product26Id = product26.getId();
@@ -430,6 +455,7 @@ public class ProductConfiguration {
             product27.setDescription("blue male watch");
             product27.setColor("Blue");
             product27.setName("Blue Male Watch");
+            product27.setImageUrl(imageUrl);
             productRepository.save(product27);
             Optional<Product> products27 = productRepository.findBySku(product27.getSku());
             int product27Id = product27.getId();
@@ -445,6 +471,7 @@ public class ProductConfiguration {
             product28.setDescription("blue female watch");
             product28.setColor("Blue");
             product28.setName("Blue Female Watch");
+            product28.setImageUrl(imageUrl);
             productRepository.save(product28);
             Optional<Product> products28 = productRepository.findBySku(product28.getSku());
             int product28Id = product28.getId();
@@ -460,6 +487,7 @@ public class ProductConfiguration {
             product29.setDescription("pink male watch");
             product29.setColor("Pink");
             product29.setName("Pink Male Watch");
+            product29.setImageUrl(imageUrl);
             productRepository.save(product29);
             Optional<Product> products29 = productRepository.findBySku(product29.getSku());
             int product29Id = product29.getId();
@@ -475,6 +503,7 @@ public class ProductConfiguration {
             product30.setDescription("pink female watch");
             product30.setColor("Pink");
             product30.setName("Pink Female Watch");
+            product30.setImageUrl(imageUrl);
             productRepository.save(product30);
             Optional<Product> products30 = productRepository.findBySku(product30.getSku());
             int product30Id = product30.getId();
@@ -491,6 +520,7 @@ public class ProductConfiguration {
             product31.setDescription("small black shirt");
             product31.setColor("Black");
             product31.setName("Black Male Shirt");
+            product31.setImageUrl(imageUrl);
             productRepository.save(product31);
             Optional<Product> products31 = productRepository.findBySku(product31.getSku());
             int product31Id = product31.getId();
@@ -506,6 +536,7 @@ public class ProductConfiguration {
             product32.setDescription("small black female shirt");
             product32.setColor("Black");
             product32.setName("Black Female Shirt");
+            product32.setImageUrl(imageUrl);
             productRepository.save(product32);
             Optional<Product> products32 = productRepository.findBySku(product32.getSku());
             int product32Id = product32.getId();
@@ -521,6 +552,7 @@ public class ProductConfiguration {
             product33.setDescription("medium red shirt");
             product33.setColor("Red");
             product33.setName("Red Male Shirt");
+            product33.setImageUrl(imageUrl);
             productRepository.save(product33);
             Optional<Product> products33 = productRepository.findBySku(product33.getSku());
             int product33Id = product33.getId();
@@ -536,6 +568,7 @@ public class ProductConfiguration {
             product34.setDescription("large red female shirt");
             product34.setColor("Red");
             product34.setName("Red Female Shirt");
+            product34.setImageUrl(imageUrl);
             productRepository.save(product34);
             Optional<Product> products34 = productRepository.findBySku(product34.getSku());
             int product34Id = product34.getId();
@@ -551,6 +584,7 @@ public class ProductConfiguration {
             product35.setDescription("small blue shirt");
             product35.setColor("Blue");
             product35.setName("Blue Male Shirt");
+            product35.setImageUrl(imageUrl);
             productRepository.save(product35);
             Optional<Product> products35 = productRepository.findBySku(product35.getSku());
             int product35Id = product35.getId();
@@ -566,6 +600,7 @@ public class ProductConfiguration {
             product36.setDescription("small blue female shirt");
             product36.setColor("Blue");
             product36.setName("Blue Female Shirt");
+            product36.setImageUrl(imageUrl);
             productRepository.save(product36);
             Optional<Product> products36 = productRepository.findBySku(product36.getSku());
             int product36Id = product36.getId();
@@ -581,6 +616,7 @@ public class ProductConfiguration {
             product37.setDescription("small pink shirt");
             product37.setColor("Pink");
             product37.setName("Pink Male Shirt");
+            product37.setImageUrl(imageUrl);
             productRepository.save(product37);
             Optional<Product> products37 = productRepository.findBySku(product37.getSku());
             int product37Id = product37.getId();
@@ -596,6 +632,7 @@ public class ProductConfiguration {
             product38.setDescription("small pink female shirt");
             product38.setColor("Pink");
             product38.setName("Pink Female Shirt");
+            product38.setImageUrl(imageUrl);
             productRepository.save(product38);
             Optional<Product> products38 = productRepository.findBySku(product38.getSku());
             int product38Id = product38.getId();
@@ -611,6 +648,7 @@ public class ProductConfiguration {
             product39.setDescription("small green shirt");
             product39.setColor("Green");
             product39.setName("Green Male Shirt");
+            product39.setImageUrl(imageUrl);
             productRepository.save(product39);
             Optional<Product> products39 = productRepository.findBySku(product39.getSku());
             int product39Id = product39.getId();
@@ -626,6 +664,7 @@ public class ProductConfiguration {
             product40.setDescription("small green female shirt");
             product40.setColor("Green");
             product40.setName("Green Female Shirt");
+            product40.setImageUrl(imageUrl);
             productRepository.save(product40);
             Optional<Product> products40 = productRepository.findBySku(product40.getSku());
             int product40Id = product40.getId();
@@ -642,6 +681,7 @@ public class ProductConfiguration {
             product41.setDescription("small yellow shirt");
             product41.setColor("Yellow");
             product41.setName("Yellow Male Shirt");
+            product41.setImageUrl(imageUrl);
             productRepository.save(product41);
             Optional<Product> products41 = productRepository.findBySku(product41.getSku());
             int product41Id = product41.getId();
@@ -657,6 +697,7 @@ public class ProductConfiguration {
             product42.setDescription("small yellow female shirt");
             product42.setColor("Yellow");
             product42.setName("Yellow Female Shirt");
+            product42.setImageUrl(imageUrl);
             productRepository.save(product42);
             Optional<Product> products42 = productRepository.findBySku(product42.getSku());
             int product42Id = product42.getId();
@@ -672,6 +713,7 @@ public class ProductConfiguration {
             product43.setDescription("small purple shirt");
             product43.setColor("Purple");
             product43.setName("Purple Male Shirt");
+            product43.setImageUrl(imageUrl);
             productRepository.save(product43);
             Optional<Product> products43 = productRepository.findBySku(product43.getSku());
             int product43Id = product43.getId();
@@ -687,6 +729,7 @@ public class ProductConfiguration {
             product44.setDescription("small purple female shirt");
             product44.setColor("Purple");
             product44.setName("Purple Female Shirt");
+            product44.setImageUrl(imageUrl);
             productRepository.save(product44);
             Optional<Product> products44 = productRepository.findBySku(product44.getSku());
             int product44Id = product44.getId();
@@ -717,6 +760,7 @@ public class ProductConfiguration {
             product46.setDescription("small orange female shirt");
             product46.setColor("Orange");
             product46.setName("Orange Female Shirt");
+            product46.setImageUrl(imageUrl);
             productRepository.save(product46);
             Optional<Product> products46 = productRepository.findBySku(product46.getSku());
             int product46Id = product46.getId();
@@ -732,6 +776,7 @@ public class ProductConfiguration {
             product47.setDescription("small white shirt");
             product47.setColor("White");
             product47.setName("White Male Shirt");
+            product47.setImageUrl(imageUrl);
             productRepository.save(product47);
             Optional<Product> products47 = productRepository.findBySku(product47.getSku());
             int product47Id = product47.getId();
@@ -747,6 +792,7 @@ public class ProductConfiguration {
             product48.setDescription("small white female shirt");
             product48.setColor("White");
             product48.setName("White Female Shirt");
+            product48.setImageUrl(imageUrl);
             productRepository.save(product48);
             Optional<Product> products48 = productRepository.findBySku(product48.getSku());
             int product48Id = product48.getId();
@@ -762,6 +808,7 @@ public class ProductConfiguration {
             product49.setDescription("small black shirt");
             product49.setColor("Black");
             product49.setName("Black Male Shirt");
+            product49.setImageUrl(imageUrl);
             productRepository.save(product49);
             Optional<Product> products49 = productRepository.findBySku(product49.getSku());
             int product49Id = product49.getId();
@@ -777,6 +824,7 @@ public class ProductConfiguration {
             product50.setDescription("small black female shirt");
             product50.setColor("Black");
             product50.setName("Black Female Shirt");
+            product50.setImageUrl(imageUrl);
             productRepository.save(product50);
             Optional<Product> products50 = productRepository.findBySku(product50.getSku());
             int product50Id = product50.getId();
@@ -795,6 +843,7 @@ public class ProductConfiguration {
             product51.setDescription("small male perfume");
             product51.setColor("Transparent"); // Assuming perfumes are in transparent bottles, unless specified otherwise
             product51.setName("Male Perfume 1");
+            product51.setImageUrl(imageUrl);
             productRepository.save(product51);
             Optional<Product> products51 = productRepository.findBySku(product51.getSku());
             int product51Id = product51.getId();
@@ -810,6 +859,7 @@ public class ProductConfiguration {
             product52.setDescription("small female perfume");
             product52.setColor("Transparent");
             product52.setName("Female Perfume 1");
+            product52.setImageUrl(imageUrl);
             productRepository.save(product52);
             Optional<Product> products52 = productRepository.findBySku(product52.getSku());
             int product52Id = product52.getId();
@@ -825,6 +875,7 @@ public class ProductConfiguration {
             product53.setDescription("medium male perfume");
             product53.setColor("Transparent");
             product53.setName("Male Perfume 2");
+            product53.setImageUrl(imageUrl);
             productRepository.save(product53);
             Optional<Product> products53 = productRepository.findBySku(product53.getSku());
             int product53Id = product53.getId();
@@ -840,6 +891,7 @@ public class ProductConfiguration {
             product54.setDescription("medium female perfume");
             product54.setColor("Transparent");
             product54.setName("Female Perfume 2");
+            product54.setImageUrl(imageUrl);
             productRepository.save(product54);
             Optional<Product> products54 = productRepository.findBySku(product54.getSku());
             int product54Id = product54.getId();
@@ -855,6 +907,7 @@ public class ProductConfiguration {
             product55.setDescription("large male perfume");
             product55.setColor("Transparent");
             product55.setName("Male Perfume 3");
+            product55.setImageUrl(imageUrl);
             productRepository.save(product55);
             Optional<Product> products55 = productRepository.findBySku(product55.getSku());
             int product55Id = product55.getId();
@@ -870,6 +923,7 @@ public class ProductConfiguration {
             product56.setDescription("large female perfume");
             product56.setColor("Transparent");
             product56.setName("Female Perfume 3");
+            product56.setImageUrl(imageUrl);
             productRepository.save(product56);
             Optional<Product> products56 = productRepository.findBySku(product56.getSku());
             int product56Id = product56.getId();
@@ -886,6 +940,7 @@ public class ProductConfiguration {
             product57.setDescription("male sunglasses 1");
             product57.setColor("Black");
             product57.setName("Male Sunglasses 1");
+            product57.setImageUrl(imageUrl);
             productRepository.save(product57);
             Optional<Product> products57 = productRepository.findBySku(product57.getSku());
             int product57Id = product57.getId();
@@ -901,6 +956,7 @@ public class ProductConfiguration {
             product58.setDescription("female sunglasses 1");
             product58.setColor("Black");
             product58.setName("Female Sunglasses 1");
+            product58.setImageUrl(imageUrl);
             productRepository.save(product58);
             Optional<Product> products58 = productRepository.findBySku(product58.getSku());
             int product58Id = product58.getId();
@@ -916,6 +972,7 @@ public class ProductConfiguration {
             product59.setDescription("male sunglasses 2");
             product59.setColor("Black");
             product59.setName("Male Sunglasses 2");
+            product59.setImageUrl(imageUrl);
             productRepository.save(product59);
             Optional<Product> products59 = productRepository.findBySku(product59.getSku());
             int product59Id = product59.getId();
@@ -931,6 +988,7 @@ public class ProductConfiguration {
             product60.setDescription("female sunglasses 2");
             product60.setColor("Black");
             product60.setName("Female Sunglasses 2");
+            product60.setImageUrl(imageUrl);
             productRepository.save(product60);
             Optional<Product> products60 = productRepository.findBySku(product60.getSku());
             int product60Id = product60.getId();
@@ -946,6 +1004,7 @@ public class ProductConfiguration {
             product61.setDescription("male sunglasses 3");
             product61.setColor("Black");
             product61.setName("Male Sunglasses 3");
+            product61.setImageUrl(imageUrl);
             productRepository.save(product61);
             Optional<Product> products61 = productRepository.findBySku(product61.getSku());
             int product61Id = product61.getId();
@@ -961,6 +1020,7 @@ public class ProductConfiguration {
             product62.setDescription("female sunglasses 3");
             product62.setColor("Black");
             product62.setName("Female Sunglasses 3");
+            product62.setImageUrl(imageUrl);
             productRepository.save(product62);
             Optional<Product> products62 = productRepository.findBySku(product62.getSku());
             int product62Id = product62.getId();
@@ -978,6 +1038,7 @@ public class ProductConfiguration {
             product63.setDescription("male sunglasses 4");
             product63.setColor("Black");
             product63.setName("Male Sunglasses 4");
+            product63.setImageUrl(imageUrl);
             productRepository.save(product63);
             Optional<Product> products63 = productRepository.findBySku(product63.getSku());
             int product63Id = product63.getId();
@@ -993,6 +1054,7 @@ public class ProductConfiguration {
             product64.setDescription("female sunglasses 4");
             product64.setColor("Black");
             product64.setName("Female Sunglasses 4");
+            product64.setImageUrl(imageUrl);
             productRepository.save(product64);
             Optional<Product> products64 = productRepository.findBySku(product64.getSku());
             int product64Id = product64.getId();
@@ -1008,6 +1070,7 @@ public class ProductConfiguration {
             product65.setDescription("male accessories 1");
             product65.setColor("Varied");  // Typically for accessories, color might vary unless specified.
             product65.setName("Male Accessories 1");
+            product65.setImageUrl(imageUrl);
             productRepository.save(product65);
             Optional<Product> products65 = productRepository.findBySku(product65.getSku());
             int product65Id = product65.getId();
@@ -1023,6 +1086,7 @@ public class ProductConfiguration {
             product66.setDescription("female accessories 1");
             product66.setColor("Varied");
             product66.setName("Female Accessories 1");
+            product66.setImageUrl(imageUrl);
             productRepository.save(product66);
             Optional<Product> products66 = productRepository.findBySku(product66.getSku());
             int product66Id = product66.getId();
@@ -1038,6 +1102,7 @@ public class ProductConfiguration {
             product67.setDescription("male accessories 2");
             product67.setColor("Varied");
             product67.setName("Male Accessories 2");
+            product67.setImageUrl(imageUrl);
             productRepository.save(product67);
             Optional<Product> products67 = productRepository.findBySku(product67.getSku());
             int product67Id = product67.getId();
@@ -1053,6 +1118,7 @@ public class ProductConfiguration {
             product68.setDescription("female accessories 2");
             product68.setColor("Varied");
             product68.setName("Female Accessories 2");
+            product68.setImageUrl(imageUrl);
             productRepository.save(product68);
             Optional<Product> products68 = productRepository.findBySku(product68.getSku());
             int product68Id = product68.getId();
