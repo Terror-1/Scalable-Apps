@@ -15,6 +15,7 @@
         <option value="$PROJECT_DIR$/session-service2/pom.xml" />
         <option value="$PROJECT_DIR$/externalDTOs/pom.xml" />
         <option value="$PROJECT_DIR$/demo/demo/pom.xml" />
+        <option value="$PROJECT_DIR$/gatling-testing/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
