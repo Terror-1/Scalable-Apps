@@ -118,13 +118,13 @@ services:
       CASSANDRA_PASSWORD: "admin"
     volumes:
       - cassandra-data:/var/lib/cassandra
-      - ./init.cql:/docker-entrypoint-initdb.d/init.cql
-    entrypoint:
-      [
-        "/bin/bash",
-        "-c",
-        "cassandra -R & cqlsh -f /docker-entrypoint-initdb.d/init.cql && tail -f /dev/null",
-      ]
+#      - ./init.cql:/docker-entrypoint-initdb.d/init.cql
+#    entrypoint:
+#      [
+#        "/bin/bash",
+#        "-c",
+#        "cassandra -R & cqlsh -f /docker-entrypoint-initdb.d/init.cql && tail -f /dev/null",
+#      ]
 
 volumes:
   cassandra-data:
