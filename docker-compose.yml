@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   elasticsearch:
@@ -8,40 +8,83 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"
+  cache:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    # command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    command: redis-server --save 20 1 --loglevel warning
+    volumes:
+      - cache:/data
+    networks:
+      - cache
+  db-customer:
+    image: postgres
+    ports:
+      - "5434:5432"
+    restart: always
+    volumes:
+      - db-customer-data:/var/lib/postgresql/data
+      # - ./init.sql:/docker-entrypoint-initdb.d/init.sql # This will run the init.sql script on the first run
+    networks:
+      - db-customer
+    environment:
+      - POSTGRES_DB=customer
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    # expose:
+    #   - 5432 # Expose this port internally for docker containers on the same network
+  db-product:
+    image: postgres
+    ports:
+      - "5433:5432"
+    restart: always
+    volumes:
+      - db-product-data:/var/lib/postgresql/data # Persist the data
+      # - ./init.sql:/docker-entrypoint-initdb.d/init.sql # This will run the init.sql script on the first run
+    networks:
+      - db-product
+    environment:
+      - POSTGRES_DB=product
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    # expose:
+    #   - 5432 # Expose this port internally for docker containers on the same network
 
-#  db-customer:
-#    container_name: postgres_customer_db_container
-#    image: postgres:latest
-#    restart: always
-#    environment:
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/customer
-#      POSTGRES_USER: admin
-#      POSTGRES_PASSWORD: admin
-#      POSTGRES_DB: customer
-#    ports:
-#      - "5432:5432"
-#
-#  db-product:
-#    container_name: postgres_product_db_container
-#    image: postgres:latest
-#    restart: always
-#    environment:
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5431/product
-#      POSTGRES_USER: admin
-#      POSTGRES_PASSWORD: admin
-#      POSTGRES_DB: product
-#    ports:
-#      - "5431:5431"
-#
-#  pgadmin:
-#    container_name: pgadmin_container
-#    image: dpage/pgadmin4
-#    restart: always
-#    environment:
-#      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-#      PGADMIN_DEFAULT_PASSWORD: root
-#    ports:
-#      - "5050:80"
+  #  db-customer:
+  #    container_name: postgres_customer_db_container
+  #    image: postgres:latest
+  #    restart: always
+  #    environment:
+  #      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/customer
+  #      POSTGRES_USER: admin
+  #      POSTGRES_PASSWORD: admin
+  #      POSTGRES_DB: customer
+  #    ports:
+  #      - "5432:5432"
+  #
+  #  db-product:
+  #    container_name: postgres_product_db_container
+  #    image: postgres:latest
+  #    restart: always
+  #    environment:
+  #      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5431/product
+  #      POSTGRES_USER: admin
+  #      POSTGRES_PASSWORD: admin
+  #      POSTGRES_DB: product
+  #  ports:
+  #    - "5431:5431"
+  #
+  #  pgadmin:
+  #    container_name: pgadmin_container
+  #    image: dpage/pgadmin4
+  #    restart: always
+  #    environment:
+  #      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+  #      PGADMIN_DEFAULT_PASSWORD: root
+  #    ports:
+  #      - "5050:80"
 
   zookeeper:
     image: docker.io/bitnami/zookeeper:3.9
@@ -75,6 +118,24 @@ services:
       CASSANDRA_PASSWORD: "admin"
     volumes:
       - cassandra-data:/var/lib/cassandra
+      - ./init.cql:/docker-entrypoint-initdb.d/init.cql
+    entrypoint:
+      [
+        "/bin/bash",
+        "-c",
+        "cassandra -R & cqlsh -f /docker-entrypoint-initdb.d/init.cql && tail -f /dev/null",
+      ]
 
 volumes:
   cassandra-data:
+  cache:
+    driver: local
+  db-product-data:
+    driver: local
+  db-customer-data:
+    driver: local
+
+networks:
+  db-product:
+  db-customer:
+  cache:

@@ -12,7 +12,7 @@ spring:
   application:
     name: product-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/product
+    url: jdbc:postgresql://localhost:5433/product
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -36,7 +36,7 @@ spring:
       bootstrap-servers: localhost:9092
       auto-offset-reset: earliest
       properties:
-        spring.json.trusted.packages: '*'
+        spring.json.trusted.packages: "*"
 
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
@@ -73,9 +73,6 @@ spring:
       repositories:
         enabled: true
 
-
 stripe:
   secret:
     key: sk_test_51P9U3gRqvM61FDTxZlRrikPCKSEpqVCwWnONVdlh5GtNOUDRvhRIQD9OpJRQuT5mLFvrnDgCPZ1CSZHy0yYUmBQU00AD4KcbO5
-
-
