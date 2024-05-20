@@ -65,7 +65,6 @@ public class ImageService {
 //          File file = this.convertToFile(multipartFile, fileName);
           File file = new File(imagePath);// to convert multipartFile to File
           String URL = this.uploadFile(file, fileName);                                   // to get uploaded file link
-          file.delete();
           return URL;
       } catch (Exception e) {
           e.printStackTrace();

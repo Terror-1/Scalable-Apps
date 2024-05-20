@@ -5,6 +5,7 @@ import com.productservice.productservice.entity.PopularProducts;
 import com.productservice.productservice.entity.Product;
 import com.productservice.productservice.repository.PopularProductsRepository;
 import com.productservice.productservice.repository.ProductRepository;
+import com.productservice.productservice.service.ImageService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,12 @@ import java.util.Optional;
 
 @Configuration
 public class ProductConfiguration {
+    private final ImageService imageService;
+
+    public ProductConfiguration(ImageService imageService) {
+        this.imageService = imageService;
+    }
+
     @Bean
     public CommandLineRunner loadData(ProductRepository productRepository) {
         return args -> {
@@ -30,7 +37,7 @@ public class ProductConfiguration {
             product1.setDescription("blue running shoes");
             product1.setColor("Blue");
             product1.setName("Blue Running Shoes");
-			String imageUrl = imageService.upload("product-service/src/main/resources/firebaseShoot.jpeg");
+			String imageUrl = imageService.upload("product-service/src/main/resources/test.jpg");
 			if (imageUrl == null) {
 				// Handle error - image upload failed
 				return;

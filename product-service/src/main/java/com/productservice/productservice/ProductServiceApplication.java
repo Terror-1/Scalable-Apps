@@ -20,7 +20,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @EnableCaching
 public class 	ProductServiceApplication {
-	private final ImageService imageService;
 	public static void main(String[] args) {
 		SpringApplication.run(ProductServiceApplication.class, args);
 	}}
