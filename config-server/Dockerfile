@@ -28,7 +28,7 @@ RUN mkdir -p target/dependency
 WORKDIR /workdir/server/target/dependency
 RUN jar -xf ../*.jar
 
-FROM eclipse-temurin:17-jre-focal
+FROM eclipse-temurin:21-alpine
 
 EXPOSE 8888
 VOLUME /tmp

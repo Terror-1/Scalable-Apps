@@ -2,10 +2,20 @@
 
 FROM --platform=$BUILDPLATFORM maven:3.9.6-eclipse-temurin-21 AS builder
 WORKDIR /workdir/server
+
+# Build and install externalDTOs
+COPY ../externalDTOs/pom.xml /workdir/externalDTOs/pom.xml
+RUN mvn -f /workdir/externalDTOs/pom.xml dependency:go-offline
+
+COPY ../externalDTOs/src /workdir/externalDTOs/src
+RUN mvn -f /workdir/externalDTOs/pom.xml install
+
 COPY pom.xml /workdir/server/pom.xml
 RUN mvn dependency:go-offline
 
+COPY --from=builder /root/.m2 /root/.m2
 COPY src /workdir/server/src
+
 RUN mvn install
 
 FROM builder AS dev-envs
@@ -28,7 +38,7 @@ RUN mkdir -p target/dependency
 WORKDIR /workdir/server/target/dependency
 RUN jar -xf ../*.jar
 
-FROM eclipse-temurin:17-jre-focal
+FROM eclipse-temurin:21-alpine
 
 EXPOSE 8070
 VOLUME /tmp
