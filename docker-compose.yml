@@ -71,24 +71,19 @@ services:
       - cassandra
     networks:
       - services
-    # healthcheck:
-    #   test:
-    #     ["CMD-SHELL", "curl -f http://localhost:8888/customer-service/default || exit 1"]
-    #   interval: 6s
-    #   timeout: 2s
-    #   retries: 3
+  
 
   discovery-service:
     build:
       context: ./discovery
     container_name: discovery-service
-
     ports:
       - "8761:8761"
     depends_on:
       - config-server
     networks:
       - services
+    
 
   gateway-service:
     build:
@@ -112,7 +107,6 @@ services:
     depends_on:
       - discovery-service
       - db-customer
-      - config-server
     networks:
       - services
 
