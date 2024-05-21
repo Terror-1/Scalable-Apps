@@ -1,14 +1,27 @@
 #!/bin/bash
+
+# Start Cassandra
 nami start cassandra
-echo "script stuff here to run after cassandra starts"
+echo "Cassandra started"
+
+# Wait for Cassandra to be ready
+until cqlsh -e "DESC KEYSPACES"; do
+  echo "Waiting for Cassandra to be ready..."
+  sleep 5
+done
+
+echo "Running CQL script..."
+
+# Run CQL commands
+cqlsh <<EOF
 CREATE KEYSPACE IF NOT EXISTS store WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : '1' };
 
-CREATE TABLE IF NOT EXISTS session (
+CREATE TABLE IF NOT EXISTS store.session (
     user_id text PRIMARY KEY,
     name text
 );
 
-CREATE TABLE IF NOT EXISTS cart_item (
+CREATE TABLE IF NOT EXISTS store.cart_item (
   user_id text,
   item_id text,
   sku text,
@@ -21,7 +34,7 @@ CREATE TABLE IF NOT EXISTS cart_item (
   PRIMARY KEY (user_id, item_id)
 );
 
-CREATE TABLE IF NOT EXISTS reviews (
+CREATE TABLE IF NOT EXISTS store.reviews (
     product_id TEXT,
     user_id TEXT,
     user_name TEXT,
@@ -29,4 +42,6 @@ CREATE TABLE IF NOT EXISTS reviews (
     review TEXT,
     PRIMARY KEY (product_id, user_id)
 );
+EOF
 
+echo "CQL script executed"
