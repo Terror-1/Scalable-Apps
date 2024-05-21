@@ -76,3 +76,22 @@ spring:
 stripe:
   secret:
     key: sk_test_51P9U3gRqvM61FDTxZlRrikPCKSEpqVCwWnONVdlh5GtNOUDRvhRIQD9OpJRQuT5mLFvrnDgCPZ1CSZHy0yYUmBQU00AD4KcbO5
+
+# Logging level
+logging:
+  level:
+    root: INFO
+
+# Logstash appender
+logstash:
+  destination: localhost:5044
+
+#  Actuator endpoints exposure
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    metrics:
+      enabled: true

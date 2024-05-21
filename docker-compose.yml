@@ -1,13 +1,13 @@
 version: "3"
 
 services:
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
-    environment:
-      - discovery.type=single-node
-    ports:
-      - "9200:9200"
-      - "9300:9300"
+  # elasticsearch:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
+  #   environment:
+  #     - discovery.type=single-node
+  #   ports:
+  #     - "9200:9200"
+  #     - "9300:9300"
   cache:
     image: redis:6.2-alpine
     restart: always
@@ -59,67 +59,91 @@ services:
   #   ports:
   #     - "8081:8080"
 
-  # config-server:
-  #   build:
-  #     context: ./config-server
-  #   container_name: config-server
-  #   ports:
-  #     - "8888:8888"
-  #   depends_on:
-  #     - cache
-  #     - kafka
-  #     - cassandra
-  #   networks:
-  #     - services
-  
+  config-server:
+    build:
+      context: ./config-server
+    container_name: config-server
+    ports:
+      - "8888:8888"
+    depends_on:
+      - cache
+      - kafka
+      - cassandra
+    networks:
+      - services
+    healthcheck:
+      test: 'curl --fail --silent localhost:8080/actuator/health | jq --exit-status -n ''inputs | if has("status") then .status=="UP" else false end'' > /dev/null || exit 1'
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 
-  # discovery-service:
-  #   build:
-  #     context: ./discovery
-  #   container_name: discovery-service
-  #   ports:
-  #     - "8761:8761"
-  #   depends_on:
-  #     - config-server
-  #   networks:
-  #     - services
-    
+  discovery-service:
+    build:
+      context: ./discovery
+    container_name: discovery-service
+    ports:
+      - "8761:8761"
+    depends_on:
+      - config-server
+    # condition: service_healthy
+    networks:
+      - services
+    healthcheck:
+      test: 'curl --fail --silent localhost:8080/actuator/health | jq --exit-status -n ''inputs | if has("status") then .status=="UP" else false end'' > /dev/null || exit 1'
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 
-  # gateway-service:
-  #   build:
-  #     context: ./gateway
-  #   container_name: gateway-service
+  gateway-service:
+    build:
+      context: ./gateway
+    container_name: gateway-service
+    ports:
+      - "8222:8222"
+    depends_on:
+      - discovery-service
+        # condition: service_healthy
+    networks:
+      - services
 
-  #   ports:
-  #     - "8222:8222"
-  #   depends_on:
-  #     - discovery-service
-  #   networks:
-  #     - services
+  customer-service:
+    build:
+      context: ./customer-service
+    container_name: customer-service
+    ports:
+      - "8090:8090"
+    depends_on:
+      - gateway-service
+        # condition: service_healthy
+      - db-customer
+      - logstash
 
-  # customer-service:
-  #   build:
-  #     context: ./customer-service
-  #   container_name: customer-service
-  #   ports:
-  #     - "8090:8090"
-  #   depends_on:
-  #     - gateway-service
-  #     - db-customer
-  #   networks:
-  #     - services
+    # environment:
+    #   # - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888
+    #   - LOGSTASH_HOST=logstash
+    #   - LOGSTASH_PORT=5044
 
-  # session-service:
-  #   build:
-  #     context: ./session-service
-  #   container_name: session-service
-  #   ports:
-  #     - "8030:8030"
-  #   depends_on:
-  #     - gateway-service
-  #     - cassandra 
-  #   networks:
-  #     - services
+    networks:
+      - services
+      - elastic
+      - prometheus
+
+  session-service:
+    build:
+      context: ./session-service
+    container_name: session-service
+    ports:
+      - "8030:8030"
+    depends_on:
+      - gateway-service
+        # condition: service_healthy
+      - cassandra
+    networks:
+      - services
+      - elastic
+      - prometheus
 
   # product-service:
   #   build:
@@ -129,11 +153,14 @@ services:
   #     - "8070:8070"
   #   depends_on:
   #     - gateway-service
+  #       # condition: service_healthy
   #     - db-product
   #     - redis
   #     - cassandra
   #   networks:
   #     - services
+  #     - elastic
+  #     - prometheus
 
   zookeeper:
     image: docker.io/bitnami/zookeeper:3.9
@@ -170,6 +197,80 @@ services:
       - ./scripts/cassandra_init.sh:/init.sh
     # entrypoint: ["/app-entrypoint.sh"]
     # command: ["/init.sh"]
+  elasticsearch:
+    image: elasticsearch:7.16.1
+    container_name: es
+    environment:
+      discovery.type: single-node
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl --silent --fail localhost:9200/_cluster/health || exit 1",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    networks:
+      - elastic
+  logstash:
+    image: logstash:7.16.1
+    container_name: log
+    environment:
+      discovery.seed_hosts: logstash
+      LS_JAVA_OPTS: "-Xms512m -Xmx512m"
+    volumes:
+      - ./elasticsearch-logstash-kibana/logstash/pipeline/logstash-nginx.config:/usr/share/logstash/pipeline/logstash-nginx.config
+      - ./elasticsearch-logstash-kibana/logstash/nginx.log:/home/nginx.log
+    ports:
+      # - "5001:5001/tcp"
+      # - "5001:5001/udp"
+      - "5044:5044"
+      - "9600:9600"
+    depends_on:
+      - elasticsearch
+    networks:
+      - elastic
+    command: logstash -f /usr/share/logstash/pipeline/logstash-nginx.config
+  kibana:
+    image: kibana:7.16.1
+    container_name: kib
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - elastic
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    ports:
+      - 9090:9090
+    restart: unless-stopped
+    networks:
+      - prometheus
+    volumes:
+      - ./prometheus-grafana/prometheus:/etc/prometheus
+      - prom_data:/prometheus
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=grafana
+    networks:
+      - prometheus
+    volumes:
+      - ./prometheus-grafana/grafana:/etc/grafana/provisioning/datasources
 
 volumes:
   cassandra-data:
@@ -179,9 +280,14 @@ volumes:
     driver: local
   db-customer-data:
     driver: local
+  prom_data:
 
 networks:
   db-product:
   db-customer:
   cache:
   services:
+  elastic:
+    driver: bridge
+  prometheus:
+    driver: bridge
