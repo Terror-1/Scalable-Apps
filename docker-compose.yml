@@ -105,7 +105,7 @@ services:
     ports:
       - "8090:8090"
     depends_on:
-      - discovery-service
+      - gateway-service
       - db-customer
     networks:
       - services
@@ -117,7 +117,7 @@ services:
     ports:
       - "8030:8030"
     depends_on:
-      - customer-service
+      - gateway-service
     networks:
       - services
 
@@ -128,7 +128,7 @@ services:
     ports:
       - "8070:8070"
     depends_on:
-      - session-service
+      - gateway-service
       - db-product
     networks:
       - services
