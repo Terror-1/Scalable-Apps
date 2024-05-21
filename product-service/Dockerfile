@@ -1,43 +1,44 @@
 # syntax=docker/dockerfile:1.4
 
+# Build stage for externalDTOs
+FROM --platform=$BUILDPLATFORM maven:3.9.6-eclipse-temurin-22-alpine AS externalDTOs-builder
+WORKDIR /workdir/externalDTOs
+
+COPY ../externalDTOs/pom.xml .
+RUN mvn dependency:go-offline
+
+COPY ../externalDTOs/src ./src
+RUN mvn install
+
+# Build stage for the main application
 FROM --platform=$BUILDPLATFORM maven:3.9.6-eclipse-temurin-21 AS builder
 WORKDIR /workdir/server
 
-# Build and install externalDTOs
-COPY ../externalDTOs/pom.xml /workdir/externalDTOs/pom.xml
-RUN mvn -f /workdir/externalDTOs/pom.xml dependency:go-offline
-
-COPY ../externalDTOs/src /workdir/externalDTOs/src
-RUN mvn -f /workdir/externalDTOs/pom.xml install
-
-COPY pom.xml /workdir/server/pom.xml
+COPY pom.xml .
 RUN mvn dependency:go-offline
 
-COPY --from=builder /root/.m2 /root/.m2
-COPY src /workdir/server/src
+COPY --from=externalDTOs-builder /root/.m2 /root/.m2
+COPY src ./src
 
 RUN mvn install
 
+# Development environment stage
 FROM builder AS dev-envs
-RUN <<EOF
-apt-get update
-apt-get install -y --no-install-recommends git
-EOF
+RUN apt-get update && apt-get install -y --no-install-recommends git
 
-RUN <<EOF
-useradd -s /bin/bash -m vscode
-groupadd docker
-usermod -aG docker vscode
-EOF
-# install Docker tools (cli, buildx, compose)
+RUN useradd -s /bin/bash -m vscode && groupadd docker && usermod -aG docker vscode
+
+# Install Docker tools (cli, buildx, compose)
 COPY --from=gloursdocker/docker / /
 CMD ["mvn", "spring-boot:run"]
 
-FROM builder as prepare-production
+# Prepare production stage
+FROM builder AS prepare-production
 RUN mkdir -p target/dependency
 WORKDIR /workdir/server/target/dependency
 RUN jar -xf ../*.jar
 
+# Final stage
 FROM eclipse-temurin:21-alpine
 
 EXPOSE 8070
@@ -48,4 +49,4 @@ COPY --from=prepare-production ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=prepare-production ${DEPENDENCY}/BOOT-INF/classes /app
 CMD ["sleep", "infinity"]
 
-ENTRYPOINT ["java","-cp","app:app/lib/*","com.productservice.productservice"]
+ENTRYPOINT ["java","-cp","app:app/lib/*","com.productservice.productservice.ProductserviceApplication"]
