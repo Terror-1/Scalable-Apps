@@ -48,4 +48,4 @@ COPY --from=prepare-production ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=prepare-production ${DEPENDENCY}/BOOT-INF/classes /app
 CMD ["sleep", "infinity"]
 
-ENTRYPOINT ["java","-cp","app:app/lib/*","com.company.project.Application"]
+ENTRYPOINT ["java","-cp","app:app/lib/*","com.productservice.productservice"]

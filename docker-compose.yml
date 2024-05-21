@@ -63,76 +63,81 @@ services:
     build:
       context: ./config-server
     container_name: config-server
-    volumes:
-      - maven-repo:/root/.m2
     ports:
       - "8888:8888"
     depends_on:
       - cache
       - kafka
       - cassandra
+    networks:
+      - services
+    # healthcheck:
+    #   test:
+    #     ["CMD-SHELL", "curl -f http://localhost:8888/customer-service/default || exit 1"]
+    #   interval: 6s
+    #   timeout: 2s
+    #   retries: 3
 
-    
   discovery-service:
     build:
       context: ./discovery
     container_name: discovery-service
-    volumes:
-      - maven-repo:/root/.m2
+
     ports:
       - "8761:8761"
     depends_on:
-      config-server
+      - config-server
+    networks:
+      - services
 
   gateway-service:
     build:
       context: ./gateway
     container_name: gateway-service
-    volumes:
-      - maven-repo:/root/.m2
+
     ports:
       - "8222:8222"
     depends_on:
       - discovery-service
-        
+      - config-server
+    networks:
+      - services
+
   customer-service:
     build:
       context: ./customer-service
     container_name: customer-service
-    volumes:
-      - maven-repo:/root/.m2
     ports:
       - "8090:8090"
     depends_on:
       - discovery-service
       - db-customer
-    
+      - config-server
+    networks:
+      - services
 
   session-service:
     build:
       context: ./session-service
     container_name: session-service
-    volumes:
-      - maven-repo:/root/.m2
     ports:
       - "8030:8030"
     depends_on:
       - customer-service
-      
+    networks:
+      - services
 
   product-service:
     build:
       context: ./product-service
     container_name: product-service
-    volumes:
-      - maven-repo:/root/.m2
     ports:
       - "8070:8070"
     depends_on:
       - session-service
       - db-product
-
-
+    networks:
+      - services
 
   zookeeper:
     image: docker.io/bitnami/zookeeper:3.9
@@ -167,8 +172,8 @@ services:
     volumes:
       - cassandra-data:/var/lib/cassandra
       - ./scripts/cassandra_init.sh:/init.sh
-    entrypoint: ["/app-entrypoint.sh"]
-    command: ["/init.sh"]
+    # entrypoint: ["/app-entrypoint.sh"]
+    # command: ["/init.sh"]
 
 volumes:
   cassandra-data:
@@ -183,3 +188,4 @@ networks:
   db-product:
   db-customer:
   cache:
+  services:
