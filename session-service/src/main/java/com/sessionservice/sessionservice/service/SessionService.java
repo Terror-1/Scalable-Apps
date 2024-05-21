@@ -1,9 +1,9 @@
 package com.sessionservice.sessionservice.service;
 
 
-import com.customerservice.customerservice.dto.CustomerSessionDto;
 import com.externalDTOs.externalDTOs.dtos.AddToCartMessage;
 import com.externalDTOs.externalDTOs.dtos.UserID;
+import com.externalDTOs.externalDTOs.dtos.CustomerSessionDto;
 import com.sessionservice.sessionservice.dto.CartObject;
 import com.sessionservice.sessionservice.entity.CartItem;
 import com.sessionservice.sessionservice.entity.CartItemKey;

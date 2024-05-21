@@ -126,11 +126,10 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.session-service</groupId>
-            <artifactId>session-service</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
+        <groupId>com.stripe</groupId>
+        <artifactId>stripe-java</artifactId>
+        <version>20.82.0</version>
+    </dependency>
         <dependency>
             <groupId>com.externalDTOs</groupId>
             <artifactId>externalDTOs</artifactId>

@@ -4,20 +4,20 @@
 FROM --platform=$BUILDPLATFORM maven:3.9.6-eclipse-temurin-22-alpine AS externalDTOs-builder
 WORKDIR /workdir/externalDTOs
 
-COPY ../externalDTOs/pom.xml .
+COPY ./externalDTOs/pom.xml .
 RUN mvn dependency:go-offline
 
-COPY ../externalDTOs/src ./src
+COPY ./externalDTOs/src ./src
 RUN mvn install
 
 # Build stage for the main application
 FROM --platform=$BUILDPLATFORM maven:3.9.6-eclipse-temurin-21 AS builder
 WORKDIR /workdir/server
+COPY --from=externalDTOs-builder /root/.m2 /root/.m2
 
 COPY pom.xml .
 RUN mvn dependency:go-offline
 
-COPY --from=externalDTOs-builder /root/.m2 /root/.m2
 COPY src ./src
 
 RUN mvn install

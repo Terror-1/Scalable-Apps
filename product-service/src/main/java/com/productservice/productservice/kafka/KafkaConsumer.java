@@ -1,7 +1,7 @@
 package com.productservice.productservice.kafka;
 
 import com.productservice.productservice.service.ProductService;
-import com.sessionservice.sessionservice.dto.CartObject;
+import com.externalDTOs.externalDTOs.dtos.CartObject;
 import com.stripe.exception.StripeException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

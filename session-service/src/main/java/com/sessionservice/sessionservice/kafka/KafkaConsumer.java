@@ -1,6 +1,6 @@
 package com.sessionservice.sessionservice.kafka;
 
-import com.customerservice.customerservice.dto.CustomerSessionDto;
+import com.externalDTOs.externalDTOs.dtos.CustomerSessionDto;
 import com.externalDTOs.externalDTOs.dtos.AddToCartMessage;
 import com.externalDTOs.externalDTOs.dtos.UserID;
 import com.sessionservice.sessionservice.service.SessionService;
