@@ -49,42 +49,90 @@ services:
       - POSTGRES_DB=product
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-    # expose:
-    #   - 5432 # Expose this port internally for docker containers on the same network
 
-  #  db-customer:
-  #    container_name: postgres_customer_db_container
-  #    image: postgres:latest
-  #    restart: always
-  #    environment:
-  #      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/customer
-  #      POSTGRES_USER: admin
-  #      POSTGRES_PASSWORD: admin
-  #      POSTGRES_DB: customer
-  #    ports:
-  #      - "5432:5432"
-  #
-  #  db-product:
-  #    container_name: postgres_product_db_container
-  #    image: postgres:latest
-  #    restart: always
-  #    environment:
-  #      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5431/product
-  #      POSTGRES_USER: admin
-  #      POSTGRES_PASSWORD: admin
-  #      POSTGRES_DB: product
-  #  ports:
-  #    - "5431:5431"
-  #
-  #  pgadmin:
-  #    container_name: pgadmin_container
-  #    image: dpage/pgadmin4
-  #    restart: always
-  #    environment:
-  #      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-  #      PGADMIN_DEFAULT_PASSWORD: root
-  #    ports:
-  #      - "5050:80"
+  # externalDTOs-service:
+  #   build:
+  #     context: ./externalDTOs
+  #   container_name: externalDTOs
+  #   volumes:
+  #     - maven-repo:/root/.m2
+  #   ports:
+  #     - "8081:8080"
+
+  config-server:
+    build:
+      context: ./config-server
+    container_name: config-server
+    volumes:
+      - maven-repo:/root/.m2
+    ports:
+      - "8888:8888"
+    depends_on:
+      - cache
+      - kafka
+      - cassandra
+
+    
+  discovery-service:
+    build:
+      context: ./discovery
+    container_name: discovery-service
+    volumes:
+      - maven-repo:/root/.m2
+    ports:
+      - "8761:8761"
+    depends_on:
+      config-server
+
+  gateway-service:
+    build:
+      context: ./gateway
+    container_name: gateway-service
+    volumes:
+      - maven-repo:/root/.m2
+    ports:
+      - "8222:8222"
+    depends_on:
+      - discovery-service
+        
+  customer-service:
+    build:
+      context: ./customer-service
+    container_name: customer-service
+    volumes:
+      - maven-repo:/root/.m2
+    ports:
+      - "8090:8090"
+    depends_on:
+      - discovery-service
+      - db-customer
+    
+
+  session-service:
+    build:
+      context: ./session-service
+    container_name: session-service
+    volumes:
+      - maven-repo:/root/.m2
+    ports:
+      - "8030:8030"
+    depends_on:
+      - customer-service
+      
+
+  product-service:
+    build:
+      context: ./product-service
+    container_name: product-service
+    volumes:
+      - maven-repo:/root/.m2
+    ports:
+      - "8070:8070"
+    depends_on:
+      - session-service
+      - db-product
+
+
 
   zookeeper:
     image: docker.io/bitnami/zookeeper:3.9
@@ -118,13 +166,9 @@ services:
       CASSANDRA_PASSWORD: "admin"
     volumes:
       - cassandra-data:/var/lib/cassandra
-#      - ./init.cql:/docker-entrypoint-initdb.d/init.cql
-#    entrypoint:
-#      [
-#        "/bin/bash",
-#        "-c",
-#        "cassandra -R & cqlsh -f /docker-entrypoint-initdb.d/init.cql && tail -f /dev/null",
-#      ]
+      - ./scripts/cassandra_init.sh:/init.sh
+    entrypoint: ["/app-entrypoint.sh"]
+    command: ["/init.sh"]
 
 volumes:
   cassandra-data:
