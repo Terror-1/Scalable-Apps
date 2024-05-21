@@ -59,79 +59,81 @@ services:
   #   ports:
   #     - "8081:8080"
 
-  config-server:
-    build:
-      context: ./config-server
-    container_name: config-server
-    ports:
-      - "8888:8888"
-    depends_on:
-      - cache
-      - kafka
-      - cassandra
-    networks:
-      - services
+  # config-server:
+  #   build:
+  #     context: ./config-server
+  #   container_name: config-server
+  #   ports:
+  #     - "8888:8888"
+  #   depends_on:
+  #     - cache
+  #     - kafka
+  #     - cassandra
+  #   networks:
+  #     - services
   
 
-  discovery-service:
-    build:
-      context: ./discovery
-    container_name: discovery-service
-    ports:
-      - "8761:8761"
-    depends_on:
-      - config-server
-    networks:
-      - services
+  # discovery-service:
+  #   build:
+  #     context: ./discovery
+  #   container_name: discovery-service
+  #   ports:
+  #     - "8761:8761"
+  #   depends_on:
+  #     - config-server
+  #   networks:
+  #     - services
     
 
-  gateway-service:
-    build:
-      context: ./gateway
-    container_name: gateway-service
+  # gateway-service:
+  #   build:
+  #     context: ./gateway
+  #   container_name: gateway-service
 
-    ports:
-      - "8222:8222"
-    depends_on:
-      - discovery-service
-      - config-server
-    networks:
-      - services
+  #   ports:
+  #     - "8222:8222"
+  #   depends_on:
+  #     - discovery-service
+  #   networks:
+  #     - services
 
-  customer-service:
-    build:
-      context: ./customer-service
-    container_name: customer-service
-    ports:
-      - "8090:8090"
-    depends_on:
-      - gateway-service
-      - db-customer
-    networks:
-      - services
+  # customer-service:
+  #   build:
+  #     context: ./customer-service
+  #   container_name: customer-service
+  #   ports:
+  #     - "8090:8090"
+  #   depends_on:
+  #     - gateway-service
+  #     - db-customer
+  #   networks:
+  #     - services
 
-  session-service:
-    build:
-      context: ./session-service
-    container_name: session-service
-    ports:
-      - "8030:8030"
-    depends_on:
-      - gateway-service
-    networks:
-      - services
+  # session-service:
+  #   build:
+  #     context: ./session-service
+  #   container_name: session-service
+  #   ports:
+  #     - "8030:8030"
+  #   depends_on:
+  #     - gateway-service
+  #     - cassandra 
+  #   networks:
+  #     - services
 
-  product-service:
-    build:
-      context: ./product-service
-    container_name: product-service
-    ports:
-      - "8070:8070"
-    depends_on:
-      - gateway-service
-      - db-product
-    networks:
-      - services
+  # product-service:
+  #   build:
+  #     context: ./product-service
+  #   container_name: product-service
+  #   ports:
+  #     - "8070:8070"
+  #   depends_on:
+  #     - gateway-service
+  #     - db-product
+  #     - redis
+  #     - cassandra
+  #   networks:
+  #     - services
 
   zookeeper:
     image: docker.io/bitnami/zookeeper:3.9
