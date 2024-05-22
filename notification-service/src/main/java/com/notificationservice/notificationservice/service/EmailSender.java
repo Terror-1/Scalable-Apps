@@ -29,6 +29,9 @@ public class EmailSender {
         sendEmail(toEmail, "Payment", "Your payment has been processed successfully");
     }
 
+    public void review(String toEmail) {
+        sendEmail(toEmail, "Review", "Your review has been submitted successfully");
+    }
     public void shipment(String toEmail) {
         sendEmail(toEmail, "Shipment", "Your order has been shipped successfully");
     }

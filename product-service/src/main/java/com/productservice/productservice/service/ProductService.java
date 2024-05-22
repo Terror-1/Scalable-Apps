@@ -291,6 +291,11 @@ public class ProductService {
                 ,productReviewDto.getRating()
                 , productReviewDto.getReview()
         );
+        UserID userIdMessage = UserID.builder()
+                .userId(userId)
+                .email(customer.getEmail())
+                .build();
+        kafkaProducer.reviewNotification(userIdMessage);
         return new ResponseEntity<>("Your review was added successfully, Thank you !", HttpStatus.CREATED);
     }
 

@@ -46,6 +46,11 @@ spring:
         key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
         value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
 
+      reviewNotification:
+        group-id: emptyCart
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
       addToCart:
         group-id: addToCart
         key-deserializer: org.apache.kafka.common.serialization.StringDeserializer

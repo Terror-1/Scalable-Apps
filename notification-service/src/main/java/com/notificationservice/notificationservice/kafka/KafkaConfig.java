@@ -20,6 +20,12 @@ public class KafkaConfig {
                 .name("register")
                 .build();
     }
+    @Bean
+    public NewTopic reviewNotification() {
+        return TopicBuilder
+                .name("reviewNotification")
+                .build();
+    }
 
 
 }

@@ -34,4 +34,12 @@ public class KafkaProducer {
         kafkaTemplate2.send(message);
         log.info(format("sending message to kafka template to empty cart after successfull purchase :: %s", message));
     }
+    public void reviewNotification(UserID msg) {
+        Message<UserID> message = MessageBuilder
+                .withPayload(msg)
+                .setHeader(KafkaHeaders.TOPIC, "reviewNotification")
+                .build();
+        kafkaTemplate2.send(message);
+        log.info(format("sending message to kafka template to send email for review notification :: %s", message));
+    }
 }

@@ -28,4 +28,11 @@ public class KafkaConfig {
                 .build();
     }
 
+    @Bean
+    public NewTopic reviewNotification() {
+        return TopicBuilder
+                .name("reviewNotification")
+                .build();
+    }
+
 }

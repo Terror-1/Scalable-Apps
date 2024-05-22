@@ -34,4 +34,10 @@ public class KafkaConsumer {
         EmailSender.payment(msg.getEmail());
     }
 
+    @KafkaListener(topics = "reviewNotification", groupId = "reviewNotification")
+    public void reviewNotification(UserID msg) {
+        log.info(format("Consumed the message to notify the user:: %s", msg.toString()));
+        EmailSender.review(msg.getEmail());
+    }
+
 }
