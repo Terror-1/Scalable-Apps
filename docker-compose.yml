@@ -59,24 +59,24 @@ services:
   #   ports:
   #     - "8081:8080"
 
-  config-server:
-    build:
-      context: ./config-server
-    container_name: config-server
-    ports:
-      - "8888:8888"
-    depends_on:
-      - cache
-      - kafka
-      - cassandra
-    networks:
-      - services
-    healthcheck:
-      test: 'curl --fail --silent localhost:8080/actuator/health | jq --exit-status -n ''inputs | if has("status") then .status=="UP" else false end'' > /dev/null || exit 1'
-      interval: 20s
-      timeout: 5s
-      retries: 3
-      start_period: 15s
+  # config-server:
+  #   build:
+  #     context: ./config-server
+  #   container_name: config-server
+  #   ports:
+  #     - "8888:8888"
+  #   depends_on:
+  #     - cache
+  #     - kafka
+  #     - cassandra
+  #   networks:
+  #     - services
+  #   healthcheck:
+  #     test: 'curl --fail --silent localhost:8080/actuator/health | jq --exit-status -n ''inputs | if has("status") then .status=="UP" else false end'' > /dev/null || exit 1'
+  #     interval: 20s
+  #     timeout: 5s
+  #     retries: 3
+  #     start_period: 15s
 
   discovery-service:
     build:
@@ -84,8 +84,8 @@ services:
     container_name: discovery-service
     ports:
       - "8761:8761"
-    depends_on:
-      - config-server
+    # depends_on:
+    #   - config-server
     # condition: service_healthy
     networks:
       - services
@@ -145,22 +145,22 @@ services:
       - elastic
       - prometheus
 
-  # product-service:
-  #   build:
-  #     context: ./product-service
-  #   container_name: product-service
-  #   ports:
-  #     - "8070:8070"
-  #   depends_on:
-  #     - gateway-service
-  #       # condition: service_healthy
-  #     - db-product
-  #     - redis
-  #     - cassandra
-  #   networks:
-  #     - services
-  #     - elastic
-  #     - prometheus
+  product-service:
+    build:
+      context: ./product-service
+    container_name: product-service
+    ports:
+      - "8070:8070"
+    depends_on:
+      - gateway-service
+        # condition: service_healthy
+      - db-product
+      - cache
+      - cassandra
+    networks:
+      - services
+      - elastic
+      - prometheus
 
   zookeeper:
     image: docker.io/bitnami/zookeeper:3.9
