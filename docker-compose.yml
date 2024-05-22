@@ -50,14 +50,6 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
 
-  # externalDTOs-service:
-  #   build:
-  #     context: ./externalDTOs
-  #   container_name: externalDTOs
-  #   volumes:
-  #     - maven-repo:/root/.m2
-  #   ports:
-  #     - "8081:8080"
 
   config-server:
     build:
@@ -109,29 +101,29 @@ services:
       - db-customer
     networks:
       - services
-
-  session-service:
-    build:
-      context: ./session-service
-    container_name: session-service
-    ports:
-      - "8030:8030"
-    depends_on:
-      - customer-service
-    networks:
-      - services
-
-  product-service:
-    build:
-      context: ./product-service
-    container_name: product-service
-    ports:
-      - "8070:8070"
-    depends_on:
-      - session-service
-      - db-product
-    networks:
-      - services
+#
+#  session-service:
+#    build:
+#      context: ./session-service
+#    container_name: session-service
+#    ports:
+#      - "8030:8030"
+#    depends_on:
+#      - customer-service
+#    networks:
+#      - services
+#
+#  product-service:
+#    build:
+#      context: ./product-service
+#    container_name: product-service
+#    ports:
+#      - "8070:8070"
+#    depends_on:
+#      - session-service
+#      - db-product
+#    networks:
+#      - services
 
   zookeeper:
     image: docker.io/bitnami/zookeeper:3.9

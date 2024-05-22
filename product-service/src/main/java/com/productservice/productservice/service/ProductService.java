@@ -289,7 +289,7 @@ public class ProductService {
                 , customer.getName()
                 ,productReviewDto.getRating()
                 , productReviewDto.getReview()
-                );
+        );
         return new ResponseEntity<>("Your review was added successfully, Thank you !", HttpStatus.CREATED);
     }
 
@@ -303,7 +303,7 @@ public class ProductService {
         Review review = reviewRepository.findByUserIdAndProductId(userId, productId);
         reviewRepository.deleteByUserIdAndProductId(userId, productId);
         if (review == null)
-                return new ResponseEntity<>("There is no such review for that user on that product", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("There is no such review for that user on that product", HttpStatus.BAD_REQUEST);
         reviewRepository.deleteByUserIdAndProductId(userId, productId);
         return new ResponseEntity<>("Review deleted successfully !", HttpStatus.OK);
     }
