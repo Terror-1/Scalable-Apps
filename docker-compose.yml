@@ -51,79 +51,79 @@ services:
       - POSTGRES_PASSWORD=postgres
 
 
-  config-server:
-    build:
-      context: ./config-server
-    container_name: config-server
-    ports:
-      - "8888:8888"
-    depends_on:
-      - cache
-      - kafka
-      - cassandra
-    networks:
-      - services
-  
-
-  discovery-service:
-    build:
-      context: ./discovery
-    container_name: discovery-service
-    ports:
-      - "8761:8761"
-    depends_on:
-      - config-server
-    networks:
-      - services
-    
-
-  gateway-service:
-    build:
-      context: ./gateway
-    container_name: gateway-service
-
-    ports:
-      - "8222:8222"
-    depends_on:
-      - discovery-service
-      - config-server
-    networks:
-      - services
-
-  customer-service:
-    build:
-      context: ./customer-service
-    container_name: customer-service
-    ports:
-      - "8090:8090"
-    depends_on:
-      - discovery-service
-      - db-customer
-    networks:
-      - services
-#
-#  session-service:
+#  config-server:
 #    build:
-#      context: ./session-service
-#    container_name: session-service
+#      context: ./config-server
+#    container_name: config-server
 #    ports:
-#      - "8030:8030"
+#      - "8888:8888"
 #    depends_on:
-#      - customer-service
+#      - cache
+#      - kafka
+#      - cassandra
 #    networks:
 #      - services
 #
-#  product-service:
+#
+#  discovery-service:
 #    build:
-#      context: ./product-service
-#    container_name: product-service
+#      context: ./discovery
+#    container_name: discovery-service
 #    ports:
-#      - "8070:8070"
+#      - "8761:8761"
 #    depends_on:
-#      - session-service
-#      - db-product
+#      - config-server
 #    networks:
 #      - services
+#
+#
+#  gateway-service:
+#    build:
+#      context: ./gateway
+#    container_name: gateway-service
+#
+#    ports:
+#      - "8222:8222"
+#    depends_on:
+#      - discovery-service
+#      - config-server
+#    networks:
+#      - services
+#
+#  customer-service:
+#    build:
+#      context: ./customer-service
+#    container_name: customer-service
+#    ports:
+#      - "8090:8090"
+#    depends_on:
+#      - discovery-service
+#      - db-customer
+#    networks:
+#      - services
+  #
+  #  session-service:
+  #    build:
+  #      context: ./session-service
+  #    container_name: session-service
+  #    ports:
+  #      - "8030:8030"
+  #    depends_on:
+  #      - customer-service
+  #    networks:
+  #      - services
+  #
+  #  product-service:
+  #    build:
+  #      context: ./product-service
+  #    container_name: product-service
+  #    ports:
+  #      - "8070:8070"
+  #    depends_on:
+  #      - session-service
+  #      - db-product
+  #    networks:
+  #      - services
 
   zookeeper:
     image: docker.io/bitnami/zookeeper:3.9

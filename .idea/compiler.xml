@@ -15,6 +15,7 @@
         <module name="myCustomer-service" />
         <module name="gateway" />
         <module name="session-service" />
+        <module name="notification-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -35,6 +36,7 @@
       <module name="gateway" options="-parameters" />
       <module name="inventory-service" options="-parameters" />
       <module name="myCustomer-service" options="-parameters" />
+      <module name="notification-service" options="-parameters" />
       <module name="order-service" options="-parameters" />
       <module name="product-service" options="-parameters" />
       <module name="session-service" options="-parameters" />

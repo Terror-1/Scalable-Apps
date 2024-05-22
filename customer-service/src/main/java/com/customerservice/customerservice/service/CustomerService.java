@@ -122,6 +122,12 @@ public class CustomerService {
         Customer stripeCustomer = Customer.create(customerParam);
         customerDetails.setStripeId(stripeCustomer.getId());
         customerRepository.save(customerDetails);
+        String name =customerDetails.getFirstName() + " " + customerDetails.getLastName();
+        CustomerSessionDto customerSessionDto = CustomerSessionDto.builder()
+                .stripeId(stripeSecretKey)
+                .name(name)
+                .build();
+        kafkaProducer.sendRegisterMail(customerSessionDto);
         return  customerDetails;
     }
 

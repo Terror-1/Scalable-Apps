@@ -1,4 +1,4 @@
-package com.customerservice.customerservice.kafka;
+package com.notificationservice.notificationservice.kafka;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.context.annotation.Bean;
@@ -7,13 +7,6 @@ import org.springframework.kafka.config.TopicBuilder;
 
 @Configuration
 public class KafkaConfig {
-
-    @Bean
-    public NewTopic register() {
-        return TopicBuilder
-                .name("register")
-                .build();
-    }
     @Bean
     public NewTopic login() {
         return TopicBuilder
@@ -22,11 +15,12 @@ public class KafkaConfig {
     }
 
     @Bean
-    public NewTopic logout() {
+    public NewTopic register() {
         return TopicBuilder
-                .name("logout")
+                .name("register")
                 .build();
     }
+
 
 }
 

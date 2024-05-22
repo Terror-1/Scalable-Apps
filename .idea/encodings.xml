@@ -10,6 +10,8 @@
     <file url="file://$PROJECT_DIR$/gatling-testing/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/gatling-testing/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/inventory-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/notification-service/notification-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/notification-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/order-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/product-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/session-service/src/main/java" charset="UTF-8" />

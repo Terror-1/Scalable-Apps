@@ -16,6 +16,8 @@
         <option value="$PROJECT_DIR$/externalDTOs/pom.xml" />
         <option value="$PROJECT_DIR$/demo/demo/pom.xml" />
         <option value="$PROJECT_DIR$/gatling-testing/pom.xml" />
+        <option value="$PROJECT_DIR$/notification-service/notification-service/pom.xml" />
+        <option value="$PROJECT_DIR$/notification-service/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

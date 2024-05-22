@@ -33,4 +33,13 @@ public class KafkaProducer {
         kafkaTemplate.send(message);
         log.info(format("sending userId info to kafka template to destroy the session:: %s", message));
     }
+
+    public void sendRegisterMail(CustomerSessionDto msg) {
+        Message<CustomerSessionDto> message = MessageBuilder
+                .withPayload(msg)
+                .setHeader(KafkaHeaders.TOPIC, "register")
+                .build();
+        kafkaTemplate.send(message);
+        log.info(format("sending register info to kafka template to send Email:: %s", message));
+    }
 }

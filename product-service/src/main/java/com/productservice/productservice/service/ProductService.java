@@ -266,6 +266,7 @@ public class ProductService {
             PaymentIntent paymentIntent = PaymentIntent.create(paymentIntentParams);
             UserID userIdMessage = UserID.builder()
                     .userId(msg.getUserId())
+                    .email(customer.getEmail())
                     .build();
             kafkaProducer.emptyCart(userIdMessage);
             System.out.println("Order created Successfully: " + paymentIntent.getId());
