@@ -1,5 +1,36 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery:8761/eureka
+
+server:
+  port: 8090
+
 spring:
   application:
     name: customer-service
-  config:
-    import: optional:configserver:http://localhost:8888
+
+  datasource:
+    url: jdbc:postgresql://db-customer:5432/customer
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format-sql: true
+    database: postgresql
+
+  kafka:
+    producer:
+      bootstrap-servers: kafka:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+stripe:
+  secret:
+    key: sk_test_51P9U3gRqvM61FDTxZlRrikPCKSEpqVCwWnONVdlh5GtNOUDRvhRIQD9OpJRQuT5mLFvrnDgCPZ1CSZHy0yYUmBQU00AD4KcbO5

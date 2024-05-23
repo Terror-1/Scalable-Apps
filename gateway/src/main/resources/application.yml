@@ -1,5 +1,32 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery:8761/eureka
+
+
+server:
+  port: 8222
+
+
 spring:
   application:
     name: gateway
-  config:
-    import: optional:configserver:http://localhost:8888
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      mvc:
+        routes:
+          - id: PRODUCT-SERVICE
+            uri: http://product-service:8070
+            predicates:
+              - Path=/api/products/**
+          - id: SESSION-SERVICE
+            uri: http://session-service:8030
+            predicates:
+              - Path=/api/session/**
+          - id: CUSTOMER-SERVICE
+            uri: http://customer:8090
+            predicates:
+              - Path=/api/customers/**
