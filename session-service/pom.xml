@@ -61,17 +61,16 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-        <dependency>
-            <groupId>com.myCustomer-service</groupId>
-            <artifactId>myCustomer-service</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
 		<dependency>
-			<groupId>com.externalDTOs</groupId>
-			<artifactId>externalDTOs</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<groupId>com.stripe</groupId>
+			<artifactId>stripe-java</artifactId>
+			<version>25.4.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version>
 			<scope>compile</scope>
 		</dependency>
 
