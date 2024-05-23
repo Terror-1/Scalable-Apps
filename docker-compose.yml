@@ -18,17 +18,17 @@ services:
     volumes:
       - cache:/data
     networks:
-      - cache
+      - services
   db-customer:
     image: postgres
     ports:
-      - "5434:5432"
+      - "5432:5432"
     restart: always
     volumes:
       - db-customer-data:/var/lib/postgresql/data
       # - ./init.sql:/docker-entrypoint-initdb.d/init.sql # This will run the init.sql script on the first run
     networks:
-      - db-customer
+      - services
     environment:
       - POSTGRES_DB=customer
       - POSTGRES_USER=postgres
@@ -44,7 +44,7 @@ services:
       - db-product-data:/var/lib/postgresql/data # Persist the data
       # - ./init.sql:/docker-entrypoint-initdb.d/init.sql # This will run the init.sql script on the first run
     networks:
-      - db-product
+      - services
     environment:
       - POSTGRES_DB=product
       - POSTGRES_USER=postgres
@@ -78,10 +78,10 @@ services:
   #     retries: 3
   #     start_period: 15s
 
-  discovery-service:
+  discovery:
     build:
       context: ./discovery
-    container_name: discovery-service
+    container_name: discovery
     ports:
       - "8761:8761"
     # depends_on:
@@ -89,33 +89,33 @@ services:
     # condition: service_healthy
     networks:
       - services
-    healthcheck:
-      test: 'curl --fail --silent localhost:8080/actuator/health | jq --exit-status -n ''inputs | if has("status") then .status=="UP" else false end'' > /dev/null || exit 1'
-      interval: 20s
-      timeout: 5s
-      retries: 3
-      start_period: 15s
+    # healthcheck:
+    #   test: 'curl --fail --silent localhost:8080/actuator/health | jq --exit-status -n ''inputs | if has("status") then .status=="UP" else false end'' > /dev/null || exit 1'
+    #   interval: 20s
+    #   timeout: 5s
+    #   retries: 3
+    #   start_period: 15s
 
-  gateway-service:
+  gateway:
     build:
       context: ./gateway
-    container_name: gateway-service
+    container_name: gateway
     ports:
       - "8222:8222"
     depends_on:
-      - discovery-service
+      - discovery
         # condition: service_healthy
     networks:
       - services
 
-  customer-service:
+  customer:
     build:
       context: ./customer-service
-    container_name: customer-service
+    container_name: customer
     ports:
       - "8090:8090"
     depends_on:
-      - gateway-service
+      - gateway
         # condition: service_healthy
       - db-customer
       - logstash
@@ -127,40 +127,38 @@ services:
 
     networks:
       - services
-      - elastic
-      - prometheus
 
-  session-service:
-    build:
-      context: ./session-service
-    container_name: session-service
-    ports:
-      - "8030:8030"
-    depends_on:
-      - gateway-service
-        # condition: service_healthy
-      - cassandra
-    networks:
-      - services
-      - elastic
-      - prometheus
+  # session-service:
+  #   build:
+  #     context: ./session-service
+  #   container_name: session-service
+  #   ports:
+  #     - "8030:8030"
+  #   depends_on:
+  #     - gateway-service
+  #       # condition: service_healthy
+  #     - cassandra
+  #   networks:
+  #     - services
+  #     - elastic
+  #     - prometheus
 
-  product-service:
-    build:
-      context: ./product-service
-    container_name: product-service
-    ports:
-      - "8070:8070"
-    depends_on:
-      - gateway-service
-        # condition: service_healthy
-      - db-product
-      - cache
-      - cassandra
-    networks:
-      - services
-      - elastic
-      - prometheus
+  # product-service:
+  #   build:
+  #     context: ./product-service
+  #   container_name: product-service
+  #   ports:
+  #     - "8070:8070"
+  #   depends_on:
+  #     - gateway-service
+  #       # condition: service_healthy
+  #     - db-product
+  #     - cache
+  #     - cassandra
+  #   networks:
+  #     - services
+  #     - elastic
+  #     - prometheus
 
   zookeeper:
     image: docker.io/bitnami/zookeeper:3.9
@@ -169,6 +167,8 @@ services:
       - "2181:2181"
     environment:
       ALLOW_ANONYMOUS_LOGIN: "yes"
+    networks:
+      - services
 
   kafka:
     image: docker.io/bitnami/kafka:3.4
@@ -183,6 +183,8 @@ services:
       ALLOW_PLAINTEXT_LISTENER: "yes"
     depends_on:
       - zookeeper
+    networks:
+      - services
 
   cassandra:
     image: cassandra:latest
@@ -195,6 +197,8 @@ services:
     volumes:
       - cassandra-data:/var/lib/cassandra
       - ./scripts/cassandra_init.sh:/init.sh
+    networks:
+      - services
     # entrypoint: ["/app-entrypoint.sh"]
     # command: ["/init.sh"]
   elasticsearch:
@@ -216,7 +220,7 @@ services:
       timeout: 10s
       retries: 3
     networks:
-      - elastic
+      - services
   logstash:
     image: logstash:7.16.1
     container_name: log
@@ -234,7 +238,7 @@ services:
     depends_on:
       - elasticsearch
     networks:
-      - elastic
+      - services
     command: logstash -f /usr/share/logstash/pipeline/logstash-nginx.config
   kibana:
     image: kibana:7.16.1
@@ -244,7 +248,7 @@ services:
     depends_on:
       - elasticsearch
     networks:
-      - elastic
+      - services
   prometheus:
     image: prom/prometheus
     container_name: prometheus
@@ -254,7 +258,7 @@ services:
       - 9090:9090
     restart: unless-stopped
     networks:
-      - prometheus
+      - services
     volumes:
       - ./prometheus-grafana/prometheus:/etc/prometheus
       - prom_data:/prometheus
@@ -268,7 +272,7 @@ services:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=grafana
     networks:
-      - prometheus
+      - services
     volumes:
       - ./prometheus-grafana/grafana:/etc/grafana/provisioning/datasources
 
@@ -283,11 +287,12 @@ volumes:
   prom_data:
 
 networks:
-  db-product:
-  db-customer:
-  cache:
   services:
-  elastic:
-    driver: bridge
-  prometheus:
-    driver: bridge
+  # db-product:
+  # db-customer:
+  # cache:
+  # services:
+  # elastic:
+  #   driver: bridge
+  # prometheus:
+  #   driver: bridge

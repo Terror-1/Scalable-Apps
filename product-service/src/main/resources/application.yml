@@ -1,5 +1,103 @@
+# spring:
+#   application:
+#     name: product-service
+#   config:
+#     import: optional:configserver:http://localhost:8888
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+server:
+  port: 8070
+
 spring:
   application:
     name: product-service
-  config:
-    import: optional:configserver:http://localhost:8888
+  datasource:
+    url: jdbc:postgresql://localhost:5433/product
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format-sql: true
+    database: postgresql
+
+  redis:
+    port: 6379
+    host: localhost
+  main:
+    allow-bean-definition-overriding: true
+
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: "*"
+
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+      emptyCart:
+        group-id: emptyCart
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+      addToCart:
+        group-id: addToCart
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+      checkCart:
+        group-id: checkCart
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+  cassandra:
+    keyspace-name: store
+    local-datacenter: datacenter1
+  data:
+    cassandra:
+      schema-action: CREATE_IF_NOT_EXISTS
+    elasticsearch:
+      cluster-name: elasticsearch
+      cluster-nodes: localhost:9200
+      repositories:
+        enabled: true
+
+stripe:
+  secret:
+    key: sk_test_51P9U3gRqvM61FDTxZlRrikPCKSEpqVCwWnONVdlh5GtNOUDRvhRIQD9OpJRQuT5mLFvrnDgCPZ1CSZHy0yYUmBQU00AD4KcbO5
+
+# Logging level
+logging:
+  level:
+    root: INFO
+
+# Logstash appender
+logstash:
+  destination: localhost:5044
+
+#  Actuator endpoints exposure
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    metrics:
+      enabled: true
