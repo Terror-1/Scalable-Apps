@@ -8,7 +8,7 @@ services:
   #   ports:
   #     - "9200:9200"
   #     - "9300:9300"
-  cache:
+  redis:
     image: redis:6.2-alpine
     restart: always
     ports:
@@ -36,9 +36,12 @@ services:
     # expose:
     #   - 5432 # Expose this port internally for docker containers on the same network
   db-product:
+    container_name: dp-product
     image: postgres
     ports:
-      - "5433:5432"
+      - "5433:5433"
+    expose:
+      - "5433"
     restart: always
     volumes:
       - db-product-data:/var/lib/postgresql/data # Persist the data
@@ -103,37 +106,65 @@ services:
     networks:
       - services
 
-  # session-service:
-  #   build:
-  #     context: ./session-service
-  #   container_name: session-service
-  #   ports:
-  #     - "8030:8030"
-  #   depends_on:
-  #     - gateway-service
-  #       # condition: service_healthy
-  #     - cassandra
-  #   networks:
-  #     - services
-  #     - elastic
-  #     - prometheus
+  session-service:
+   build:
+     context: ./session-service
+   container_name: session-service
+   ports:
+     - "8030:8030"
+   environment:
+     - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+     - SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS=kafka:9092
+     - SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS=kafka:9092
+     - REDIS_HOST=redis
+     - SPRING_CASSANDRA_HOST=cassandra
+     - SPRING_CASSANDRA_CONTACT_POINTS=cassandra
+   depends_on:
+     - gateway
+     - cassandra
+   networks:
+     - services
 
-  # product-service:
-  #   build:
-  #     context: ./product-service
-  #   container_name: product-service
-  #   ports:
-  #     - "8070:8070"
-  #   depends_on:
-  #     - gateway-service
-  #       # condition: service_healthy
-  #     - db-product
-  #     - cache
-  #     - cassandra
-  #   networks:
-  #     - services
-  #     - elastic
-  #     - prometheus
+
+
+  product-service:
+   build:
+     context: ./product-service
+   container_name: product-service
+   ports:
+     - "8070:8070"
+   environment:
+     - SPRING_DATASOURCE_URL=jdbc:postgresql://dp-product:5432/product
+     - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+     - SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS=kafka:9092
+     - SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS=kafka:9092
+     - REDIS_HOST=redis
+     - SPRING_CASSANDRA_HOST=cassandra
+     - SPRING_CASSANDRA_CONTACT_POINTS=cassandra
+   depends_on:
+     - gateway
+     - db-product
+     - redis
+     - cassandra
+   networks:
+     - services
+
+  notification-service:
+    build:
+      context: ./notification-service
+    container_name: notification-service
+    ports:
+      - "8020:8020"
+    environment:
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS=kafka:9092
+      - SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS=kafka:9092
+    depends_on:
+      - gateway
+    networks:
+      - services
+
+
 
   zookeeper:
     image: docker.io/bitnami/zookeeper:3.9
@@ -152,8 +183,9 @@ services:
       - "9092:9092"
     environment:
       KAFKA_BROKER_ID: "1"
-      KAFKA_LISTENERS: "PLAINTEXT://kafka:9092"
-      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092"
+      KAFKA_LISTENERS: PLAINTEXT_INTERNAL://localhost:29092,PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT_INTERNAL://localhost:29092,PLAINTEXT://kafka:9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       ALLOW_PLAINTEXT_LISTENER: "yes"
     depends_on:
@@ -163,7 +195,7 @@ services:
 
   cassandra:
     image: cassandra:latest
-    container_name: cassandra-container
+    container_name: cassandra
     ports:
       - "9042:9042"
     environment:
