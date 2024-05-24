@@ -64,6 +64,7 @@ public class ProductController {
     @PostMapping("/product/add-review")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<String> addReview(@RequestBody ProductReviewDto productReviewDto, HttpServletRequest request) throws StripeException {
+        System.err.println("Start");
         return productService.addReview(productReviewDto, request);
     }
 

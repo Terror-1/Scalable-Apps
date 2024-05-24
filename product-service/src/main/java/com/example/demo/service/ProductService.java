@@ -276,19 +276,30 @@ public class ProductService {
 
     public ResponseEntity<String> addReview(ProductReviewDto productReviewDto, HttpServletRequest request) throws StripeException {
         Stripe.apiKey = stripeSecretKey;
+        System.err.println("token");
         String token = getTokenFromCookies(request);
+        System.err.println("this is the token" +token);
         String userId = getIdFromToken(token);
-        Customer customer = Customer.retrieve(userId);
+        System.err.println(userId);
+
+        String username = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().get("username").toString();
+        System.err.println(username);
+
+
+        String email = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().get("email").toString();
+        System.err.println(email);
+
+//        Customer customer = Customer.retrieve(userId);
         reviewRepository.addReview(
                 Integer.toString(productReviewDto.getProductId())
                 , userId
-                , customer.getName()
+                , username
                 ,productReviewDto.getRating()
                 , productReviewDto.getReview()
         );
         UserID userIdMessage = UserID.builder()
                 .userId(userId)
-                .email(customer.getEmail())
+                .email(email)
                 .build();
         kafkaProducer.reviewNotification(userIdMessage);
         return new ResponseEntity<>("Your review was added successfully, Thank you !", HttpStatus.CREATED);

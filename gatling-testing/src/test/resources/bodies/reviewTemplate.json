@@ -1,0 +1,7 @@
+{
+  "productId": #{productId},
+
+  "rating": #{rating},
+
+  "review":"#{review}"
+}
