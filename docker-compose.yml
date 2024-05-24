@@ -36,7 +36,6 @@ services:
     # expose:
     #   - 5432 # Expose this port internally for docker containers on the same network
   db-product:
-    container_name: dp-product
     image: postgres
     ports:
       - "5433:5433"
@@ -99,6 +98,9 @@ services:
     container_name: customer
     ports:
       - "8090:8090"
+    environment:
+     - LOGSTASH_HOST=log
+     - LOGSTASH_PORT=5044
     depends_on:
       - gateway
       - db-customer
@@ -121,6 +123,8 @@ services:
      - REDIS_HOST=redis
      - SPRING_CASSANDRA_HOST=cassandra
      - SPRING_CASSANDRA_CONTACT_POINTS=cassandra
+     - LOGSTASH_HOST=log
+     - LOGSTASH_PORT=5044
    depends_on:
      - gateway
      - cassandra
@@ -138,13 +142,15 @@ services:
    ports:
      - "8070:8070"
    environment:
-     - SPRING_DATASOURCE_URL=jdbc:postgresql://dp-product:5432/product
+     - SPRING_DATASOURCE_URL=jdbc:postgresql://db-product:5432/product
      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
      - SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS=kafka:9092
      - SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS=kafka:9092
      - REDIS_HOST=redis
      - SPRING_CASSANDRA_HOST=cassandra
      - SPRING_CASSANDRA_CONTACT_POINTS=cassandra
+     - LOGSTASH_HOST=log
+     - LOGSTASH_PORT=5044
    depends_on:
      - gateway
      - db-product
@@ -165,6 +171,8 @@ services:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS=kafka:9092
       - SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS=kafka:9092
+      - LOGSTASH_HOST=log
+      - LOGSTASH_PORT=5044
     depends_on:
       - gateway
       - logstash
@@ -254,6 +262,8 @@ services:
    networks:
      - services
    command: logstash -f /usr/share/logstash/pipeline/logstash-nginx.config
+
+# create an index then go to discover to view the data 
   kibana:
    image: kibana:7.16.1
    container_name: kib
@@ -279,7 +289,7 @@ services:
      - ./prometheus-grafana/prometheus:/etc/prometheus
      - prom_data:/prometheus
 
-
+# import a dashboard with id 11378
   grafana:
    image: grafana/grafana
    container_name: grafana

@@ -1,7 +1,5 @@
 package com.example.demo.controller;
 
-
-
 import com.example.demo.entity.PopularProducts;
 import com.example.demo.entity.Product;
 import com.example.demo.entity.Review;
@@ -9,11 +7,12 @@ import com.example.demo.service.ProductService;
 import com.example.demo.dto.ProductReviewDto;
 import com.stripe.exception.StripeException;
 import jakarta.servlet.http.HttpServletRequest;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
@@ -22,153 +21,212 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
-//    @PostMapping
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public void createProduct(@RequestBody ProductRequest productRequest) {
-//        productService.createProduct(productRequest);
-//    }
+    private static final Logger LOG = LogManager.getLogger(ProductController.class);
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Iterable<Product> getAllProducts() {
-        return productService.getAllProducts();
+        LOG.info("Received request to get all products");
+        Iterable<Product> products = productService.getAllProducts();
+        LOG.info("Returning {} products", ((List<Product>) products).size());
+        return products;
     }
-
-
 
     @GetMapping("/product")
     @ResponseStatus(HttpStatus.OK)
     public Product getProductById(@RequestBody String productId) {
-        return productService.getProductById(productId);
+        LOG.info("Received request to get product by ID: {}", productId);
+        Product product = productService.getProductById(productId);
+        LOG.info("Returning product: {}", product);
+        return product;
     }
 
     @GetMapping("/product/get-reviews")
     @ResponseStatus(HttpStatus.OK)
     public List<Review> getReviewsPerProduct(@RequestBody String productId) {
-        return productService.getReviewsPerProduct(productId);
+        LOG.info("Received request to get reviews for product ID: {}", productId);
+        List<Review> reviews = productService.getReviewsPerProduct(productId);
+        LOG.info("Returning {} reviews for product ID: {}", reviews.size(), productId);
+        return reviews;
     }
 
     @GetMapping("/get-popular-products")
     @ResponseStatus(HttpStatus.OK)
     public List<PopularProducts> getPopularProducts() {
-        return productService.getPopularProducts();
+        LOG.info("Received request to get popular products");
+        List<PopularProducts> popularProducts = productService.getPopularProducts();
+        LOG.info("Returning {} popular products", popularProducts.size());
+        return popularProducts;
     }
 
     @GetMapping("/empty-popular-products")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> emptyPopularProducts() {
-        return productService.emptyPopularProducts();
+        LOG.info("Received request to empty popular products");
+        ResponseEntity<String> response = productService.emptyPopularProducts();
+        LOG.info("Empty popular products response: {}", response);
+        return response;
     }
-
 
     @PostMapping("/product/add-review")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<String> addReview(@RequestBody ProductReviewDto productReviewDto, HttpServletRequest request) throws StripeException {
-        return productService.addReview(productReviewDto, request);
+        LOG.info("Received request to add review for product ID: {}", productReviewDto.getProductId());
+        ResponseEntity<String> response = productService.addReview(productReviewDto, request);
+        LOG.info("Add review response: {}", response);
+        return response;
     }
 
     @PostMapping("/product/delete-review")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> deleteReview(@RequestBody String productId, HttpServletRequest request) throws StripeException {
-        return productService.deleteReview(productId, request);
+        LOG.info("Received request to delete review for product ID: {}", productId);
+        ResponseEntity<String> response = productService.deleteReview(productId, request);
+        LOG.info("Delete review response: {}", response);
+        return response;
     }
-
 
     @GetMapping("/all-woman")
     @ResponseStatus(HttpStatus.OK)
-    public List<Product>  getAllWomanProducts() {
-        return productService.getAllWomanProducts();
+    public List<Product> getAllWomanProducts() {
+        LOG.info("Received request to get all woman products");
+        List<Product> products = productService.getAllWomanProducts();
+        LOG.info("Returning {} woman products", products.size());
+        return products;
     }
+
     @GetMapping("/woman-clothes")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getWomanClothes() {
+        LOG.info("Received request to get woman clothes");
         List<Product> products = productService.getWomanClothes();
-        return  products;
+        LOG.info("Returning {} woman clothes", products.size());
+        return products;
     }
+
     @GetMapping("/woman-shoes")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getWomanShoes() {
+        LOG.info("Received request to get woman shoes");
         List<Product> products = productService.getWomanShoes();
-        return  products;
+        LOG.info("Returning {} woman shoes", products.size());
+        return products;
     }
+
     @GetMapping("/woman-sunglasses")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getWomanSunglasses() {
+        LOG.info("Received request to get woman sunglasses");
         List<Product> products = productService.getWomanSunglasses();
-        return  products;
+        LOG.info("Returning {} woman sunglasses", products.size());
+        return products;
     }
+
     @GetMapping("/woman-perfumes")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getWomanPerfume() {
+        LOG.info("Received request to get woman perfumes");
         List<Product> products = productService.getWomanPerfumes();
-        return  products;
+        LOG.info("Returning {} woman perfumes", products.size());
+        return products;
     }
+
     @GetMapping("/woman-watches")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getWomanWatches() {
+        LOG.info("Received request to get woman watches");
         List<Product> products = productService.getWomanWatches();
-        return  products;
+        LOG.info("Returning {} woman watches", products.size());
+        return products;
     }
+
     @GetMapping("/woman-accessories")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getWomanAccessories() {
+        LOG.info("Received request to get woman accessories");
         List<Product> products = productService.getWomanAccessories();
-        return  products;
+        LOG.info("Returning {} woman accessories", products.size());
+        return products;
     }
+
     @GetMapping("/all-man")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getAllManProducts() {
-        return productService.getAllManProducts();
+        LOG.info("Received request to get all man products");
+        List<Product> products = productService.getAllManProducts();
+        LOG.info("Returning {} man products", products.size());
+        return products;
     }
+
     @GetMapping("/man-clothes")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getManClothes() {
+        LOG.info("Received request to get man clothes");
         List<Product> products = productService.getManClothes();
-        return  products;
+        LOG.info("Returning {} man clothes", products.size());
+        return products;
     }
+
     @GetMapping("/man-shoes")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getManShoes() {
+        LOG.info("Received request to get man shoes");
         List<Product> products = productService.getManShoes();
-        return  products;
+        LOG.info("Returning {} man shoes", products.size());
+        return products;
     }
+
     @GetMapping("/man-sunglasses")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getManSunglasses() {
+        LOG.info("Received request to get man sunglasses");
         List<Product> products = productService.getManSunglasses();
-        return  products;
+        LOG.info("Returning {} man sunglasses", products.size());
+        return products;
     }
+
     @GetMapping("/man-perfumes")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getManPerfume() {
+        LOG.info("Received request to get man perfumes");
         List<Product> products = productService.getManPerfumes();
-        return  products;
+        LOG.info("Returning {} man perfumes", products.size());
+        return products;
     }
+
     @GetMapping("/man-watches")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getManWatches() {
+        LOG.info("Received request to get man watches");
         List<Product> products = productService.getManWatches();
-        return  products;
+        LOG.info("Returning {} man watches", products.size());
+        return products;
     }
+
     @GetMapping("/man-accessories")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getManAccessories() {
+        LOG.info("Received request to get man accessories");
         List<Product> products = productService.getManAccessories();
-        return  products;
+        LOG.info("Returning {} man accessories", products.size());
+        return products;
     }
+
     @PostMapping("/product/add-to-cart")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> addToCart(HttpServletRequest request,@RequestBody String productId) {
-
-        return productService.addToCart(request, productId);
+    public ResponseEntity<String> addToCart(HttpServletRequest request, @RequestBody String productId) {
+        LOG.info("Received request to add product ID {} to cart", productId);
+        ResponseEntity<String> response = productService.addToCart(request, productId);
+        LOG.info("Add to cart response: {}", response);
+        return response;
     }
 
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> searchProduct(@RequestParam String query) {
-        return  productService.searchProduct(query.toLowerCase());
+        LOG.info("Received request to search for products with query: {}", query);
+        List<Product> products = productService.searchProduct(query.toLowerCase());
+        LOG.info("Returning {} products for search query: {}", products.size(), query);
+        return products;
     }
-
-
 }
-
