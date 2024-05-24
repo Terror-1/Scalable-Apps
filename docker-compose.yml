@@ -103,6 +103,8 @@ services:
       - gateway
       - db-customer
       - kafka
+      - logstash
+      - prometheus
     networks:
       - services
 
@@ -122,6 +124,8 @@ services:
    depends_on:
      - gateway
      - cassandra
+     - logstash
+     - prometheus
    networks:
      - services
 
@@ -146,6 +150,8 @@ services:
      - db-product
      - redis
      - cassandra
+     - logstash
+     - prometheus
    networks:
      - services
 
@@ -161,6 +167,8 @@ services:
       - SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS=kafka:9092
     depends_on:
       - gateway
+      - logstash
+      - prometheus
     networks:
       - services
 
@@ -206,85 +214,85 @@ services:
       - ./scripts/cassandra_init.sh:/init.sh
     networks:
       - services
-#
-#  elasticsearch:
-#    image: elasticsearch:7.16.1
-#    container_name: es
-#    environment:
-#      discovery.type: single-node
-#      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
-#    ports:
-#      - "9200:9200"
-#      - "9300:9300"
-#    healthcheck:
-#      test:
-#        [
-#          "CMD-SHELL",
-#          "curl --silent --fail localhost:9200/_cluster/health || exit 1",
-#        ]
-#      interval: 10s
-#      timeout: 10s
-#      retries: 3
-#    networks:
-#      - services
+
+  elasticsearch:
+   image: elasticsearch:7.16.1
+   container_name: es
+   environment:
+     discovery.type: single-node
+     ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+
+   ports:
+     - "9200:9200"
+     - "9300:9300"
+   healthcheck:
+     test:
+       [
+         "CMD-SHELL",
+         "curl --silent --fail localhost:9200/_cluster/health || exit 1",
+       ]
+     interval: 10s
+     timeout: 10s
+     retries: 3
+   networks:
+     - services
+
+  logstash:
+   image: logstash:7.16.1
+   container_name: log
+   environment:
+     discovery.seed_hosts: logstash
+     LS_JAVA_OPTS: "-Xms512m -Xmx512m"
+   volumes:
+     - ./elasticsearch-logstash-kibana/logstash/pipeline/logstash-nginx.config:/usr/share/logstash/pipeline/logstash-nginx.config
+     - ./elasticsearch-logstash-kibana/logstash/nginx.log:/home/nginx.log
+   ports:
+     - "5044:5044"
+     - "9600:9600"
+   depends_on:
+     - elasticsearch
+   networks:
+     - services
+   command: logstash -f /usr/share/logstash/pipeline/logstash-nginx.config
+  kibana:
+   image: kibana:7.16.1
+   container_name: kib
+   ports:
+     - "5601:5601"
+   depends_on:
+     - elasticsearch
+   networks:
+     - services
 
 
-#  logstash:
-#    image: logstash:7.16.1
-#    container_name: log
-#    environment:
-#      discovery.seed_hosts: logstash
-#      LS_JAVA_OPTS: "-Xms512m -Xmx512m"
-#    volumes:
-#      - ./elasticsearch-logstash-kibana/logstash/pipeline/logstash-nginx.config:/usr/share/logstash/pipeline/logstash-nginx.config
-#      - ./elasticsearch-logstash-kibana/logstash/nginx.log:/home/nginx.log
-#    ports:
-#      - "5044:5044"
-#      - "9600:9600"
-#    depends_on:
-#      - elasticsearch
-#    networks:
-#      - services
-#    command: logstash -f /usr/share/logstash/pipeline/logstash-nginx.config
-#  kibana:
-#    image: kibana:7.16.1
-#    container_name: kib
-#    ports:
-#      - "5601:5601"
-#    depends_on:
-#      - elasticsearch
-#    networks:
-#      - services
-#
-#
-#  prometheus:
-#    image: prom/prometheus
-#    container_name: prometheus
-#    command:
-#      - "--config.file=/etc/prometheus/prometheus.yml"
-#    ports:
-#      - 9090:9090
-#    restart: unless-stopped
-#    networks:
-#      - services
-#    volumes:
-#      - ./prometheus-grafana/prometheus:/etc/prometheus
-#      - prom_data:/prometheus
-#
-#
-#  grafana:
-#    image: grafana/grafana
-#    container_name: grafana
-#    ports:
-#      - 3000:3000
-#    restart: unless-stopped
-#    environment:
-#      - GF_SECURITY_ADMIN_USER=admin
-#      - GF_SECURITY_ADMIN_PASSWORD=grafana
-#    networks:
-#      - services
-#    volumes:
-#      - ./prometheus-grafana/grafana:/etc/grafana/provisioning/datasources
+  prometheus:
+   image: prom/prometheus
+   container_name: prometheus
+   command:
+     - "--config.file=/etc/prometheus/prometheus.yml"
+   ports:
+     - 9090:9090
+   restart: unless-stopped
+   networks:
+     - services
+   volumes:
+     - ./prometheus-grafana/prometheus:/etc/prometheus
+     - prom_data:/prometheus
+
+
+  grafana:
+   image: grafana/grafana
+   container_name: grafana
+   ports:
+     - 3000:3000
+   restart: unless-stopped
+   environment:
+     - GF_SECURITY_ADMIN_USER=admin
+     - GF_SECURITY_ADMIN_PASSWORD=grafana
+   networks:
+     - services
+   volumes:
+     - ./prometheus-grafana/grafana:/etc/grafana/provisioning/datasources
 
 volumes:
   cassandra-data:

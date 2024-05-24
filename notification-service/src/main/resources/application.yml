@@ -52,3 +52,24 @@ spring:
           auth: true
           starttls:
             enable: true
+
+
+
+# Logging level
+logging:
+  level:
+    root: INFO
+
+# Logstash appender
+logstash:
+  destination: localhost:5044
+
+#  Actuator endpoints exposure
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    metrics:
+      enabled: true
