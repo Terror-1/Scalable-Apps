@@ -43,7 +43,9 @@ logging:
 
 # Logstash appender
 logstash:
-  destination: localhost:5044
+  enabled: true
+  appender:
+    destination: ${LOGSTASH_HOST}:${LOGSTASH_PORT}
 
 #  Actuator endpoints exposure
 management:

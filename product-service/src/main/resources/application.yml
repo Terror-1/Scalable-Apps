@@ -10,7 +10,7 @@ spring:
   application:
     name: product-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/product
+    url: jdbc:postgresql://db-product:5432/product
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -25,7 +25,7 @@ spring:
 
   redis:
     port: 6379
-    host: local
+    host: redis
   main:
     allow-bean-definition-overriding: true
 
@@ -91,8 +91,9 @@ logging:
 
 # Logstash appender
 logstash:
-  destination: localhost:5044
-
+  enabled: true
+  appender:
+    destination: ${LOGSTASH_HOST}:${LOGSTASH_PORT}
 #  Actuator endpoints exposure
 management:
   endpoints:

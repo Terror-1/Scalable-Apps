@@ -20,11 +20,36 @@ scrape_configs:
   static_configs:
   - targets:
     - localhost:9090
-# if they are on the same docker network you can use the localhost then the port number 
-- job_name: 'MyAppMetrics'
+
+
+- job_name: 'CustomerMetrics'
   metrics_path: '/actuator/prometheus'
   scrape_interval: 3s
   static_configs:
-    - targets: ['service:8080']
+    - targets: ['customer:8090']
       labels:
-        application: 'My Spring Boot Application'
+        application: 'Customer Service'
+
+- job_name: 'SessionMetrics'
+  metrics_path: '/actuator/prometheus'
+  scrape_interval: 3s
+  static_configs:
+    - targets: ['session-service:8030']
+      labels:
+        application: 'Session Service'
+
+- job_name: 'NotificationMetrics'
+  metrics_path: '/actuator/prometheus'
+  scrape_interval: 3s
+  static_configs:
+    - targets: ['notification-service:8020']
+      labels:
+        application: 'Notification Service'
+
+- job_name: 'ProductMetrics'
+  metrics_path: '/actuator/prometheus'
+  scrape_interval: 3s
+  static_configs:
+    - targets: ['product-service:8070']
+      labels:
+        application: 'Product Service'
