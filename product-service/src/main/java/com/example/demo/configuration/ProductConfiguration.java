@@ -34,7 +34,7 @@ public class ProductConfiguration {
             product1.setDescription("blue running shoes");
             product1.setColor("Blue");
             product1.setName("Blue Running Shoes");
-			String imageUrl = imageService.upload("product-service/src/main/resources/test.jpg");
+			String imageUrl = imageService.upload("/app/test.jpg");
 			if (imageUrl == null) {
 				// Handle error - image upload failed
 				return;

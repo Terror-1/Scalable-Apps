@@ -1,4 +1,4 @@
-FROM openjdk:22
+FROM openjdk:21
 WORKDIR /app
 COPY ./target/gateway-0.0.1-SNAPSHOT.jar /app
 EXPOSE 8222

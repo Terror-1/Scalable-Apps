@@ -65,6 +65,26 @@ stripe:
     key: sk_test_51P9U3gRqvM61FDTxZlRrikPCKSEpqVCwWnONVdlh5GtNOUDRvhRIQD9OpJRQuT5mLFvrnDgCPZ1CSZHy0yYUmBQU00AD4KcbO5
 
 
+# Logging level
+logging:
+  level:
+    root: INFO
+
+# Logstash appender
+logstash:
+  enabled: true
+  appender:
+    destination: ${LOGSTASH_HOST}:${LOGSTASH_PORT}
+
+#  Actuator endpoints exposure
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    metrics:
+      enabled: true
 
 
 

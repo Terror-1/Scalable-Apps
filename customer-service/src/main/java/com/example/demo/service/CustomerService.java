@@ -70,7 +70,7 @@ public class CustomerService {
                 // Handle errors during customer update
                 return new ResponseEntity<>("Error setting default payment method: " + e.getMessage(), HttpStatus.BAD_REQUEST);
             }
-            return new ResponseEntity<>("PaymentMethod created: " +  resource.getId(), HttpStatus.CREATED);
+            return new ResponseEntity<>(resource.getId(), HttpStatus.CREATED);
 
         } catch (StripeException e) {
             // Handle any errors that may occur during the creation of PaymentMethod
@@ -100,7 +100,7 @@ public class CustomerService {
     public String authenticate(String email, String password) {
         MyCustomer customer = customerRepository.findByEmail(email);
         if (customer != null && passwordEncoder.matches(password, customer.getPassword())) {
-            return JwtService.generateToken(customer.getStripeId());
+            return JwtService.generateToken(customer.getFirstName()+" "+customer.getLastName(), email, customer.getStripeId());
         }
         return null;
     }

@@ -1,5 +1,5 @@
-FROM openjdk:22
+FROM openjdk:21
 WORKDIR /app
 COPY ./target/notification-service-0.0.1-SNAPSHOT.jar /app
-EXPOSE 8020
+EXPOSE 8070
 CMD ["java", "-jar", "notification-service-0.0.1-SNAPSHOT.jar"]

@@ -1,0 +1,6 @@
+{
+  "city":"#{city}",
+  "line1":"#{line1}",
+  "postalCode":"#{postalCode}",
+  "country":"#{country}"
+}

@@ -36,7 +36,6 @@ services:
     # expose:
     #   - 5432 # Expose this port internally for docker containers on the same network
   db-product:
-    container_name: dp-product
     image: postgres
     ports:
       - "5433:5433"
@@ -99,10 +98,15 @@ services:
     container_name: customer
     ports:
       - "8090:8090"
+    environment:
+     - LOGSTASH_HOST=log
+     - LOGSTASH_PORT=5044
     depends_on:
       - gateway
       - db-customer
       - kafka
+      - logstash
+      - prometheus
     networks:
       - services
 
@@ -119,9 +123,13 @@ services:
      - REDIS_HOST=redis
      - SPRING_CASSANDRA_HOST=cassandra
      - SPRING_CASSANDRA_CONTACT_POINTS=cassandra
+     - LOGSTASH_HOST=log
+     - LOGSTASH_PORT=5044
    depends_on:
      - gateway
      - cassandra
+     - logstash
+     - prometheus
    networks:
      - services
 
@@ -134,18 +142,22 @@ services:
    ports:
      - "8070:8070"
    environment:
-     - SPRING_DATASOURCE_URL=jdbc:postgresql://dp-product:5432/product
+     - SPRING_DATASOURCE_URL=jdbc:postgresql://db-product:5432/product
      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
      - SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS=kafka:9092
      - SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS=kafka:9092
      - REDIS_HOST=redis
      - SPRING_CASSANDRA_HOST=cassandra
      - SPRING_CASSANDRA_CONTACT_POINTS=cassandra
+     - LOGSTASH_HOST=log
+     - LOGSTASH_PORT=5044
    depends_on:
      - gateway
      - db-product
      - redis
      - cassandra
+     - logstash
+     - prometheus
    networks:
      - services
 
@@ -159,8 +171,12 @@ services:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS=kafka:9092
       - SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS=kafka:9092
+      - LOGSTASH_HOST=log
+      - LOGSTASH_PORT=5044
     depends_on:
       - gateway
+      - logstash
+      - prometheus
     networks:
       - services
   controller:
@@ -219,85 +235,87 @@ services:
       - ./scripts/cassandra_init.sh:/init.sh
     networks:
       - services
-#
-#  elasticsearch:
-#    image: elasticsearch:7.16.1
-#    container_name: es
-#    environment:
-#      discovery.type: single-node
-#      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
-#    ports:
-#      - "9200:9200"
-#      - "9300:9300"
-#    healthcheck:
-#      test:
-#        [
-#          "CMD-SHELL",
-#          "curl --silent --fail localhost:9200/_cluster/health || exit 1",
-#        ]
-#      interval: 10s
-#      timeout: 10s
-#      retries: 3
-#    networks:
-#      - services
+
+  elasticsearch:
+   image: elasticsearch:7.16.1
+   container_name: es
+   environment:
+     discovery.type: single-node
+     ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+
+   ports:
+     - "9200:9200"
+     - "9300:9300"
+   healthcheck:
+     test:
+       [
+         "CMD-SHELL",
+         "curl --silent --fail localhost:9200/_cluster/health || exit 1",
+       ]
+     interval: 10s
+     timeout: 10s
+     retries: 3
+   networks:
+     - services
+
+  logstash:
+   image: logstash:7.16.1
+   container_name: log
+   environment:
+     discovery.seed_hosts: logstash
+     LS_JAVA_OPTS: "-Xms512m -Xmx512m"
+   volumes:
+     - ./elasticsearch-logstash-kibana/logstash/pipeline/logstash-nginx.config:/usr/share/logstash/pipeline/logstash-nginx.config
+     - ./elasticsearch-logstash-kibana/logstash/nginx.log:/home/nginx.log
+   ports:
+     - "5044:5044"
+     - "9600:9600"
+   depends_on:
+     - elasticsearch
+   networks:
+     - services
+   command: logstash -f /usr/share/logstash/pipeline/logstash-nginx.config
+
+# create an index then go to discover to view the data 
+  kibana:
+   image: kibana:7.16.1
+   container_name: kib
+   ports:
+     - "5601:5601"
+   depends_on:
+     - elasticsearch
+   networks:
+     - services
 
 
-#  logstash:
-#    image: logstash:7.16.1
-#    container_name: log
-#    environment:
-#      discovery.seed_hosts: logstash
-#      LS_JAVA_OPTS: "-Xms512m -Xmx512m"
-#    volumes:
-#      - ./elasticsearch-logstash-kibana/logstash/pipeline/logstash-nginx.config:/usr/share/logstash/pipeline/logstash-nginx.config
-#      - ./elasticsearch-logstash-kibana/logstash/nginx.log:/home/nginx.log
-#    ports:
-#      - "5044:5044"
-#      - "9600:9600"
-#    depends_on:
-#      - elasticsearch
-#    networks:
-#      - services
-#    command: logstash -f /usr/share/logstash/pipeline/logstash-nginx.config
-#  kibana:
-#    image: kibana:7.16.1
-#    container_name: kib
-#    ports:
-#      - "5601:5601"
-#    depends_on:
-#      - elasticsearch
-#    networks:
-#      - services
-#
-#
-#  prometheus:
-#    image: prom/prometheus
-#    container_name: prometheus
-#    command:
-#      - "--config.file=/etc/prometheus/prometheus.yml"
-#    ports:
-#      - 9090:9090
-#    restart: unless-stopped
-#    networks:
-#      - services
-#    volumes:
-#      - ./prometheus-grafana/prometheus:/etc/prometheus
-#      - prom_data:/prometheus
-#
-#
-#  grafana:
-#    image: grafana/grafana
-#    container_name: grafana
-#    ports:
-#      - 3000:3000
-#    restart: unless-stopped
-#    environment:
-#      - GF_SECURITY_ADMIN_USER=admin
-#      - GF_SECURITY_ADMIN_PASSWORD=grafana
-#    networks:
-#      - services
-#    volumes:
-#      - ./prometheus-grafana/grafana:/etc/grafana/provisioning/datasources
+  prometheus:
+   image: prom/prometheus
+   container_name: prometheus
+   command:
+     - "--config.file=/etc/prometheus/prometheus.yml"
+   ports:
+     - 9090:9090
+   restart: unless-stopped
+   networks:
+     - services
+   volumes:
+     - ./prometheus-grafana/prometheus:/etc/prometheus
+     - prom_data:/prometheus
+
+# import a dashboard with id 11378
+  grafana:
+   image: grafana/grafana
+   container_name: grafana
+   ports:
+     - 3000:3000
+   restart: unless-stopped
+   environment:
+     - GF_SECURITY_ADMIN_USER=admin
+     - GF_SECURITY_ADMIN_PASSWORD=grafana
+   networks:
+     - services
+   volumes:
+     - ./prometheus-grafana/grafana:/etc/grafana/provisioning/datasources
 
 volumes:
   cassandra-data:
