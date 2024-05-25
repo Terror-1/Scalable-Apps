@@ -45,7 +45,12 @@ public class ControllerController {
     @PostMapping("/freeze-product")
     public ResponseEntity<String> freezeProduct() {
         kafkaProducer.freezeProductService();
-        return ResponseEntity.ok("DataBase config updated successfully");
+        return ResponseEntity.ok("product service freezed successfully");
+    }
+    @PostMapping("/unfreeze-product")
+    public ResponseEntity<String> unfreezeProduct() {
+        kafkaProducer.unfreezeProductService();
+        return ResponseEntity.ok("product service unfreezed successfully");
     }
 
 
