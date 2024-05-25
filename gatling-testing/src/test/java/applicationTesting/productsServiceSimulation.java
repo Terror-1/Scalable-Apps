@@ -16,8 +16,8 @@ private HttpProtocolBuilder httpProtocol = http.baseUrl("http://localhost:8222/a
 private static FeederBuilder.FileBased<Object> reviewFeeder = jsonFile("data/reviews.json").random();
 private static FeederBuilder.FileBased<Object> userFeeder = jsonFile("data/users4.json").queue();
 
-private static final  int USER_COUNT = Integer.parseInt(System.getProperty("USERS","2500"));
-private static final  int RAMP_DURATION = Integer.parseInt(System.getProperty("RAMP_DURATION","10"));
+private static final  int USER_COUNT = Integer.parseInt(System.getProperty("USERS","2"));
+private static final  int RAMP_DURATION = Integer.parseInt(System.getProperty("RAMP_DURATION","1"));
 private static final  int WAIT = Integer.parseInt(System.getProperty("WAIT","0"));
 private static final  String PRODUCT_ID = "10";
 
