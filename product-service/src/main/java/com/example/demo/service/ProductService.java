@@ -51,6 +51,7 @@ public class ProductService {
 
 
     private final KafkaProducer kafkaProducer;
+    private CustomHealthIndicator healthIndicator;
     private static final Logger LOG = LogManager.getLogger(ProductService.class);
 
 
@@ -356,4 +357,14 @@ public class ProductService {
         LOG.info("maxpool after"+dataSource.getMaximumPoolSize());
         return "Updated pool size settings";
     }
+    public ResponseEntity<String> freeze() {
+        healthIndicator.setHealth(false);
+        return ResponseEntity.ok("Service is now frozen");
+    }
+
+    public ResponseEntity<String> unfreeze() {
+        healthIndicator.setHealth(true);
+        return ResponseEntity.ok("Service is now unfrozen");
+    }
+
 }

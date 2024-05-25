@@ -27,4 +27,14 @@ public class KafkaConsumer {
         log.info(format("Consumed the message to update the database connection config:: %s", msg.toString()));
         productService.updateDBConnection(msg);
     }
+    @KafkaListener(topics = "freezeProductService", groupId = "freezeProductService")
+    public void freezeProductService() {
+        log.info(format("Consumed the message to freeze Product Service"));
+        productService.freeze();
+    }
+    @KafkaListener(topics = "unfreezeProductService", groupId = "unfreezeProductService")
+    public void unfreezeProductService() {
+        log.info(format("Consumed the message to unfreeze Product Service"));
+        productService.unfreeze();
+    }
 }

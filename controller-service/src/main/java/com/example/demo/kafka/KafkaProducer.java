@@ -17,6 +17,8 @@ import static java.lang.String.format;
 @Slf4j
 public class KafkaProducer {
     private final KafkaTemplate<String, ThreadPoolConfig> kafkaTemplate;
+    private final KafkaTemplate<String, DBConnectionConfig> kafkaTemplate2;
+    private final KafkaTemplate<String, String> kafkaTemplate3;
     public void updateProduct(ThreadPoolConfig msg) {
         Message<ThreadPoolConfig> message = MessageBuilder
                 .withPayload(msg)
@@ -54,7 +56,23 @@ public class KafkaProducer {
                 .withPayload(msg)
                 .setHeader(KafkaHeaders.TOPIC, "updateDBConnection")
                 .build();
-        kafkaTemplate.send( message);
+        kafkaTemplate2.send( message);
         log.info(format("sending DB connection update message to kafka template:: %s", message));
+    }
+    public void freezeProductService() {
+        Message<String> message = MessageBuilder
+                .withPayload("freezeProductService")
+                .setHeader(KafkaHeaders.TOPIC, "freezeProductService")
+                .build();
+        kafkaTemplate3.send( message);
+        log.info(format("sending freeze product service message to kafka template:: %s", message));
+    }
+    public void unfreezeProductService() {
+        Message<String> message = MessageBuilder
+                .withPayload("unfreezeProductService")
+                .setHeader(KafkaHeaders.TOPIC, "unfreezeProductService")
+                .build();
+        kafkaTemplate3.send( message);
+        log.info(format("sending unfreeze product service message to kafka template:: %s", message));
     }
 }

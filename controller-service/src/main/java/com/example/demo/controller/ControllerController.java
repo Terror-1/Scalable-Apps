@@ -42,6 +42,13 @@ public class ControllerController {
         kafkaProducer.updateDBConnection(config);
         return ResponseEntity.ok("DataBase config updated successfully");
     }
+    @PostMapping("/freeze-product")
+    public ResponseEntity<String> freezeProduct() {
+        kafkaProducer.freezeProductService();
+        return ResponseEntity.ok("DataBase config updated successfully");
+    }
+
+
 }
 
 
