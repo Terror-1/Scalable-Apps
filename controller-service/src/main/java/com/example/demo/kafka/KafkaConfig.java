@@ -8,22 +8,21 @@ import org.springframework.kafka.config.TopicBuilder;
 @Configuration
 public class KafkaConfig {
     @Bean
-    public NewTopic login() {
+    public NewTopic updateProduct() {
         return TopicBuilder
-                .name("login")
-                .build();
-    }
-
-    @Bean
-    public NewTopic register() {
-        return TopicBuilder
-                .name("register")
+                .name("updateProductConfig")
                 .build();
     }
     @Bean
-    public NewTopic reviewNotification() {
+    public NewTopic updateCustomer() {
         return TopicBuilder
-                .name("reviewNotification")
+                .name("updateCustomerConfig")
+                .build();
+    }
+    @Bean
+    public NewTopic updateSession() {
+        return TopicBuilder
+                .name("updateSessionConfig")
                 .build();
     }
     @Bean
@@ -34,5 +33,3 @@ public class KafkaConfig {
     }
 
 }
-
-

@@ -2,7 +2,9 @@ package com.example.demo.kafka;
 
 import com.example.demo.dto.CustomerSessionDto;
 
+import com.example.demo.dto.ThreadPoolConfig;
 import com.example.demo.dto.UserID;
+import com.example.demo.service.ThreadPoolManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -38,6 +40,11 @@ public class KafkaConsumer {
     public void reviewNotification(UserID msg) {
         log.info(format("Consumed the message to notify the user:: %s", msg.toString()));
         EmailSender.review(msg.getEmail());
+    }
+    @KafkaListener(topics = "updateNotificationConfig", groupId = "updateNotificationConfig")
+    public void updateNotification(ThreadPoolConfig msg) {
+        log.info(format("Consumed the message to update the notifcation config:: %s", msg.toString()));
+        EmailSender.updateThreadPool(msg);
     }
 
 }

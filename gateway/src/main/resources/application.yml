@@ -30,3 +30,7 @@ spring:
             uri: http://customer:8090
             predicates:
               - Path=/api/customers/**
+          - id: CONTROLLER-SERVICE
+            uri: http://controller:8060
+            predicates:
+              - Path=/api/controller/**

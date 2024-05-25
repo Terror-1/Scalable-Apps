@@ -1,19 +1,25 @@
 package com.example.demo.controller;
 
+
+
 import com.example.demo.entity.PopularProducts;
 import com.example.demo.entity.Product;
 import com.example.demo.entity.Review;
 import com.example.demo.service.ProductService;
 import com.example.demo.dto.ProductReviewDto;
 import com.stripe.exception.StripeException;
+import com.zaxxer.hikari.HikariDataSource;
 import jakarta.servlet.http.HttpServletRequest;
+
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -22,6 +28,7 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
     private static final Logger LOG = LogManager.getLogger(ProductController.class);
+    private final HikariDataSource dataSource;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -31,6 +38,8 @@ public class ProductController {
         LOG.info("Returning {} products", ((List<Product>) products).size());
         return products;
     }
+
+
 
     @GetMapping("/product")
     @ResponseStatus(HttpStatus.OK)
@@ -68,6 +77,7 @@ public class ProductController {
         return response;
     }
 
+
     @PostMapping("/product/add-review")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<String> addReview(@RequestBody ProductReviewDto productReviewDto, HttpServletRequest request) throws StripeException {
@@ -94,7 +104,6 @@ public class ProductController {
         LOG.info("Returning {} woman products", products.size());
         return products;
     }
-
     @GetMapping("/woman-clothes")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getWomanClothes() {
@@ -103,7 +112,6 @@ public class ProductController {
         LOG.info("Returning {} woman clothes", products.size());
         return products;
     }
-
     @GetMapping("/woman-shoes")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getWomanShoes() {
@@ -112,7 +120,6 @@ public class ProductController {
         LOG.info("Returning {} woman shoes", products.size());
         return products;
     }
-
     @GetMapping("/woman-sunglasses")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getWomanSunglasses() {
@@ -121,7 +128,6 @@ public class ProductController {
         LOG.info("Returning {} woman sunglasses", products.size());
         return products;
     }
-
     @GetMapping("/woman-perfumes")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getWomanPerfume() {
@@ -130,7 +136,6 @@ public class ProductController {
         LOG.info("Returning {} woman perfumes", products.size());
         return products;
     }
-
     @GetMapping("/woman-watches")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getWomanWatches() {
@@ -139,7 +144,6 @@ public class ProductController {
         LOG.info("Returning {} woman watches", products.size());
         return products;
     }
-
     @GetMapping("/woman-accessories")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getWomanAccessories() {
@@ -148,7 +152,6 @@ public class ProductController {
         LOG.info("Returning {} woman accessories", products.size());
         return products;
     }
-
     @GetMapping("/all-man")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getAllManProducts() {
@@ -157,7 +160,6 @@ public class ProductController {
         LOG.info("Returning {} man products", products.size());
         return products;
     }
-
     @GetMapping("/man-clothes")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getManClothes() {
@@ -166,7 +168,6 @@ public class ProductController {
         LOG.info("Returning {} man clothes", products.size());
         return products;
     }
-
     @GetMapping("/man-shoes")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getManShoes() {
@@ -175,7 +176,6 @@ public class ProductController {
         LOG.info("Returning {} man shoes", products.size());
         return products;
     }
-
     @GetMapping("/man-sunglasses")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getManSunglasses() {
@@ -184,7 +184,6 @@ public class ProductController {
         LOG.info("Returning {} man sunglasses", products.size());
         return products;
     }
-
     @GetMapping("/man-perfumes")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getManPerfume() {
@@ -193,7 +192,6 @@ public class ProductController {
         LOG.info("Returning {} man perfumes", products.size());
         return products;
     }
-
     @GetMapping("/man-watches")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getManWatches() {
@@ -211,7 +209,6 @@ public class ProductController {
         LOG.info("Returning {} man accessories", products.size());
         return products;
     }
-
     @PostMapping("/product/add-to-cart")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> addToCart(HttpServletRequest request, @RequestBody String productId) {
@@ -229,4 +226,25 @@ public class ProductController {
         LOG.info("Returning {} products for search query: {}", products.size(), query);
         return products;
     }
+    @GetMapping("/get-pool-size")
+    public String updatePoolSize() throws SQLException {
+        System.out.println(dataSource.getHikariPoolMXBean());
+        System.out.println( dataSource.getConnection());
+        System.out.println(dataSource.getMaximumPoolSize());
+        System.out.println(dataSource.getMinimumIdle());
+//        System.out.println(dataSource.connec);
+        return "Updated pool size settings";
+    }
+    @PostMapping("/update-pool-size")
+    public String updatePoolSize(@RequestParam int minimumIdle, @RequestParam int maximumPoolSize) {
+        System.out.println("idle before"+dataSource.getMinimumIdle());
+        dataSource.setMinimumIdle(minimumIdle);
+        System.out.println("idle after"+dataSource.getMinimumIdle());
+        System.out.println("maxpool before"+dataSource.getMaximumPoolSize());
+        dataSource.setMaximumPoolSize(maximumPoolSize);
+        System.out.println("maxpool after"+dataSource.getMaximumPoolSize());
+        return "Updated pool size settings";
+    }
+
 }
+
