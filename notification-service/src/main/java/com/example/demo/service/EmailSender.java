@@ -25,16 +25,26 @@ public class EmailSender {
     }
 
     public void updateThreadPool(ThreadPoolConfig config) {
-        System.out.println("executor "+executor);
-        System.out.println("executor pool size "+executor.getCorePoolSize());
-        System.out.println("config pool size "+config.getCorePoolSize());
+        LOG.info("updating thread pool configuration for notification service");
+
+
         if (executor != null) {
+            LOG.info("core pool size was: "+executor.getCorePoolSize());
+            LOG.info("max pool size was: "+executor.getMaxPoolSize());
+            LOG.info("Queue Capacity was: "+executor.getQueueCapacity());
             executor.setCorePoolSize(config.getCorePoolSize());
             executor.setMaxPoolSize(config.getMaxPoolSize());
             executor.setQueueCapacity(config.getQueueCapacity());
             executor.initialize();
+            LOG.info("core pool size now is: "+executor.getCorePoolSize());
+            LOG.info("max pool size now is: "+executor.getMaxPoolSize());
+            LOG.info("Queue Capacity now is: "+executor.getQueueCapacity());
         }
-        System.out.println("executor pool size "+executor.getCorePoolSize());
+        else{
+            LOG.info("notification service executor is null");
+        }
+
+
 
     }
 

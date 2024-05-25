@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.controller.ProductController;
 import com.example.demo.dto.*;
 import com.example.demo.entity.PopularProducts;
 import com.example.demo.entity.Product;
@@ -14,15 +15,19 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.Customer;
 import com.stripe.model.PaymentIntent;
 import com.stripe.param.PaymentIntentCreateParams;
+import com.zaxxer.hikari.HikariDataSource;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,8 +47,12 @@ public class ProductService {
     private final ReviewRepository reviewRepository;
 
     private  final PopularProductsRepository popularProductsRepository;
+    private final HikariDataSource dataSource;
+
 
     private final KafkaProducer kafkaProducer;
+    private static final Logger LOG = LogManager.getLogger(ProductService.class);
+
 
     private static final String jwtSecret = "d740b4e7547111cee19518ffef9b95645de3c346043281e52caaf7c48514e04b";
 
@@ -337,5 +346,14 @@ public class ProductService {
 
     public List<Product> searchProduct(String name) {
         return productRepository.searchByNameOrSkuOrDescriptionContaining(name);
+    }
+    public String updateDBConnection(DBConnectionConfig config) {
+        LOG.info("idle before"+dataSource.getMinimumIdle());
+        dataSource.setMinimumIdle(config.getMinimumIdle());
+        LOG.info("idle after"+dataSource.getMinimumIdle());
+        LOG.info("maxpool before"+dataSource.getMaximumPoolSize());
+        dataSource.setMaximumPoolSize(config.getMaximumPoolSize());
+        LOG.info("maxpool after"+dataSource.getMaximumPoolSize());
+        return "Updated pool size settings";
     }
 }

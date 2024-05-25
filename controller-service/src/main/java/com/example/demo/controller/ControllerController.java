@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.DBConnectionConfig;
 import com.example.demo.dto.ThreadPoolConfig;
 import com.example.demo.kafka.KafkaProducer;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,6 +36,11 @@ public class ControllerController {
     public ResponseEntity<String> updateNotification(@RequestBody ThreadPoolConfig config) {
         kafkaProducer.updateNotification(config);
         return ResponseEntity.ok("Thread pool updated successfully");
+    }
+    @PostMapping("/update-dbconnection")
+    public ResponseEntity<String> updateNotification(@RequestBody DBConnectionConfig config) {
+        kafkaProducer.updateDBConnection(config);
+        return ResponseEntity.ok("DataBase config updated successfully");
     }
 }
 

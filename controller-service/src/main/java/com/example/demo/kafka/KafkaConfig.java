@@ -31,5 +31,11 @@ public class KafkaConfig {
                 .name("updateNotificationConfig")
                 .build();
     }
+    @Bean
+    public NewTopic updateDBConnection() {
+        return TopicBuilder
+                .name("updateDBConnection")
+                .build();
+    }
 
 }
