@@ -15,15 +15,20 @@ public class ControllerController {
     private final KafkaProducer kafkaProducer;
     @PostMapping("/update-product")
     public ResponseEntity<String> updateProduct(@RequestBody ThreadPoolConfig config) {
+        kafkaProducer.updateProduct(config);
 
         return ResponseEntity.ok("Thread pool updated successfully");
     }
     @PostMapping("/update-customer")
     public ResponseEntity<String> updateCustomer(@RequestBody ThreadPoolConfig config) {
+        kafkaProducer.updateCustomer(config);
+
         return ResponseEntity.ok("Thread pool updated successfully");
     }
     @PostMapping("/update-session")
     public ResponseEntity<String> updateSession(@RequestBody ThreadPoolConfig config) {
+        kafkaProducer.updateSession(config);
+
         return ResponseEntity.ok("Thread pool updated successfully");
     }
     @PostMapping("/update-notification")

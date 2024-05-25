@@ -8,20 +8,31 @@ import com.example.demo.entity.Review;
 import com.example.demo.service.ProductService;
 import com.example.demo.dto.ProductReviewDto;
 import com.stripe.exception.StripeException;
+import com.zaxxer.hikari.HikariDataSource;
 import jakarta.servlet.http.HttpServletRequest;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
 public class ProductController {
+
     private final ProductService productService;
+
+    private final HikariDataSource dataSource;
+
+//    @Autowired
+//    public ProductController(HikariDataSource dataSource) {
+//        this.dataSource = dataSource;
+//    }
 //    @PostMapping
 //    @ResponseStatus(HttpStatus.CREATED)
 //    public void createProduct(@RequestBody ProductRequest productRequest) {
@@ -168,7 +179,25 @@ public class ProductController {
     public List<Product> searchProduct(@RequestParam String query) {
         return  productService.searchProduct(query.toLowerCase());
     }
-
+    @GetMapping("/get-pool-size")
+    public String updatePoolSize() throws SQLException {
+        System.out.println(dataSource.getHikariPoolMXBean());
+        System.out.println( dataSource.getConnection());
+        System.out.println(dataSource.getMaximumPoolSize());
+        System.out.println(dataSource.getMinimumIdle());
+//        System.out.println(dataSource.connec);
+        return "Updated pool size settings";
+    }
+    @PostMapping("/update-pool-size")
+    public String updatePoolSize(@RequestParam int minimumIdle, @RequestParam int maximumPoolSize) {
+        System.out.println("idle before"+dataSource.getMinimumIdle());
+        dataSource.setMinimumIdle(minimumIdle);
+        System.out.println("idle after"+dataSource.getMinimumIdle());
+        System.out.println("maxpool before"+dataSource.getMaximumPoolSize());
+        dataSource.setMaximumPoolSize(maximumPoolSize);
+        System.out.println("maxpool after"+dataSource.getMaximumPoolSize());
+        return "Updated pool size settings";
+    }
 
 }
 
