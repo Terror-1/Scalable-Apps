@@ -240,6 +240,10 @@ public class ProductController {
 //        System.out.println(dataSource.connec);
         return new ResponseEntity<>(config,HttpStatus.OK);
     }
+    @GetMapping("/get-health-status")
+    public ResponseEntity<String> getStatus(){
+        return productService.getStatus();
+    }
 
 
 }

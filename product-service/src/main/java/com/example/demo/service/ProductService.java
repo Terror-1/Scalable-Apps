@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +52,8 @@ public class ProductService {
 
 
     private final KafkaProducer kafkaProducer;
+
+    @Autowired
     private CustomHealthIndicator healthIndicator;
     private static final Logger LOG = LogManager.getLogger(ProductService.class);
 
@@ -365,6 +368,10 @@ public class ProductService {
     public ResponseEntity<String> unfreeze() {
         healthIndicator.setHealth(true);
         return ResponseEntity.ok("Service is now unfrozen");
+    }
+    public ResponseEntity<String> getStatus(){
+
+        return  ResponseEntity.ok("health status: "+healthIndicator.getHealth(true));
     }
 
 }
