@@ -1,4 +1,4 @@
-FROM openjdk:18
+FROM openjdk:21
 WORKDIR /app
 COPY ./target/notification-service-0.0.1-SNAPSHOT.jar /app
 EXPOSE 8070
