@@ -9,7 +9,6 @@
         <outputRelativeToContentRoot value="true" />
         <module name="config-server" />
         <module name="gatling-testing" />
-        <module name="controller-service" />
         <module name="discovery" />
         <module name="product-service" />
         <module name="myCustomer-service" />

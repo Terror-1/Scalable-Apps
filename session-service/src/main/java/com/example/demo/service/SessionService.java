@@ -88,7 +88,7 @@ public class SessionService {
         String token = getTokenFromCookies(request);
         String userId = getIdFromToken(token);
         cartItemRepository.deleteAllByUserId(userId);
-        return new ResponseEntity<>("Card is now empty", HttpStatus.OK);
+        return new ResponseEntity<>("Cart is now empty", HttpStatus.OK);
     }
 
     public ResponseEntity<String> removeItem(HttpServletRequest request, String itemId) {
