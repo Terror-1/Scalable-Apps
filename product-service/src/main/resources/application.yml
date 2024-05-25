@@ -22,10 +22,6 @@ spring:
       hibernate:
         format-sql: true
     database: postgresql
-
-  redis:
-    port: 6379
-    host: redis
   main:
     allow-bean-definition-overriding: true
 
@@ -78,6 +74,10 @@ spring:
       cluster-nodes: elasticsearch:9200
       repositories:
         enabled: true
+    redis:
+      port: 6379
+      host: redis
+      password: redis
 
 stripe:
   secret:

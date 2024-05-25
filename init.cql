@@ -4,7 +4,7 @@ cqlsh
 
 CREATE KEYSPACE IF NOT EXISTS store WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : '1' };
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+use store;
 CREATE TABLE IF NOT EXISTS session (
     user_id text PRIMARY KEY,
     name text
