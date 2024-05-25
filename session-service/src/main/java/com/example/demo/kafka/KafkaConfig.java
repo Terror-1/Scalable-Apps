@@ -40,4 +40,10 @@ public class KafkaConfig {
                 .name("emptyCart")
                 .build();
     }
+    @Bean
+    public NewTopic updateSession() {
+        return TopicBuilder
+                .name("updateSessionConfig")
+                .build();
+    }
 }

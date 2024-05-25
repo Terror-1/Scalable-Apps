@@ -1,12 +1,9 @@
 package com.example.demo.service;
 
 
-import com.example.demo.dto.AddToCartMessage;
-import com.example.demo.dto.CustomerSessionDto;
-import com.example.demo.dto.UserID;
+import com.example.demo.dto.*;
 import com.example.demo.entity.Session;
 import com.example.demo.kafka.KafkaProducer;
-import com.example.demo.dto.CartObject;
 import com.example.demo.entity.CartItem;
 import com.example.demo.repository.CartItemRepository;
 import com.example.demo.repository.SessionRepository;
@@ -20,9 +17,12 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -186,5 +186,36 @@ public class SessionService {
         String userId = msg.getStripeId();
         cartItemRepository.deleteAllByUserId(userId);
         sessionRepository.deleteByUserId(userId);
+    }
+    private ThreadPoolTaskExecutor executor ;
+    private static final Logger LOG = LogManager.getLogger(SessionService.class);
+
+
+    public void registerExecutor(String serviceName, ThreadPoolTaskExecutor executor) {
+        this.executor=executor;
+    }
+
+    public void updateThreadPool(ThreadPoolConfig config) {
+        LOG.info("updating thread pool configuration for session service");
+
+
+        if (executor != null) {
+            LOG.info("core pool size was: "+executor.getCorePoolSize());
+            LOG.info("max pool size was: "+executor.getMaxPoolSize());
+            LOG.info("Queue Capacity was: "+executor.getQueueCapacity());
+            executor.setCorePoolSize(config.getCorePoolSize());
+            executor.setMaxPoolSize(config.getMaxPoolSize());
+            executor.setQueueCapacity(config.getQueueCapacity());
+            executor.initialize();
+            LOG.info("core pool size now is: "+executor.getCorePoolSize());
+            LOG.info("max pool size now is: "+executor.getMaxPoolSize());
+            LOG.info("Queue Capacity now is: "+executor.getQueueCapacity());
+        }
+        else{
+            LOG.info("session service executor is null");
+        }
+
+
+
     }
 }
