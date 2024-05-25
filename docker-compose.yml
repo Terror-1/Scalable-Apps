@@ -163,7 +163,20 @@ services:
       - gateway
     networks:
       - services
-
+  controller:
+    build:
+      context: ./controller-service
+    container_name: controller
+    ports:
+      - "8060:8060"
+    environment:
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS=kafka:9092
+      - SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS=kafka:9092
+    depends_on:
+      - gateway
+    networks:
+      - services
 
 
   zookeeper:

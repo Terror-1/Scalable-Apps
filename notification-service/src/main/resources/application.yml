@@ -21,6 +21,11 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
 
 
+      updateNotificationConfig:
+        group-id: updateNotificationConfig
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
       emptyCart:
         group-id: emptyCart
         key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
