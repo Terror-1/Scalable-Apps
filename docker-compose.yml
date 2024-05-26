@@ -10,15 +10,22 @@ services:
   #     - "9300:9300"
   redis:
     image: redis:6.2-alpine
+    container_name: redis
     restart: always
     ports:
       - "6379:6379"
-    # command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
-    command: redis-server --save 20 1 --loglevel warning
+    command: >
+      redis-server --save 20 1 --loglevel warning
+                  --protected-mode no
     volumes:
-      - cache:/data
+      - redis-data:/data
+      - /path/to/local/dаta:/root/redis
+      - /path/to/local/redis.conf:/usr/local/etc/redis/redis.conf
+
     networks:
       - services
+
+
   db-customer:
     image: postgres
     ports:
@@ -89,6 +96,7 @@ services:
       - "8222:8222"
     depends_on:
       - discovery
+      - redis
     networks:
       - services
 
@@ -120,7 +128,6 @@ services:
      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
      - SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS=kafka:9092
      - SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS=kafka:9092
-     - REDIS_HOST=redis
      - SPRING_CASSANDRA_HOST=cassandra
      - SPRING_CASSANDRA_CONTACT_POINTS=cassandra
      - LOGSTASH_HOST=log
@@ -146,7 +153,9 @@ services:
      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
      - SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS=kafka:9092
      - SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS=kafka:9092
-     - REDIS_HOST=redis
+     - SPRING_DATA_REDIS_HOST=redis
+     - SPRING_DATA_REDIS_PORT=6379
+     - SPRING_REDIS_PASSWORD=redis
      - SPRING_CASSANDRA_HOST=cassandra
      - SPRING_CASSANDRA_CONTACT_POINTS=cassandra
      - LOGSTASH_HOST=log
@@ -319,8 +328,7 @@ services:
 
 volumes:
   cassandra-data:
-  cache:
-    driver: local
+  redis-data:
   db-product-data:
     driver: local
   db-customer-data:
@@ -329,3 +337,4 @@ volumes:
 
 networks:
   services:
+    driver: bridge
