@@ -35,4 +35,23 @@ public class KafkaConfig {
                 .build();
     }
 
+    @Bean
+    public NewTopic updateDBConnection() {
+        return TopicBuilder
+                .name("updateDBConnection")
+                .build();
+    }
+    @Bean
+    public NewTopic freezeProductService() {
+        return TopicBuilder
+                .name("freezeProductService")
+                .build();
+    }
+    @Bean
+    public NewTopic unfreezeProductService() {
+        return TopicBuilder
+                .name("unfreezeProductService")
+                .build();
+    }
+
 }

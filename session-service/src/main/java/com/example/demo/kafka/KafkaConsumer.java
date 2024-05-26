@@ -3,6 +3,7 @@ package com.example.demo.kafka;
 import com.example.demo.dto.AddToCartMessage;
 import com.example.demo.dto.CustomerSessionDto;
 
+import com.example.demo.dto.ThreadPoolConfig;
 import com.example.demo.dto.UserID;
 import com.example.demo.service.SessionService;
 import lombok.RequiredArgsConstructor;
@@ -39,5 +40,10 @@ public class KafkaConsumer {
     public void emptyCart(UserID msg) {
         log.info(format("Consumed the message to empty the cart:: %s", msg.toString()));
         sessionService.emptyCartAfterPurchase(msg);
+    }
+    @KafkaListener(topics = "updateSessionConfig", groupId = "updateSessionConfig")
+    public void updateSessionConfig(ThreadPoolConfig msg) {
+        log.info(format("Consumed the message to empty the cart:: %s", msg.toString()));
+        sessionService.updateThreadPool(msg);
     }
 }

@@ -25,66 +25,70 @@ public class EmailSender {
     }
 
     public void updateThreadPool(ThreadPoolConfig config) {
-        System.out.println("executor "+executor);
-        System.out.println("executor pool size "+executor.getCorePoolSize());
-        System.out.println("config pool size "+config.getCorePoolSize());
+        LOG.info("updating thread pool configuration for notification service");
+
+
         if (executor != null) {
+            LOG.info("core pool size was: "+executor.getCorePoolSize());
+            LOG.info("max pool size was: "+executor.getMaxPoolSize());
+            LOG.info("Queue Capacity was: "+executor.getQueueCapacity());
             executor.setCorePoolSize(config.getCorePoolSize());
             executor.setMaxPoolSize(config.getMaxPoolSize());
             executor.setQueueCapacity(config.getQueueCapacity());
             executor.initialize();
+            LOG.info("core pool size now is: "+executor.getCorePoolSize());
+            LOG.info("max pool size now is: "+executor.getMaxPoolSize());
+            LOG.info("Queue Capacity now is: "+executor.getQueueCapacity());
         }
-        System.out.println("executor pool size "+executor.getCorePoolSize());
+        else{
+            LOG.info("notification service executor is null");
+        }
+
+
 
     }
 
     public void registered(String toEmail) {
 
         LOG.info("Sending registration email to {}", toEmail);
-        sendEmail(toEmail, "Registration", "You have been registered successfully");
-        LOG.info("Registration email sent to {}", toEmail);
         executor.execute(()->{
             sendEmail(toEmail + "@gmail.com", "Registration", "You have been registered successfully");
         });
+        LOG.info("Registration email sent to {}", toEmail);
 
     }
 
     public void login(String toEmail) {
         LOG.info("Sending login email to {}", toEmail);
-        sendEmail(toEmail, "Login", "You have been logged in successfully");
-        LOG.info("Login email sent to {}", toEmail);
         executor.execute(()->{
         sendEmail(toEmail, "Login", "You have been logged in successfully");});
+        LOG.info("Login email sent to {}", toEmail);
     }
     public void order(String toEmail) {
         LOG.info("Sending order email to {}", toEmail);
-        sendEmail(toEmail, "Order", "Your order has been placed successfully");
-        LOG.info("Order email sent to {}", toEmail);
         executor.execute(()->{
         sendEmail(toEmail, "Order", "Your order has been placed successfully");});
+        LOG.info("Order email sent to {}", toEmail);
     }
 
     public void payment(String toEmail) {
         LOG.info("Sending payment email to {}", toEmail);
-        sendEmail(toEmail, "Payment", "Your payment has been processed successfully");
-        LOG.info("Payment email sent to {}", toEmail);
         executor.execute(()->{
         sendEmail(toEmail, "Payment", "Your payment has been processed successfully");});
+        LOG.info("Payment email sent to {}", toEmail);
     }
 
     public void review(String toEmail) {
         LOG.info("Sending review email to {}", toEmail);
-        sendEmail(toEmail, "Review", "Your review has been submitted successfully");
-        LOG.info("Review email sent to {}", toEmail);
         executor.execute(()->{
         sendEmail(toEmail, "Review", "Your review has been submitted successfully");});
+        LOG.info("Review email sent to {}", toEmail);
     }
     public void shipment(String toEmail) {
         LOG.info("Sending shipment email to {}", toEmail);
-        sendEmail(toEmail, "Shipment", "Your order has been shipped successfully");
-        LOG.info("Shipment email sent to {}", toEmail);
         executor.execute(()->{
         sendEmail(toEmail, "Shipment", "Your order has been shipped successfully");});
+        LOG.info("Shipment email sent to {}", toEmail);
     }
 
 
