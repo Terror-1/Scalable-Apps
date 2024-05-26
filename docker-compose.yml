@@ -92,13 +92,42 @@ services:
     build:
       context: ./gateway
     container_name: gateway
+    environment:
+      - "SERVER_PORT=8223"
     ports:
-      - "8222:8222"
+      - "8223:8223"
     depends_on:
       - discovery
       - redis
     networks:
       - services
+  gateway2:
+    build:
+      context: ./gateway
+    container_name: gateway2
+    environment:
+      - "SERVER_PORT=8224"
+    ports:
+      - "8224:8224"
+    depends_on:
+      - discovery
+      - redis
+    networks:
+      - services
+  gateway3:
+    build:
+      context: ./gateway
+    container_name: gateway3
+    environment:
+      - "SERVER_PORT=8225"
+    ports:
+      - "8225:8225"
+    depends_on:
+      - discovery
+      - redis
+    networks:
+      - services
+
 
   customer:
     build:
@@ -326,6 +355,24 @@ services:
    volumes:
      - ./prometheus-grafana/grafana:/etc/grafana/provisioning/datasources
 
+  nginx:
+    image: nginx:1.17.10
+    container_name: nginx
+    ports:
+      - "8010:80"
+    volumes:
+      - ./NGINX/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - services
+  product-nginx:
+    image: nginx:1.17.10
+    container_name: product-nginx
+    ports:
+      - "8011:80"
+    volumes:
+      - ./NGINX/product-nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - services
 volumes:
   cassandra-data:
   redis-data:
@@ -338,3 +385,4 @@ volumes:
 networks:
   services:
     driver: bridge
+

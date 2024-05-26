@@ -5,8 +5,7 @@ eureka:
 
 
 server:
-  port: 8222
-
+  port: ${SERVER_PORT:8222}
 
 spring:
   application:

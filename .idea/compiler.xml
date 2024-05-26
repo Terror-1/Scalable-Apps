@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="config-server" />
         <module name="gatling-testing" />
+        <module name="controller-service" />
         <module name="discovery" />
         <module name="product-service" />
         <module name="myCustomer-service" />
@@ -20,6 +21,7 @@
     <bytecodeTargetLevel>
       <module name="customer-service" target="21" />
       <module name="demo" target="17" />
+      <module name="discovery" target="21" />
       <module name="externalDTOs" target="20" />
       <module name="inventory-service" target="21" />
       <module name="order-service" target="21" />
